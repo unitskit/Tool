@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Black-Scholes Calculator - Investment Tools - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Math.js for advanced mathematical functions -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.4.4/math.js"></script>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate option prices using the Black-Scholes model. Features Greeks calculation, implied volatility, and sensitivity analysis.">
+    <meta name="keywords" content="black scholes, options pricing, option greeks, implied volatility, derivatives, options trading">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">Black-Scholes Options Calculator</h1>
+                    <p class="tool-description">Calculate theoretical option prices using the Black-Scholes model. Features comprehensive analysis including Greeks, implied volatility, and sensitivity analysis.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="blackScholesForm" class="needs-validation" novalidate>
+                        <!-- Option Parameters -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Option Parameters</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="optionType" class="form-label">Option Type</label>
+                                            <select class="form-select" id="optionType" required>
+                                                <option value="call">Call Option</option>
+                                                <option value="put">Put Option</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="stockPrice" class="form-label">Stock Price ($)</label>
+                                            <input type="number" class="form-control" id="stockPrice" value="100" step="0.01" required>
+                                            <div class="form-text">Current market price of the underlying stock</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="strikePrice" class="form-label">Strike Price ($)</label>
+                                            <input type="number" class="form-control" id="strikePrice" value="100" step="0.01" required>
+                                            <div class="form-text">Exercise price of the option</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="timeToExpiry" class="form-label">Time to Expiry (Years)</label>
+                                            <input type="number" class="form-control" id="timeToExpiry" value="1" step="0.01" required>
+                                            <div class="form-text">Time until option expiration in years</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="volatility" class="form-label">Volatility (%)</label>
+                                            <input type="number" class="form-control" id="volatility" value="20" step="0.1" required>
+                                            <div class="form-text">Annual volatility of the underlying stock</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="riskFreeRate" class="form-label">Risk-Free Rate (%)</label>
+                                            <input type="number" class="form-control" id="riskFreeRate" value="5" step="0.1" required>
+                                            <div class="form-text">Annual risk-free interest rate</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate Option Price</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>Black-Scholes Analysis Results</h3>
+                        
+                        <!-- Option Price -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Option Price</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Theoretical Price</label>
+                                            <p id="optionPrice" class="h4">$0.00</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Intrinsic Value</label>
+                                            <p id="intrinsicValue" class="h4">$0.00</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Time Value</label>
+                                            <p id="timeValue" class="h4">$0.00</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Moneyness</label>
+                                            <p id="moneyness" class="h4">At-the-money</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Greeks -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Option Greeks</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Delta</label>
+                                            <p id="delta" class="h4">0.00</p>
+                                            <small class="text-muted">Price sensitivity to underlying</small>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Gamma</label>
+                                            <p id="gamma" class="h4">0.00</p>
+                                            <small class="text-muted">Delta sensitivity to underlying</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Theta</label>
+                                            <p id="theta" class="h4">0.00</p>
+                                            <small class="text-muted">Time decay per day</small>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Vega</label>
+                                            <p id="vega" class="h4">0.00</p>
+                                            <small class="text-muted">Volatility sensitivity</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sensitivity Charts -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Sensitivity Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6 mb-4">
+                                        <canvas id="priceChart"></canvas>
+                                    </div>
+                                    <div class="col-md-6 mb-4">
+                                        <canvas id="greeksChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="call-option-calculator.html">Call Option Calculator</a></li>
+                            <li class="mb-2"><a href="put-option-calculator.html">Put Option Calculator</a></li>
+                            <li class="mb-2"><a href="options-spread-calculator.html">Options Spread Calculator</a></li>
+                            <li class="mb-2"><a href="implied-volatility-calculator.html">Implied Volatility Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Formula Reference -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Black-Scholes Formula</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="mb-2">Call Option Price:</p>
+                        <p class="text-monospace">C = S₀N(d₁) - Ke⁻ʳᵀN(d₂)</p>
+                        <p class="mb-2">Put Option Price:</p>
+                        <p class="text-monospace">P = Ke⁻ʳᵀN(-d₂) - S₀N(-d₁)</p>
+                        <p class="mb-2">Where:</p>
+                        <ul class="list-unstyled small">
+                            <li>S₀ = Current stock price</li>
+                            <li>K = Strike price</li>
+                            <li>r = Risk-free rate</li>
+                            <li>T = Time to expiry</li>
+                            <li>σ = Volatility</li>
+                            <li>N() = Cumulative normal distribution</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- How to Use Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Select option type (Call/Put)</li>
+                            <li class="mb-2">Enter stock and strike prices</li>
+                            <li class="mb-2">Input time to expiry in years</li>
+                            <li class="mb-2">Specify volatility and risk-free rate</li>
+                            <li>Review option price and Greeks</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('blackScholesForm');
+            const results = document.getElementById('results');
+            let priceChart = null;
+            let greeksChart = null;
+
+            function normalCDF(x) {
+                const a1 = 0.254829592;
+                const a2 = -0.284496736;
+                const a3 = 1.421413741;
+                const a4 = -1.453152027;
+                const a5 = 1.061405429;
+                const p = 0.3275911;
+                
+                const sign = x < 0 ? -1 : 1;
+                x = Math.abs(x) / Math.sqrt(2.0);
+                
+                const t = 1.0 / (1.0 + p * x);
+                const erf = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-x * x);
+                
+                return 0.5 * (1.0 + sign * erf);
+            }
+
+            function calculateBlackScholes(inputs) {
+                const S = inputs.stockPrice;
+                const K = inputs.strikePrice;
+                const T = inputs.timeToExpiry;
+                const r = inputs.riskFreeRate / 100;
+                const sigma = inputs.volatility / 100;
+                const isCall = inputs.optionType === 'call';
+
+                const d1 = (Math.log(S / K) + (r + sigma * sigma / 2) * T) / (sigma * Math.sqrt(T));
+                const d2 = d1 - sigma * Math.sqrt(T);
+
+                let price;
+                if (isCall) {
+                    price = S * normalCDF(d1) - K * Math.exp(-r * T) * normalCDF(d2);
+                } else {
+                    price = K * Math.exp(-r * T) * normalCDF(-d2) - S * normalCDF(-d1);
+                }
+
+                // Calculate Greeks
+                const delta = isCall ? normalCDF(d1) : normalCDF(d1) - 1;
+                const gamma = Math.exp(-d1 * d1 / 2) / (S * sigma * Math.sqrt(2 * Math.PI * T));
+                const theta = (-S * sigma * Math.exp(-d1 * d1 / 2) / (2 * Math.sqrt(T)) - 
+                             (isCall ? 1 : -1) * r * K * Math.exp(-r * T) * normalCDF((isCall ? 1 : -1) * d2)) / 365;
+                const vega = S * Math.sqrt(T) * Math.exp(-d1 * d1 / 2) / Math.sqrt(2 * Math.PI) / 100;
+
+                return {
+                    price,
+                    delta,
+                    gamma,
+                    theta,
+                    vega,
+                    intrinsicValue: Math.max(0, isCall ? S - K : K - S)
+                };
+            }
+
+            function updateCharts(inputs, results) {
+                const ctx1 = document.getElementById('priceChart').getContext('2d');
+                const ctx2 = document.getElementById('greeksChart').getContext('2d');
+                
+                if (priceChart) priceChart.destroy();
+                if (greeksChart) greeksChart.destroy();
+
+                // Generate price range for analysis
+                const priceRange = Array.from({length: 21}, (_, i) => 
+                    inputs.stockPrice * (0.7 + i * 0.03));
+
+                const prices = priceRange.map(price => {
+                    const tempInputs = {...inputs, stockPrice: price};
+                    return calculateBlackScholes(tempInputs).price;
+                });
+
+                const greeks = priceRange.map(price => {
+                    const tempInputs = {...inputs, stockPrice: price};
+                    const result = calculateBlackScholes(tempInputs);
+                    return {
+                        delta: result.delta,
+                        gamma: result.gamma * 100
+                    };
+                });
+
+                priceChart = new Chart(ctx1, {
+                    type: 'line',
+                    data: {
+                        labels: priceRange.map(price => price.toFixed(2)),
+                        datasets: [{
+                            label: 'Option Price',
+                            data: prices,
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Stock Price ($)'
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Option Price ($)'
+                                }
+                            }
+                        }
+                    }
+                });
+
+                greeksChart = new Chart(ctx2, {
+                    type: 'line',
+                    data: {
+                        labels: priceRange.map(price => price.toFixed(2)),
+                        datasets: [{
+                            label: 'Delta',
+                            data: greeks.map(g => g.delta),
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            yAxisID: 'y'
+                        }, {
+                            label: 'Gamma',
+                            data: greeks.map(g => g.gamma),
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            yAxisID: 'y1'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Stock Price ($)'
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Delta'
+                                }
+                            },
+                            y1: {
+                                position: 'right',
+                                title: {
+                                    display: true,
+                                    text: 'Gamma (%)'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const inputs = {
+                    optionType: document.getElementById('optionType').value,
+                    stockPrice: parseFloat(document.getElementById('stockPrice').value),
+                    strikePrice: parseFloat(document.getElementById('strikePrice').value),
+                    timeToExpiry: parseFloat(document.getElementById('timeToExpiry').value),
+                    volatility: parseFloat(document.getElementById('volatility').value),
+                    riskFreeRate: parseFloat(document.getElementById('riskFreeRate').value)
+                };
+                
+                const result = calculateBlackScholes(inputs);
+                
+                // Update display
+                document.getElementById('optionPrice').textContent = '$' + result.price.toFixed(4);
+                document.getElementById('intrinsicValue').textContent = '$' + result.intrinsicValue.toFixed(4);
+                document.getElementById('timeValue').textContent = '$' + (result.price - result.intrinsicValue).toFixed(4);
+                
+                document.getElementById('delta').textContent = result.delta.toFixed(4);
+                document.getElementById('gamma').textContent = result.gamma.toFixed(4);
+                document.getElementById('theta').textContent = result.theta.toFixed(4);
+                document.getElementById('vega').textContent = result.vega.toFixed(4);
+                
+                const ratio = inputs.stockPrice / inputs.strikePrice;
+                document.getElementById('moneyness').textContent = 
+                    ratio > 1.05 ? 'In-the-money' :
+                    ratio < 0.95 ? 'Out-of-the-money' : 'At-the-money';
+                
+                // Update charts
+                updateCharts(inputs, result);
+                
+                results.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Overtime Calculator - Calculate Extra Hours Pay - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate overtime pay and total compensation with our overtime calculator. Account for different overtime rates and work schedules.">
+    <meta name="keywords" content="overtime calculator, overtime pay, extra hours, wage calculator, labor calculator">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">Overtime Calculator</h1>
+                    <p class="tool-description">Calculate overtime pay and total compensation. Account for different overtime rates and work schedules to determine your extra hours pay.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="overtimeForm" class="needs-validation" novalidate>
+                        <!-- Regular Hours -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Regular Hours</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="hourlyRate" class="form-label">Regular Hourly Rate ($)</label>
+                                    <input type="number" class="form-control" id="hourlyRate" required min="0" step="0.01">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="regularHours" class="form-label">Regular Hours Worked</label>
+                                    <input type="number" class="form-control" id="regularHours" required min="0" step="0.5">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="standardHours" class="form-label">Standard Hours per Week</label>
+                                    <input type="number" class="form-control" id="standardHours" value="40" min="0" step="0.5">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Overtime Details -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Overtime Details</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="overtimeRate" class="form-label">Overtime Rate Multiplier</label>
+                                    <select class="form-select" id="overtimeRate">
+                                        <option value="1.5">1.5x (Time and a half)</option>
+                                        <option value="2">2x (Double time)</option>
+                                        <option value="2.5">2.5x</option>
+                                        <option value="3">3x</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="overtimeHours" class="form-label">Overtime Hours Worked</label>
+                                    <input type="number" class="form-control" id="overtimeHours" required min="0" step="0.5">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Additional Pay -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Additional Pay (Optional)</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="holidayHours" class="form-label">Holiday Hours</label>
+                                    <input type="number" class="form-control" id="holidayHours" value="0" min="0" step="0.5">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="holidayRate" class="form-label">Holiday Pay Rate Multiplier</label>
+                                    <select class="form-select" id="holidayRate">
+                                        <option value="1.5">1.5x</option>
+                                        <option value="2" selected>2x</option>
+                                        <option value="2.5">2.5x</option>
+                                        <option value="3">3x</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="bonusPay" class="form-label">Bonus Pay ($)</label>
+                                    <input type="number" class="form-control" id="bonusPay" value="0" min="0" step="0.01">
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate Pay</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>Pay Breakdown</h3>
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5>Regular Pay</h5>
+                                        <p>Regular Hours Pay: <strong>$<span id="regularPay">0</span></strong></p>
+                                        <p>Overtime Pay: <strong>$<span id="overtimePay">0</span></strong></p>
+                                        <p>Holiday Pay: <strong>$<span id="holidayPay">0</span></strong></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5>Total Compensation</h5>
+                                        <p>Base Pay: <strong>$<span id="basePay">0</span></strong></p>
+                                        <p>Additional Pay: <strong>$<span id="additionalPay">0</span></strong></p>
+                                        <p>Total Pay: <strong>$<span id="totalPay">0</span></strong></p>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="text-center">
+                                    <p class="mb-0">Effective Hourly Rate: <strong>$<span id="effectiveRate">0</span></strong></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="salary-calculator.html">Salary Calculator</a></li>
+                            <li class="mb-2"><a href="labor-cost-calculator.html">Labor Cost Calculator</a></li>
+                            <li class="mb-2"><a href="productivity-calculator.html">Productivity Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- How to Use Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter your regular hourly rate</li>
+                            <li class="mb-2">Input regular and overtime hours</li>
+                            <li class="mb-2">Select overtime rate multiplier</li>
+                            <li class="mb-2">Add holiday hours if applicable</li>
+                            <li class="mb-2">Include any bonus pay</li>
+                            <li>Click calculate to see pay breakdown</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('overtimeForm');
+            const results = document.getElementById('results');
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get input values
+                const hourlyRate = parseFloat(document.getElementById('hourlyRate').value);
+                const regularHours = parseFloat(document.getElementById('regularHours').value);
+                const standardHours = parseFloat(document.getElementById('standardHours').value);
+                const overtimeRate = parseFloat(document.getElementById('overtimeRate').value);
+                const overtimeHours = parseFloat(document.getElementById('overtimeHours').value);
+                const holidayHours = parseFloat(document.getElementById('holidayHours').value) || 0;
+                const holidayRate = parseFloat(document.getElementById('holidayRate').value);
+                const bonusPay = parseFloat(document.getElementById('bonusPay').value) || 0;
+
+                // Calculate regular pay
+                const regularPay = hourlyRate * Math.min(regularHours, standardHours);
+                
+                // Calculate overtime pay
+                const overtimePay = hourlyRate * overtimeRate * overtimeHours;
+                
+                // Calculate holiday pay
+                const holidayPay = hourlyRate * holidayRate * holidayHours;
+
+                // Calculate total pay
+                const basePay = regularPay + overtimePay + holidayPay;
+                const additionalPay = bonusPay;
+                const totalPay = basePay + additionalPay;
+
+                // Calculate effective hourly rate
+                const totalHours = regularHours + overtimeHours + holidayHours;
+                const effectiveRate = totalPay / totalHours;
+
+                // Display results
+                document.getElementById('regularPay').textContent = regularPay.toFixed(2);
+                document.getElementById('overtimePay').textContent = overtimePay.toFixed(2);
+                document.getElementById('holidayPay').textContent = holidayPay.toFixed(2);
+                document.getElementById('basePay').textContent = basePay.toFixed(2);
+                document.getElementById('additionalPay').textContent = additionalPay.toFixed(2);
+                document.getElementById('totalPay').textContent = totalPay.toFixed(2);
+                document.getElementById('effectiveRate').textContent = effectiveRate.toFixed(2);
+
+                results.style.display = 'block';
+            });
+
+            // Form validation
+            form.addEventListener('input', function(e) {
+                if (e.target.type === 'number') {
+                    const value = parseFloat(e.target.value);
+                    const min = parseFloat(e.target.min);
+                    const max = parseFloat(e.target.max);
+
+                    if (!isNaN(min) && value < min) {
+                        e.target.value = min;
+                    }
+                    if (!isNaN(max) && value > max) {
+                        e.target.value = max;
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

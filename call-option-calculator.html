@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Call Option Calculator - Investment Tools - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate and analyze call option prices, payoff scenarios, and profit potential. Features comprehensive analysis including breakeven points, maximum profit/loss, and risk metrics.">
+    <meta name="keywords" content="call option, options trading, option premium, strike price, breakeven analysis, options payoff, profit calculator">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">Call Option Calculator</h1>
+                    <p class="tool-description">Calculate call option prices, analyze potential payoff scenarios, and determine profit/loss metrics. Features comprehensive analysis including breakeven points, risk assessment, and interactive payoff diagrams.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="callOptionForm" class="needs-validation" novalidate>
+                        <!-- Option Parameters -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Option Parameters</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="stockPrice" class="form-label">Current Stock Price ($)</label>
+                                    <input type="number" class="form-control" id="stockPrice" value="100" step="0.01" required>
+                                    <div class="form-text">Current market price of the underlying stock</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="strikePrice" class="form-label">Strike Price ($)</label>
+                                    <input type="number" class="form-control" id="strikePrice" value="100" step="0.01" required>
+                                    <div class="form-text">Strike price of the call option</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="premium" class="form-label">Option Premium ($)</label>
+                                    <input type="number" class="form-control" id="premium" value="5" step="0.01" required>
+                                    <div class="form-text">Price paid for the call option</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="contracts" class="form-label">Number of Contracts</label>
+                                    <input type="number" class="form-control" id="contracts" value="1" step="1" required>
+                                    <div class="form-text">Each contract represents 100 shares</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="timeToExpiry" class="form-label">Days to Expiration</label>
+                                    <input type="number" class="form-control" id="timeToExpiry" value="30" step="1" required>
+                                    <div class="form-text">Number of days until option expiration</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Price Range Analysis -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Price Range Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="minPrice" class="form-label">Minimum Stock Price ($)</label>
+                                    <input type="number" class="form-control" id="minPrice" value="80" step="0.01" required>
+                                    <div class="form-text">Lowest stock price to analyze</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="maxPrice" class="form-label">Maximum Stock Price ($)</label>
+                                    <input type="number" class="form-control" id="maxPrice" value="120" step="0.01" required>
+                                    <div class="form-text">Highest stock price to analyze</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate Payoff</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>Call Option Analysis Results</h3>
+                        
+                        <!-- Key Metrics -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Key Metrics</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Breakeven Price</label>
+                                            <p id="breakeven" class="h4">$0.00</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Maximum Loss</label>
+                                            <p id="maxLoss" class="h4">$0.00</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Total Investment</label>
+                                            <p id="totalInvestment" class="h4">$0.00</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Current Profit/Loss</label>
+                                            <p id="currentPL" class="h4">$0.00</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Position Status -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Position Status</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Moneyness</label>
+                                            <p id="moneyness" class="h4">At-the-money</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Time Value</label>
+                                            <p id="timeValue" class="h4">$0.00</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Intrinsic Value</label>
+                                            <p id="intrinsicValue" class="h4">$0.00</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Return on Investment</label>
+                                            <p id="roi" class="h4">0%</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Payoff Chart -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Payoff Diagram</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="payoffChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Profit/Loss Table -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Profit/Loss Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Stock Price</th>
+                                                <th>Profit/Loss</th>
+                                                <th>Return (%)</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="plTable">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="black-scholes-calculator.html">Black-Scholes Calculator</a></li>
+                            <li class="mb-2"><a href="put-call-parity-calculator.html">Put-Call Parity Calculator</a></li>
+                            <li class="mb-2"><a href="options-spread-calculator.html">Options Spread Calculator</a></li>
+                            <li class="mb-2"><a href="implied-volatility-calculator.html">Implied Volatility Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- How to Use Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter current stock price</li>
+                            <li class="mb-2">Input strike price and premium</li>
+                            <li class="mb-2">Specify number of contracts</li>
+                            <li class="mb-2">Set price range for analysis</li>
+                            <li>Review payoff and profit metrics</li>
+                        </ol>
+                        <div class="mt-3">
+                            <p class="mb-2"><strong>Key Terms:</strong></p>
+                            <ul class="list-unstyled small">
+                                <li>• Premium: Cost of the option</li>
+                                <li>• Strike Price: Exercise price</li>
+                                <li>• Breakeven: Price needed for profit</li>
+                                <li>• Intrinsic Value: In-the-money amount</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('callOptionForm');
+            const results = document.getElementById('results');
+            let payoffChart = null;
+
+            function calculateCallOption(inputs) {
+                const contractMultiplier = 100;
+                const totalContracts = inputs.contracts * contractMultiplier;
+                
+                // Calculate key metrics
+                const breakeven = inputs.strikePrice + inputs.premium;
+                const maxLoss = inputs.premium * totalContracts;
+                const totalInvestment = maxLoss;
+                
+                // Calculate current position metrics
+                const intrinsicValue = Math.max(0, inputs.stockPrice - inputs.strikePrice);
+                const timeValue = inputs.premium - intrinsicValue;
+                const currentValue = Math.max(0, inputs.stockPrice - inputs.strikePrice) * totalContracts;
+                const currentPL = currentValue - maxLoss;
+                const roi = (currentPL / totalInvestment) * 100;
+
+                return {
+                    breakeven,
+                    maxLoss,
+                    totalInvestment,
+                    intrinsicValue,
+                    timeValue,
+                    currentPL,
+                    roi
+                };
+            }
+
+            function getMoneyness(stockPrice, strikePrice) {
+                const ratio = stockPrice / strikePrice;
+                if (ratio > 1.05) return 'In-the-money';
+                if (ratio < 0.95) return 'Out-of-the-money';
+                return 'At-the-money';
+            }
+
+            function updatePayoffChart(inputs) {
+                const ctx = document.getElementById('payoffChart').getContext('2d');
+                
+                if (payoffChart) {
+                    payoffChart.destroy();
+                }
+
+                const priceStep = (inputs.maxPrice - inputs.minPrice) / 20;
+                const prices = Array.from({length: 21}, (_, i) => inputs.minPrice + i * priceStep);
+                
+                const payoff = prices.map(price => {
+                    const profit = Math.max(0, price - inputs.strikePrice) * inputs.contracts * 100 
+                                 - (inputs.premium * inputs.contracts * 100);
+                    return profit;
+                });
+
+                payoffChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: prices.map(price => price.toFixed(2)),
+                        datasets: [{
+                            label: 'Profit/Loss',
+                            data: payoff,
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Stock Price ($)'
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Profit/Loss ($)'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            function updatePLTable(inputs) {
+                const tbody = document.getElementById('plTable');
+                const priceStep = (inputs.maxPrice - inputs.minPrice) / 4;
+                const prices = Array.from({length: 5}, (_, i) => inputs.minPrice + i * priceStep);
+                
+                const rows = prices.map(price => {
+                    const profit = Math.max(0, price - inputs.strikePrice) * inputs.contracts * 100 
+                                 - (inputs.premium * inputs.contracts * 100);
+                    const returnPct = (profit / (inputs.premium * inputs.contracts * 100)) * 100;
+                    
+                    return {
+                        price: price.toFixed(2),
+                        profit: profit.toFixed(2),
+                        return: returnPct.toFixed(2),
+                        status: price < inputs.strikePrice ? 'Out-of-the-money' :
+                               price === inputs.strikePrice ? 'At-the-money' : 'In-the-money'
+                    };
+                });
+
+                tbody.innerHTML = rows.map(row => `
+                    <tr>
+                        <td>$${row.price}</td>
+                        <td>$${row.profit}</td>
+                        <td>${row.return}%</td>
+                        <td><span class="badge bg-${row.status === 'In-the-money' ? 'success' : 
+                            row.status === 'At-the-money' ? 'warning' : 'danger'}">${row.status}</span></td>
+                    </tr>
+                `).join('');
+            }
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const inputs = {
+                    stockPrice: parseFloat(document.getElementById('stockPrice').value),
+                    strikePrice: parseFloat(document.getElementById('strikePrice').value),
+                    premium: parseFloat(document.getElementById('premium').value),
+                    contracts: parseInt(document.getElementById('contracts').value),
+                    timeToExpiry: parseInt(document.getElementById('timeToExpiry').value),
+                    minPrice: parseFloat(document.getElementById('minPrice').value),
+                    maxPrice: parseFloat(document.getElementById('maxPrice').value)
+                };
+                
+                const metrics = calculateCallOption(inputs);
+                
+                // Update display
+                document.getElementById('breakeven').textContent = '$' + metrics.breakeven.toFixed(2);
+                document.getElementById('maxLoss').textContent = '$' + metrics.maxLoss.toFixed(2);
+                document.getElementById('totalInvestment').textContent = '$' + metrics.totalInvestment.toFixed(2);
+                document.getElementById('currentPL').textContent = '$' + metrics.currentPL.toFixed(2);
+                
+                document.getElementById('moneyness').textContent = getMoneyness(inputs.stockPrice, inputs.strikePrice);
+                document.getElementById('timeValue').textContent = '$' + metrics.timeValue.toFixed(2);
+                document.getElementById('intrinsicValue').textContent = '$' + metrics.intrinsicValue.toFixed(2);
+                document.getElementById('roi').textContent = metrics.roi.toFixed(2) + '%';
+                
+                // Update chart and table
+                updatePayoffChart(inputs);
+                updatePLTable(inputs);
+                
+                results.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html> 

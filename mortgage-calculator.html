@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mortgage Calculator - Calculate Monthly Payments - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate monthly mortgage payments and view amortization schedule. Plan your home purchase with our comprehensive mortgage calculator.">
+    <meta name="keywords" content="mortgage calculator, home loan calculator, amortization schedule, monthly payments, real estate calculator">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">Mortgage Calculator</h1>
+                    <p class="tool-description">Calculate your monthly mortgage payments and view detailed amortization schedule. Plan your home purchase with accurate payment estimates.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="mortgageForm" class="needs-validation" novalidate>
+                        <!-- Loan Details -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Loan Details</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="homePrice" class="form-label">Home Price ($)</label>
+                                    <input type="number" class="form-control" id="homePrice" required min="0" step="1000">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="downPayment" class="form-label">Down Payment ($)</label>
+                                    <input type="number" class="form-control" id="downPayment" required min="0" step="1000">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="loanTerm" class="form-label">Loan Term (Years)</label>
+                                    <select class="form-select" id="loanTerm" required>
+                                        <option value="30" selected>30 years</option>
+                                        <option value="20">20 years</option>
+                                        <option value="15">15 years</option>
+                                        <option value="10">10 years</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="interestRate" class="form-label">Interest Rate (%)</label>
+                                    <input type="number" class="form-control" id="interestRate" required min="0" max="100" step="0.01">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Additional Costs -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Additional Costs</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="propertyTax" class="form-label">Annual Property Tax ($)</label>
+                                    <input type="number" class="form-control" id="propertyTax" value="0" min="0" step="100">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="insurance" class="form-label">Annual Home Insurance ($)</label>
+                                    <input type="number" class="form-control" id="insurance" value="0" min="0" step="100">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="pmi" class="form-label">PMI Rate (%)</label>
+                                    <input type="number" class="form-control" id="pmi" value="0" min="0" max="100" step="0.01">
+                                    <div class="form-text">Private Mortgage Insurance is typically required if down payment is less than 20%</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="hoa" class="form-label">Monthly HOA Fees ($)</label>
+                                    <input type="number" class="form-control" id="hoa" value="0" min="0" step="10">
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate Mortgage</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>Mortgage Analysis</h3>
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5>Monthly Payments</h5>
+                                        <p>Principal & Interest: <strong>$<span id="monthlyPI">0</span></strong></p>
+                                        <p>Property Tax: <strong>$<span id="monthlyTax">0</span></strong></p>
+                                        <p>Insurance: <strong>$<span id="monthlyInsurance">0</span></strong></p>
+                                        <p>PMI: <strong>$<span id="monthlyPMI">0</span></strong></p>
+                                        <p>HOA: <strong>$<span id="monthlyHOA">0</span></strong></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5>Loan Summary</h5>
+                                        <p>Loan Amount: <strong>$<span id="loanAmount">0</span></strong></p>
+                                        <p>Total Interest: <strong>$<span id="totalInterest">0</span></strong></p>
+                                        <p>Total Cost: <strong>$<span id="totalCost">0</span></strong></p>
+                                        <p>Down Payment %: <strong><span id="downPaymentPercent">0</span>%</strong></p>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="text-center">
+                                    <p class="mb-0">Total Monthly Payment: <strong>$<span id="totalMonthly">0</span></strong></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Amortization Schedule -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Amortization Schedule</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Year</th>
+                                                <th>Principal</th>
+                                                <th>Interest</th>
+                                                <th>Balance</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="amortizationTable">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="compound-interest-calculator.html">Compound Interest Calculator</a></li>
+                            <li class="mb-2"><a href="investment-calculator.html">Investment Calculator</a></li>
+                            <li class="mb-2"><a href="apy-calculator.html">APY Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- How to Use Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter home price and down payment</li>
+                            <li class="mb-2">Select loan term and interest rate</li>
+                            <li class="mb-2">Add property tax and insurance costs</li>
+                            <li class="mb-2">Include PMI if applicable</li>
+                            <li class="mb-2">Add HOA fees if any</li>
+                            <li>Click calculate to see payment breakdown</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('mortgageForm');
+            const results = document.getElementById('results');
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get input values
+                const homePrice = parseFloat(document.getElementById('homePrice').value);
+                const downPayment = parseFloat(document.getElementById('downPayment').value);
+                const loanTerm = parseInt(document.getElementById('loanTerm').value);
+                const interestRate = parseFloat(document.getElementById('interestRate').value) / 100;
+                const propertyTax = parseFloat(document.getElementById('propertyTax').value);
+                const insurance = parseFloat(document.getElementById('insurance').value);
+                const pmiRate = parseFloat(document.getElementById('pmi').value) / 100;
+                const hoa = parseFloat(document.getElementById('hoa').value);
+
+                // Calculate loan details
+                const loanAmount = homePrice - downPayment;
+                const monthlyRate = interestRate / 12;
+                const numberOfPayments = loanTerm * 12;
+                const downPaymentPercent = (downPayment / homePrice) * 100;
+
+                // Calculate monthly P&I payment
+                const monthlyPI = loanAmount * (monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments)) / (Math.pow(1 + monthlyRate, numberOfPayments) - 1);
+
+                // Calculate additional monthly costs
+                const monthlyTax = propertyTax / 12;
+                const monthlyInsurance = insurance / 12;
+                const monthlyPMI = downPaymentPercent < 20 ? (loanAmount * pmiRate) / 12 : 0;
+
+                // Calculate total monthly payment
+                const totalMonthly = monthlyPI + monthlyTax + monthlyInsurance + monthlyPMI + hoa;
+
+                // Calculate total interest
+                const totalInterest = (monthlyPI * numberOfPayments) - loanAmount;
+                const totalCost = totalInterest + loanAmount;
+
+                // Display results
+                document.getElementById('monthlyPI').textContent = monthlyPI.toFixed(2);
+                document.getElementById('monthlyTax').textContent = monthlyTax.toFixed(2);
+                document.getElementById('monthlyInsurance').textContent = monthlyInsurance.toFixed(2);
+                document.getElementById('monthlyPMI').textContent = monthlyPMI.toFixed(2);
+                document.getElementById('monthlyHOA').textContent = hoa.toFixed(2);
+                document.getElementById('totalMonthly').textContent = totalMonthly.toFixed(2);
+
+                document.getElementById('loanAmount').textContent = loanAmount.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                document.getElementById('totalInterest').textContent = totalInterest.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                document.getElementById('totalCost').textContent = totalCost.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                document.getElementById('downPaymentPercent').textContent = downPaymentPercent.toFixed(1);
+
+                // Generate amortization schedule
+                const amortizationTable = document.getElementById('amortizationTable');
+                amortizationTable.innerHTML = '';
+                
+                let balance = loanAmount;
+                let totalPrincipal = 0;
+                let yearlyInterest = 0;
+
+                for (let year = 1; year <= loanTerm; year++) {
+                    let yearlyPrincipal = 0;
+                    yearlyInterest = 0;
+
+                    for (let month = 1; month <= 12; month++) {
+                        const monthlyInterest = balance * monthlyRate;
+                        const monthlyPrincipal = monthlyPI - monthlyInterest;
+                        
+                        yearlyPrincipal += monthlyPrincipal;
+                        yearlyInterest += monthlyInterest;
+                        balance -= monthlyPrincipal;
+                    }
+
+                    totalPrincipal += yearlyPrincipal;
+
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${year}</td>
+                        <td>$${yearlyPrincipal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                        <td>$${yearlyInterest.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                        <td>$${balance.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                    `;
+                    amortizationTable.appendChild(row);
+                }
+
+                results.style.display = 'block';
+            });
+
+            // Form validation
+            form.addEventListener('input', function(e) {
+                if (e.target.type === 'number') {
+                    const value = parseFloat(e.target.value);
+                    const min = parseFloat(e.target.min);
+                    const max = parseFloat(e.target.max);
+
+                    if (!isNaN(min) && value < min) {
+                        e.target.value = min;
+                    }
+                    if (!isNaN(max) && value > max) {
+                        e.target.value = max;
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

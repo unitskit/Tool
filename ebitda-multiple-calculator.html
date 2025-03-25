@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EBITDA Multiple Calculator - Valuation Tools - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate and analyze EBITDA multiples for company valuation. Compare enterprise value to EBITDA ratios and assess company worth.">
+    <meta name="keywords" content="ebitda multiple, enterprise value, company valuation, ev/ebitda, valuation metrics">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">EBITDA Multiple Calculator</h1>
+                    <p class="tool-description">Calculate and analyze EBITDA multiples to determine company valuation. Compare enterprise value to EBITDA ratios and assess relative company worth.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="ebitdaForm" class="needs-validation" novalidate>
+                        <!-- Enterprise Value Section -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Enterprise Value Components</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="marketCap" class="form-label">Market Capitalization</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" id="marketCap" step="1000000" value="1000000000" required>
+                                    </div>
+                                    <div class="form-text">Total market value of company's shares</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="totalDebt" class="form-label">Total Debt</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" id="totalDebt" step="1000000" value="500000000" required>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="cashEquivalents" class="form-label">Cash & Cash Equivalents</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" id="cashEquivalents" step="1000000" value="200000000" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- EBITDA Section -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">EBITDA Components</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="ebitda" class="form-label">EBITDA (Annual)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" id="ebitda" step="1000000" value="150000000" required>
+                                    </div>
+                                    <div class="form-text">Earnings Before Interest, Taxes, Depreciation & Amortization</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="ebitdaGrowth" class="form-label">Expected EBITDA Growth Rate (%)</label>
+                                    <input type="number" class="form-control" id="ebitdaGrowth" step="0.1" value="5.0">
+                                    <div class="form-text">Projected annual growth rate for EBITDA</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate Multiple</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>Valuation Analysis</h3>
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5>Enterprise Value</h5>
+                                        <p>Enterprise Value: <strong>$<span id="enterpriseValue">0</span></strong></p>
+                                        <p>EV/EBITDA Multiple: <strong><span id="evEbitdaMultiple">0</span>x</strong></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5>Forward Metrics</h5>
+                                        <p>Forward EBITDA: <strong>$<span id="forwardEbitda">0</span></strong></p>
+                                        <p>Forward Multiple: <strong><span id="forwardMultiple">0</span>x</strong></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Valuation Analysis -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Multiple Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Component</th>
+                                                <th>Value</th>
+                                                <th>% of Enterprise Value</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="componentAnalysis"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Visual Representation -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Enterprise Value Composition</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="compositionChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="enterprise-value-calculator.html">Enterprise Value Calculator</a></li>
+                            <li class="mb-2"><a href="ev-to-sales-calculator.html">EV/Sales Calculator</a></li>
+                            <li class="mb-2"><a href="market-cap-calculator.html">Market Cap Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- How to Use Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter the company's market capitalization</li>
+                            <li class="mb-2">Input total debt and cash equivalents</li>
+                            <li class="mb-2">Provide annual EBITDA value</li>
+                            <li class="mb-2">Set expected EBITDA growth rate</li>
+                            <li>Click calculate to analyze multiples</li>
+                        </ol>
+                        <div class="mt-3">
+                            <p class="mb-0"><strong>Note:</strong> Industry averages vary significantly for EBITDA multiples</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('ebitdaForm');
+            const results = document.getElementById('results');
+            let compositionChart = null;
+
+            function formatCurrency(value) {
+                if (Math.abs(value) >= 1e9) {
+                    return (value / 1e9).toFixed(2) + 'B';
+                } else if (Math.abs(value) >= 1e6) {
+                    return (value / 1e6).toFixed(2) + 'M';
+                } else {
+                    return value.toFixed(2);
+                }
+            }
+
+            function formatNumber(value) {
+                return new Intl.NumberFormat('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }).format(value);
+            }
+
+            function calculateEnterpriseValue(marketCap, totalDebt, cashEquivalents) {
+                return marketCap + totalDebt - cashEquivalents;
+            }
+
+            function calculateMultiples(enterpriseValue, ebitda, ebitdaGrowth) {
+                const forwardEbitda = ebitda * (1 + ebitdaGrowth/100);
+                const currentMultiple = enterpriseValue / ebitda;
+                const forwardMultiple = enterpriseValue / forwardEbitda;
+                
+                return {
+                    forwardEbitda,
+                    currentMultiple,
+                    forwardMultiple
+                };
+            }
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get input values
+                const marketCap = parseFloat(document.getElementById('marketCap').value);
+                const totalDebt = parseFloat(document.getElementById('totalDebt').value);
+                const cashEquivalents = parseFloat(document.getElementById('cashEquivalents').value);
+                const ebitda = parseFloat(document.getElementById('ebitda').value);
+                const ebitdaGrowth = parseFloat(document.getElementById('ebitdaGrowth').value);
+                
+                // Calculate enterprise value and multiples
+                const enterpriseValue = calculateEnterpriseValue(marketCap, totalDebt, cashEquivalents);
+                const multiples = calculateMultiples(enterpriseValue, ebitda, ebitdaGrowth);
+                
+                // Display results
+                document.getElementById('enterpriseValue').textContent = formatCurrency(enterpriseValue);
+                document.getElementById('evEbitdaMultiple').textContent = formatNumber(multiples.currentMultiple);
+                document.getElementById('forwardEbitda').textContent = formatCurrency(multiples.forwardEbitda);
+                document.getElementById('forwardMultiple').textContent = formatNumber(multiples.forwardMultiple);
+                
+                // Generate component analysis
+                const components = [
+                    {
+                        name: 'Market Capitalization',
+                        value: marketCap,
+                        percentage: (marketCap / enterpriseValue) * 100
+                    },
+                    {
+                        name: 'Total Debt',
+                        value: totalDebt,
+                        percentage: (totalDebt / enterpriseValue) * 100
+                    },
+                    {
+                        name: 'Cash & Equivalents',
+                        value: -cashEquivalents,
+                        percentage: (-cashEquivalents / enterpriseValue) * 100
+                    }
+                ];
+                
+                const analysisHtml = components.map(component => `
+                    <tr>
+                        <td>${component.name}</td>
+                        <td>$${formatCurrency(component.value)}</td>
+                        <td>${formatNumber(component.percentage)}%</td>
+                    </tr>
+                `).join('');
+                document.getElementById('componentAnalysis').innerHTML = analysisHtml;
+
+                // Create/update chart
+                const ctx = document.getElementById('compositionChart').getContext('2d');
+                
+                if (compositionChart) {
+                    compositionChart.destroy();
+                }
+
+                compositionChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: components.map(c => c.name),
+                        datasets: [{
+                            data: components.map(c => Math.abs(c.value)),
+                            backgroundColor: [
+                                'rgba(75, 192, 192, 0.5)',
+                                'rgba(255, 99, 132, 0.5)',
+                                'rgba(54, 162, 235, 0.5)'
+                            ],
+                            borderColor: [
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(54, 162, 235, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Enterprise Value Components'
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const value = context.raw;
+                                        return `${context.label}: $${formatCurrency(value)}`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+
+                document.getElementById('results').style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Put-Call Parity Calculator - Investment Tools - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Analyze put-call parity relationships, verify option pricing efficiency, and identify potential arbitrage opportunities with our comprehensive calculator.">
+    <meta name="keywords" content="put-call parity, options pricing, arbitrage, call options, put options, options trading, derivatives">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">Put-Call Parity Calculator</h1>
+                    <p class="tool-description">Analyze put-call parity relationships, verify option pricing efficiency, and identify potential arbitrage opportunities. Features comprehensive analysis of synthetic positions and arbitrage strategies.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="parityForm" class="needs-validation" novalidate>
+                        <!-- Market Data -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Market Data</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="stockPrice" class="form-label">Stock Price (S)</label>
+                                            <input type="number" class="form-control" id="stockPrice" value="100.00" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="strikePrice" class="form-label">Strike Price (K)</label>
+                                            <input type="number" class="form-control" id="strikePrice" value="100.00" step="0.01" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="riskFreeRate" class="form-label">Risk-Free Rate (% p.a.)</label>
+                                            <input type="number" class="form-control" id="riskFreeRate" value="2.50" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="timeToExpiry" class="form-label">Time to Expiry (Days)</label>
+                                            <input type="number" class="form-control" id="timeToExpiry" value="30" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Option Prices -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Option Prices</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="callPrice" class="form-label">Call Option Price</label>
+                                            <input type="number" class="form-control" id="callPrice" value="2.50" step="0.01" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="putPrice" class="form-label">Put Option Price</label>
+                                            <input type="number" class="form-control" id="putPrice" value="2.50" step="0.01" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="dividendYield" class="form-label">Dividend Yield (% p.a.)</label>
+                                    <input type="number" class="form-control" id="dividendYield" value="0.00" step="0.01">
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Analyze Put-Call Parity</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>Parity Analysis</h3>
+                        
+                        <!-- Parity Check -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Parity Check</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Left Side (C + PV(K))</label>
+                                            <p id="leftSide" class="h4">$0.00</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Right Side (P + S)</label>
+                                            <p id="rightSide" class="h4">$0.00</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Parity Difference</label>
+                                            <p id="parityDiff" class="h4">$0.00</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Status</label>
+                                            <p id="parityStatus" class="h4">-</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Synthetic Positions -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Synthetic Positions</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Synthetic Long Stock</label>
+                                            <p id="syntheticLong" class="h4">$0.00</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Synthetic Short Stock</label>
+                                            <p id="syntheticShort" class="h4">$0.00</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Synthetic Long Call</label>
+                                            <p id="syntheticCall" class="h4">$0.00</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Synthetic Long Put</label>
+                                            <p id="syntheticPut" class="h4">$0.00</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Arbitrage Analysis -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Arbitrage Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="arbitrageAlert" class="alert" role="alert">
+                                    No arbitrage opportunity detected.
+                                </div>
+                                <div id="arbitrageStrategy" style="display: none;">
+                                    <h6>Recommended Strategy:</h6>
+                                    <ol id="arbitrageSteps">
+                                    </ol>
+                                    <div class="mt-3">
+                                        <h6>Potential Profit:</h6>
+                                        <p id="arbitrageProfit" class="h4">$0.00</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Visualization -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Parity Visualization</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="parityChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="black-scholes-calculator.html">Black-Scholes Calculator</a></li>
+                            <li class="mb-2"><a href="options-spread-calculator.html">Options Spread Calculator</a></li>
+                            <li class="mb-2"><a href="implied-volatility-calculator.html">Implied Volatility Calculator</a></li>
+                            <li class="mb-2"><a href="options-profit-calculator.html">Options Profit Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Formula Reference -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Formula Reference</h5>
+                    </div>
+                    <div class="card-body">
+                        <h6>Put-Call Parity</h6>
+                        <p class="small mb-3">C + PV(K) = P + S</p>
+                        
+                        <h6>With Dividends</h6>
+                        <p class="small mb-3">C + PV(K) = P + S × e<sup>-qT</sup></p>
+                        
+                        <h6>Variables:</h6>
+                        <ul class="small mb-0">
+                            <li>C = Call option price</li>
+                            <li>P = Put option price</li>
+                            <li>S = Stock price</li>
+                            <li>K = Strike price</li>
+                            <li>r = Risk-free rate</li>
+                            <li>T = Time to expiry</li>
+                            <li>q = Dividend yield</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Usage Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter current market data</li>
+                            <li class="mb-2">Input call and put option prices</li>
+                            <li class="mb-2">Add dividend yield if applicable</li>
+                            <li class="mb-2">Click "Analyze" to check parity</li>
+                            <li class="mb-2">Review arbitrage opportunities</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('parityForm');
+            const results = document.getElementById('results');
+            let parityChart = null;
+
+            function calculatePresentValue(futureValue, rate, time) {
+                return futureValue * Math.exp(-rate * time / 365);
+            }
+
+            function calculateParityComponents(inputs) {
+                const T = inputs.timeToExpiry / 365;
+                const r = inputs.riskFreeRate / 100;
+                const q = inputs.dividendYield / 100;
+                
+                // Present value of strike price
+                const pvK = calculatePresentValue(inputs.strikePrice, r, inputs.timeToExpiry);
+                
+                // Adjusted stock price for dividends
+                const adjustedS = inputs.stockPrice * Math.exp(-q * T);
+                
+                // Left and right sides of parity equation
+                const leftSide = inputs.callPrice + pvK;
+                const rightSide = inputs.putPrice + adjustedS;
+                
+                return {
+                    leftSide,
+                    rightSide,
+                    difference: leftSide - rightSide,
+                    pvK,
+                    adjustedS
+                };
+            }
+
+            function calculateSyntheticPositions(inputs, parity) {
+                return {
+                    longStock: inputs.callPrice - inputs.putPrice + parity.pvK,
+                    shortStock: inputs.putPrice - inputs.callPrice - parity.pvK,
+                    longCall: inputs.putPrice + inputs.stockPrice - parity.pvK,
+                    longPut: inputs.callPrice - inputs.stockPrice + parity.pvK
+                };
+            }
+
+            function updateChart(inputs, parity) {
+                const ctx = document.getElementById('parityChart').getContext('2d');
+                
+                if (parityChart) parityChart.destroy();
+
+                const stockPrices = [];
+                const leftValues = [];
+                const rightValues = [];
+                
+                const minPrice = inputs.stockPrice * 0.8;
+                const maxPrice = inputs.stockPrice * 1.2;
+                const steps = 100;
+                const stepSize = (maxPrice - minPrice) / steps;
+
+                for (let price = minPrice; price <= maxPrice; price += stepSize) {
+                    stockPrices.push(price.toFixed(2));
+                    leftValues.push(inputs.callPrice + parity.pvK);
+                    rightValues.push(inputs.putPrice + price);
+                }
+
+                parityChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: stockPrices,
+                        datasets: [{
+                            label: 'C + PV(K)',
+                            data: leftValues,
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            fill: false
+                        },
+                        {
+                            label: 'P + S',
+                            data: rightValues,
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            fill: false
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Stock Price'
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Value'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            function analyzeArbitrage(parity) {
+                const threshold = 0.01; // Minimum difference for arbitrage
+                const arbitrageAlert = document.getElementById('arbitrageAlert');
+                const arbitrageStrategy = document.getElementById('arbitrageStrategy');
+                const arbitrageSteps = document.getElementById('arbitrageSteps');
+                const arbitrageProfit = document.getElementById('arbitrageProfit');
+
+                if (Math.abs(parity.difference) > threshold) {
+                    arbitrageAlert.className = 'alert alert-warning';
+                    arbitrageAlert.textContent = 'Arbitrage opportunity detected!';
+                    arbitrageStrategy.style.display = 'block';
+                    arbitrageSteps.innerHTML = '';
+
+                    if (parity.difference > 0) {
+                        // Left side overvalued
+                        arbitrageSteps.innerHTML = `
+                            <li>Short the call option</li>
+                            <li>Buy the put option</li>
+                            <li>Buy the stock</li>
+                            <li>Borrow PV(K)</li>
+                        `;
+                    } else {
+                        // Right side overvalued
+                        arbitrageSteps.innerHTML = `
+                            <li>Buy the call option</li>
+                            <li>Short the put option</li>
+                            <li>Short the stock</li>
+                            <li>Lend PV(K)</li>
+                        `;
+                    }
+
+                    arbitrageProfit.textContent = `$${Math.abs(parity.difference).toFixed(2)}`;
+                } else {
+                    arbitrageAlert.className = 'alert alert-success';
+                    arbitrageAlert.textContent = 'No arbitrage opportunity detected.';
+                    arbitrageStrategy.style.display = 'none';
+                }
+            }
+
+            function updateResults(inputs) {
+                const parity = calculateParityComponents(inputs);
+                const synthetic = calculateSyntheticPositions(inputs, parity);
+
+                // Update parity check
+                document.getElementById('leftSide').textContent = `$${parity.leftSide.toFixed(2)}`;
+                document.getElementById('rightSide').textContent = `$${parity.rightSide.toFixed(2)}`;
+                document.getElementById('parityDiff').textContent = `$${parity.difference.toFixed(2)}`;
+                
+                const parityStatus = document.getElementById('parityStatus');
+                if (Math.abs(parity.difference) < 0.01) {
+                    parityStatus.textContent = 'In Parity';
+                    parityStatus.className = 'h4 text-success';
+                } else {
+                    parityStatus.textContent = 'Violation';
+                    parityStatus.className = 'h4 text-danger';
+                }
+
+                // Update synthetic positions
+                document.getElementById('syntheticLong').textContent = `$${synthetic.longStock.toFixed(2)}`;
+                document.getElementById('syntheticShort').textContent = `$${synthetic.shortStock.toFixed(2)}`;
+                document.getElementById('syntheticCall').textContent = `$${synthetic.longCall.toFixed(2)}`;
+                document.getElementById('syntheticPut').textContent = `$${synthetic.longPut.toFixed(2)}`;
+
+                // Update arbitrage analysis
+                analyzeArbitrage(parity);
+
+                // Update chart
+                updateChart(inputs, parity);
+                
+                // Show results
+                results.style.display = 'block';
+            }
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const inputs = {
+                    stockPrice: parseFloat(document.getElementById('stockPrice').value),
+                    strikePrice: parseFloat(document.getElementById('strikePrice').value),
+                    riskFreeRate: parseFloat(document.getElementById('riskFreeRate').value),
+                    timeToExpiry: parseInt(document.getElementById('timeToExpiry').value),
+                    callPrice: parseFloat(document.getElementById('callPrice').value),
+                    putPrice: parseFloat(document.getElementById('putPrice').value),
+                    dividendYield: parseFloat(document.getElementById('dividendYield').value)
+                };
+
+                updateResults(inputs);
+            });
+        });
+    </script>
+</body>
+</html> 

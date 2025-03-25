@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contribution Margin Calculator - Business Analytics Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <main class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <h1 class="mb-4">Contribution Margin Calculator</h1>
+                <div class="card">
+                    <div class="card-body">
+                        <p class="card-text mb-4">
+                            Calculate and analyze your contribution margin to understand product profitability and make informed pricing decisions. This tool helps you determine how much revenue contributes to covering fixed costs and generating profit.
+                        </p>
+                        
+                        <form id="contributionMarginForm">
+                            <!-- Sales Data -->
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Sales Data</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="totalSales" class="form-label">Total Sales Revenue</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text">$</span>
+                                                    <input type="number" class="form-control" id="totalSales" required min="0" step="0.01">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="unitsSold" class="form-label">Units Sold</label>
+                                                <input type="number" class="form-control" id="unitsSold" required min="0">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Variable Costs -->
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Variable Costs</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div id="variableCostsContainer">
+                                        <!-- Variable cost entries will be added here dynamically -->
+                                    </div>
+                                    <button type="button" class="btn btn-secondary mt-3" id="addVariableCost">
+                                        <i class="fas fa-plus"></i> Add Variable Cost
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Fixed Costs -->
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Fixed Costs</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div id="fixedCostsContainer">
+                                        <!-- Fixed cost entries will be added here dynamically -->
+                                    </div>
+                                    <button type="button" class="btn btn-secondary mt-3" id="addFixedCost">
+                                        <i class="fas fa-plus"></i> Add Fixed Cost
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-calculator"></i> Calculate Contribution Margin
+                            </button>
+                        </form>
+
+                        <div id="result" class="mt-4" style="display: none;">
+                            <h3>Contribution Margin Analysis</h3>
+                            <div class="card mb-4">
+                                <div class="card-body">
+                                    <canvas id="contributionChart"></canvas>
+                                </div>
+                            </div>
+
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Key Metrics</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div id="metrics"></div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Break-even Analysis</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div id="breakEven"></div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Recommendations</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div id="recommendations"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <h3>How to Use</h3>
+                            <ol>
+                                <li>Enter your total sales revenue and units sold</li>
+                                <li>Add variable costs (costs that change with production)</li>
+                                <li>Add fixed costs (costs that remain constant)</li>
+                                <li>Click Calculate to view the analysis</li>
+                            </ol>
+                        </div>
+
+                        <div class="mt-4">
+                            <h3>Understanding the Results</h3>
+                            <ul>
+                                <li><strong>Contribution Margin:</strong> The amount of revenue available to cover fixed costs and generate profit</li>
+                                <li><strong>Contribution Margin Ratio:</strong> The percentage of revenue that contributes to fixed costs and profit</li>
+                                <li><strong>Break-even Point:</strong> The sales level at which total revenue equals total costs</li>
+                                <li><strong>Operating Income:</strong> The profit after all costs are deducted</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script src="../js/tools/contribution-margin-calculator.js"></script>
+</body>
+</html> 

@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maturity Value Calculator - Investment Tools - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate investment maturity value with compound interest. Analyze returns, compare compounding frequencies, and plan your investment strategy.">
+    <meta name="keywords" content="maturity value, compound interest, investment calculator, future value, investment planning, financial calculator">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">Maturity Value Calculator</h1>
+                    <p class="tool-description">Calculate the maturity value of your investments with compound interest. Compare different compounding frequencies and analyze your returns.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="maturityValueForm" class="needs-validation" novalidate>
+                        <!-- Investment Details -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Investment Details</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="principal" class="form-label">Principal Amount ($)</label>
+                                            <input type="number" class="form-control" id="principal" value="10000" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="interestRate" class="form-label">Annual Interest Rate (%)</label>
+                                            <input type="number" class="form-control" id="interestRate" value="5" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="timePeriod" class="form-label">Time Period (Years)</label>
+                                            <input type="number" class="form-control" id="timePeriod" value="5" step="0.01" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="compoundingFrequency" class="form-label">Compounding Frequency</label>
+                                            <select class="form-select" id="compoundingFrequency" required>
+                                                <option value="1">Annually</option>
+                                                <option value="2">Semi-Annually</option>
+                                                <option value="4">Quarterly</option>
+                                                <option value="12">Monthly</option>
+                                                <option value="365">Daily</option>
+                                                <option value="continuous">Continuous</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="monthlyContribution" class="form-label">Monthly Contribution ($)</label>
+                                            <input type="number" class="form-control" id="monthlyContribution" value="0" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="inflationRate" class="form-label">Expected Inflation Rate (%)</label>
+                                            <input type="number" class="form-control" id="inflationRate" value="2" step="0.01" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate Maturity Value</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>Maturity Value Analysis</h3>
+                        
+                        <!-- Maturity Value Metrics -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Maturity Value Metrics</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Total Maturity Value</label>
+                                            <p id="totalMaturityValue" class="h4">$0.00</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Total Interest Earned</label>
+                                            <p id="totalInterest" class="h4">$0.00</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Total Contributions</label>
+                                            <p id="totalContributions" class="h4">$0.00</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Real Value (Inflation Adjusted)</label>
+                                            <p id="realValue" class="h4">$0.00</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Effective Annual Rate</label>
+                                            <p id="effectiveRate" class="h4">0.00%</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Return on Investment (ROI)</label>
+                                            <p id="roi" class="h4">0.00%</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Growth Chart -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Investment Growth</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="growthChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Comparison Chart -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Value Components</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="comparisonChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="compound-interest-calculator.html">Compound Interest Calculator</a></li>
+                            <li class="mb-2"><a href="investment-return-calculator.html">Investment Return Calculator</a></li>
+                            <li class="mb-2"><a href="inflation-calculator.html">Inflation Calculator</a></li>
+                            <li class="mb-2"><a href="roi-calculator.html">ROI Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Formula Reference -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Formula Reference</h5>
+                    </div>
+                    <div class="card-body">
+                        <h6>Compound Interest</h6>
+                        <p class="small mb-3">A = P(1 + r/n)^(nt)</p>
+                        <p class="small mb-3">Where:<br>
+                        A = Final Amount<br>
+                        P = Principal<br>
+                        r = Annual Rate<br>
+                        n = Compounding Frequency<br>
+                        t = Time Period</p>
+                        
+                        <h6>Continuous Compounding</h6>
+                        <p class="small mb-3">A = Pe^(rt)</p>
+                        
+                        <h6>Real Value</h6>
+                        <p class="small mb-3">Real Value = Nominal Value / (1 + inflation)^t</p>
+                    </div>
+                </div>
+
+                <!-- Compounding Frequency Impact -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Compounding Frequency Impact</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="small mb-0">
+                            <li>Daily compounding yields highest returns</li>
+                            <li>Monthly compounding is common for most investments</li>
+                            <li>Annual compounding is simplest but least effective</li>
+                            <li>Continuous compounding is theoretical maximum</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Usage Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter investment details</li>
+                            <li class="mb-2">Select compounding frequency</li>
+                            <li class="mb-2">Add monthly contributions if any</li>
+                            <li class="mb-2">Include expected inflation rate</li>
+                            <li class="mb-2">Click "Calculate" to analyze</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('maturityValueForm');
+            const results = document.getElementById('results');
+            let growthChart = null;
+            let comparisonChart = null;
+
+            function calculateMaturityValue(principal, rate, time, frequency, monthlyContribution) {
+                const r = rate / 100;
+                const t = time;
+                let maturityValue;
+
+                if (frequency === 'continuous') {
+                    maturityValue = principal * Math.exp(r * t);
+                } else {
+                    const n = parseInt(frequency);
+                    maturityValue = principal * Math.pow(1 + r/n, n * t);
+                }
+
+                // Add monthly contributions
+                if (monthlyContribution > 0) {
+                    const monthlyRate = r / 12;
+                    const months = t * 12;
+                    const futureValueOfAnnuity = monthlyContribution * 
+                        ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate);
+                    maturityValue += futureValueOfAnnuity;
+                }
+
+                return maturityValue;
+            }
+
+            function calculateRealValue(nominalValue, inflationRate, time) {
+                return nominalValue / Math.pow(1 + inflationRate/100, time);
+            }
+
+            function calculateEffectiveRate(rate, frequency) {
+                if (frequency === 'continuous') {
+                    return (Math.exp(rate/100) - 1) * 100;
+                }
+                const n = parseInt(frequency);
+                return (Math.pow(1 + rate/(100*n), n) - 1) * 100;
+            }
+
+            function calculateROI(principal, maturityValue) {
+                return ((maturityValue - principal) / principal) * 100;
+            }
+
+            function generateGrowthData(principal, rate, time, frequency, monthlyContribution) {
+                const data = [];
+                const labels = [];
+                const r = rate / 100;
+                const n = frequency === 'continuous' ? 365 : parseInt(frequency);
+                const steps = time * n;
+                let currentValue = principal;
+
+                for (let i = 0; i <= steps; i++) {
+                    const t = i / n;
+                    if (frequency === 'continuous') {
+                        currentValue = principal * Math.exp(r * t);
+                    } else {
+                        currentValue = principal * Math.pow(1 + r/n, i);
+                    }
+
+                    if (monthlyContribution > 0) {
+                        const monthlyRate = r / 12;
+                        const months = t * 12;
+                        const futureValueOfAnnuity = monthlyContribution * 
+                            ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate);
+                        currentValue += futureValueOfAnnuity;
+                    }
+
+                    data.push(currentValue);
+                    labels.push(t.toFixed(1));
+                }
+
+                return { labels, data };
+            }
+
+            function updateGrowthChart(labels, data) {
+                const ctx = document.getElementById('growthChart').getContext('2d');
+                
+                if (growthChart) growthChart.destroy();
+
+                growthChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Investment Value',
+                            data: data,
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return '$' + value.toLocaleString();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            function updateComparisonChart(principal, interest, contributions) {
+                const ctx = document.getElementById('comparisonChart').getContext('2d');
+                
+                if (comparisonChart) comparisonChart.destroy();
+
+                comparisonChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: ['Principal', 'Interest Earned', 'Contributions'],
+                        datasets: [{
+                            data: [principal, interest, contributions],
+                            backgroundColor: [
+                                'rgba(54, 162, 235, 0.5)',
+                                'rgba(75, 192, 192, 0.5)',
+                                'rgba(255, 206, 86, 0.5)'
+                            ],
+                            borderColor: [
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(255, 206, 86, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+            }
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get input values
+                const principal = parseFloat(document.getElementById('principal').value);
+                const rate = parseFloat(document.getElementById('interestRate').value);
+                const time = parseFloat(document.getElementById('timePeriod').value);
+                const frequency = document.getElementById('compoundingFrequency').value;
+                const monthlyContribution = parseFloat(document.getElementById('monthlyContribution').value);
+                const inflationRate = parseFloat(document.getElementById('inflationRate').value);
+
+                // Calculate metrics
+                const maturityValue = calculateMaturityValue(principal, rate, time, frequency, monthlyContribution);
+                const totalContributions = principal + (monthlyContribution * 12 * time);
+                const totalInterest = maturityValue - totalContributions;
+                const realValue = calculateRealValue(maturityValue, inflationRate, time);
+                const effectiveRate = calculateEffectiveRate(rate, frequency);
+                const roi = calculateROI(principal, maturityValue);
+
+                // Update results
+                document.getElementById('totalMaturityValue').textContent = '$' + maturityValue.toFixed(2);
+                document.getElementById('totalInterest').textContent = '$' + totalInterest.toFixed(2);
+                document.getElementById('totalContributions').textContent = '$' + totalContributions.toFixed(2);
+                document.getElementById('realValue').textContent = '$' + realValue.toFixed(2);
+                document.getElementById('effectiveRate').textContent = effectiveRate.toFixed(2) + '%';
+                document.getElementById('roi').textContent = roi.toFixed(2) + '%';
+
+                // Generate and update charts
+                const growthData = generateGrowthData(principal, rate, time, frequency, monthlyContribution);
+                updateGrowthChart(growthData.labels, growthData.data);
+                updateComparisonChart(principal, totalInterest, monthlyContribution * 12 * time);
+                
+                // Show results
+                results.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html> 

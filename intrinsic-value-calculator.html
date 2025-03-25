@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intrinsic Value Calculator - Investment Tools - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate the intrinsic value of stocks using multiple valuation methods including DCF, DDM, and fundamental analysis. Make informed investment decisions with comprehensive valuation metrics.">
+    <meta name="keywords" content="intrinsic value, stock valuation, DCF, dividend discount model, fundamental analysis, investment analysis, stock price, fair value">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">Intrinsic Value Calculator</h1>
+                    <p class="tool-description">Calculate the intrinsic value of stocks using multiple valuation methods including DCF, DDM, and fundamental analysis. Make informed investment decisions with comprehensive valuation metrics.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="intrinsicValueForm" class="needs-validation" novalidate>
+                        <!-- Company Information -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Company Information</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="currentPrice" class="form-label">Current Stock Price ($)</label>
+                                            <input type="number" class="form-control" id="currentPrice" value="100" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="sharesOutstanding" class="form-label">Shares Outstanding (M)</label>
+                                            <input type="number" class="form-control" id="sharesOutstanding" value="1000" step="0.01" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="marketCap" class="form-label">Market Cap ($M)</label>
+                                            <input type="number" class="form-control" id="marketCap" value="100000" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="beta" class="form-label">Beta</label>
+                                            <input type="number" class="form-control" id="beta" value="1.2" step="0.01" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Financial Metrics -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Financial Metrics</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="freeCashFlow" class="form-label">Free Cash Flow ($M)</label>
+                                            <input type="number" class="form-control" id="freeCashFlow" value="5000" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="dividendPerShare" class="form-label">Dividend per Share ($)</label>
+                                            <input type="number" class="form-control" id="dividendPerShare" value="2" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="growthRate" class="form-label">Growth Rate (%)</label>
+                                            <input type="number" class="form-control" id="growthRate" value="5" step="0.01" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="debt" class="form-label">Total Debt ($M)</label>
+                                            <input type="number" class="form-control" id="debt" value="20000" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="cash" class="form-label">Cash & Equivalents ($M)</label>
+                                            <input type="number" class="form-control" id="cash" value="5000" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="taxRate" class="form-label">Tax Rate (%)</label>
+                                            <input type="number" class="form-control" id="taxRate" value="21" step="0.01" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Market Assumptions -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Market Assumptions</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="riskFreeRate" class="form-label">Risk-Free Rate (%)</label>
+                                            <input type="number" class="form-control" id="riskFreeRate" value="4" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="marketReturn" class="form-label">Expected Market Return (%)</label>
+                                            <input type="number" class="form-control" id="marketReturn" value="10" step="0.01" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="terminalGrowth" class="form-label">Terminal Growth Rate (%)</label>
+                                            <input type="number" class="form-control" id="terminalGrowth" value="2" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="discountRate" class="form-label">Discount Rate (%)</label>
+                                            <input type="number" class="form-control" id="discountRate" value="10" step="0.01" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate Intrinsic Value</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>Valuation Analysis</h3>
+                        
+                        <!-- Valuation Results -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Valuation Results</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">DCF Value per Share</label>
+                                            <p id="dcfValue" class="h4">$0.00</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">DDM Value per Share</label>
+                                            <p id="ddmValue" class="h4">$0.00</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Margin of Safety</label>
+                                            <p id="marginOfSafety" class="h4">0%</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Valuation Status</label>
+                                            <p id="valuationStatus" class="h4">-</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Valuation Metrics -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Key Metrics</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Cost of Equity</label>
+                                            <p id="costOfEquity" class="h4">0%</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">WACC</label>
+                                            <p id="wacc" class="h4">0%</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Enterprise Value</label>
+                                            <p id="enterpriseValue" class="h4">$0.00</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Net Debt</label>
+                                            <p id="netDebt" class="h4">$0.00</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Valuation Chart -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Valuation Comparison</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="valuationChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Sensitivity Analysis -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Sensitivity Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="sensitivityChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="dividend-discount-model-calculator.html">Dividend Discount Model Calculator</a></li>
+                            <li class="mb-2"><a href="dcf-calculator.html">DCF Calculator</a></li>
+                            <li class="mb-2"><a href="enterprise-value-calculator.html">Enterprise Value Calculator</a></li>
+                            <li class="mb-2"><a href="wacc-calculator.html">WACC Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Formula Reference -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Formula Reference</h5>
+                    </div>
+                    <div class="card-body">
+                        <h6>DCF Valuation</h6>
+                        <p class="small mb-3">Present Value = FCF / (1 + WACC)^n</p>
+                        
+                        <h6>DDM Valuation</h6>
+                        <p class="small mb-3">Value = DPS / (r - g)</p>
+                        
+                        <h6>Cost of Equity</h6>
+                        <p class="small mb-3">r = Rf + β(Rm - Rf)</p>
+                        
+                        <h6>Variables:</h6>
+                        <ul class="small mb-0">
+                            <li>FCF = Free Cash Flow</li>
+                            <li>WACC = Weighted Average Cost of Capital</li>
+                            <li>DPS = Dividend per Share</li>
+                            <li>r = Required Return</li>
+                            <li>g = Growth Rate</li>
+                            <li>β = Beta</li>
+                            <li>Rf = Risk-Free Rate</li>
+                            <li>Rm = Market Return</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Usage Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter company information and financial metrics</li>
+                            <li class="mb-2">Input market assumptions and growth rates</li>
+                            <li class="mb-2">Click "Calculate" to analyze intrinsic value</li>
+                            <li class="mb-2">Review valuation results and sensitivity analysis</li>
+                            <li class="mb-2">Compare different valuation methods</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('intrinsicValueForm');
+            const results = document.getElementById('results');
+            let valuationChart = null;
+            let sensitivityChart = null;
+
+            function calculateCostOfEquity(riskFreeRate, beta, marketReturn) {
+                return riskFreeRate + beta * (marketReturn - riskFreeRate);
+            }
+
+            function calculateWACC(costOfEquity, costOfDebt, equityWeight, debtWeight, taxRate) {
+                return (costOfEquity * equityWeight) + (costOfDebt * debtWeight * (1 - taxRate));
+            }
+
+            function calculateDCFValue(fcf, growthRate, terminalGrowth, wacc, shares) {
+                // Calculate present value of explicit period
+                let pvExplicit = 0;
+                for (let i = 1; i <= 5; i++) {
+                    pvExplicit += (fcf * Math.pow(1 + growthRate/100, i)) / Math.pow(1 + wacc/100, i);
+                }
+
+                // Calculate terminal value
+                const terminalValue = (fcf * Math.pow(1 + growthRate/100, 5) * (1 + terminalGrowth/100)) / 
+                                    ((wacc/100 - terminalGrowth/100) * Math.pow(1 + wacc/100, 5));
+
+                return (pvExplicit + terminalValue) / shares;
+            }
+
+            function calculateDDMValue(dps, growthRate, costOfEquity) {
+                return dps / ((costOfEquity/100 - growthRate/100));
+            }
+
+            function updateValuationChart(dcfValue, ddmValue, currentPrice) {
+                const ctx = document.getElementById('valuationChart').getContext('2d');
+                
+                if (valuationChart) valuationChart.destroy();
+
+                valuationChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['DCF Value', 'DDM Value', 'Current Price'],
+                        datasets: [{
+                            label: 'Value per Share ($)',
+                            data: [dcfValue, ddmValue, currentPrice],
+                            backgroundColor: [
+                                'rgba(54, 162, 235, 0.5)',
+                                'rgba(75, 192, 192, 0.5)',
+                                'rgba(255, 99, 132, 0.5)'
+                            ],
+                            borderColor: [
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(255, 99, 132, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Value per Share ($)'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            function updateSensitivityChart(dcfValue, growthRate, wacc) {
+                const ctx = document.getElementById('sensitivityChart').getContext('2d');
+                
+                if (sensitivityChart) sensitivityChart.destroy();
+
+                // Generate sensitivity data
+                const growthRates = Array.from({length: 5}, (_, i) => growthRate - 2 + i);
+                const waccRates = Array.from({length: 5}, (_, i) => wacc - 2 + i);
+                
+                const sensitivityData = growthRates.map(g => 
+                    waccRates.map(w => 
+                        calculateDCFValue(
+                            parseFloat(document.getElementById('freeCashFlow').value),
+                            g,
+                            parseFloat(document.getElementById('terminalGrowth').value),
+                            w,
+                            parseFloat(document.getElementById('sharesOutstanding').value)
+                        )
+                    )
+                );
+
+                sensitivityChart = new Chart(ctx, {
+                    type: 'heatmap',
+                    data: {
+                        labels: waccRates.map(w => w + '%'),
+                        datasets: growthRates.map((g, i) => ({
+                            label: g + '% Growth',
+                            data: sensitivityData[i],
+                            backgroundColor: sensitivityData[i].map(v => 
+                                v > dcfValue ? 'rgba(75, 192, 192, 0.5)' : 'rgba(255, 99, 132, 0.5)'
+                            )
+                        }))
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Growth Rate'
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'WACC'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get input values
+                const currentPrice = parseFloat(document.getElementById('currentPrice').value);
+                const sharesOutstanding = parseFloat(document.getElementById('sharesOutstanding').value);
+                const marketCap = parseFloat(document.getElementById('marketCap').value);
+                const beta = parseFloat(document.getElementById('beta').value);
+                const freeCashFlow = parseFloat(document.getElementById('freeCashFlow').value);
+                const dividendPerShare = parseFloat(document.getElementById('dividendPerShare').value);
+                const growthRate = parseFloat(document.getElementById('growthRate').value);
+                const debt = parseFloat(document.getElementById('debt').value);
+                const cash = parseFloat(document.getElementById('cash').value);
+                const taxRate = parseFloat(document.getElementById('taxRate').value);
+                const riskFreeRate = parseFloat(document.getElementById('riskFreeRate').value);
+                const marketReturn = parseFloat(document.getElementById('marketReturn').value);
+                const terminalGrowth = parseFloat(document.getElementById('terminalGrowth').value);
+                const discountRate = parseFloat(document.getElementById('discountRate').value);
+
+                // Calculate key metrics
+                const costOfEquity = calculateCostOfEquity(riskFreeRate, beta, marketReturn);
+                const costOfDebt = riskFreeRate + 2; // Simplified assumption
+                const equityWeight = marketCap / (marketCap + debt - cash);
+                const debtWeight = (debt - cash) / (marketCap + debt - cash);
+                const wacc = calculateWACC(costOfEquity, costOfDebt, equityWeight, debtWeight, taxRate);
+
+                // Calculate valuations
+                const dcfValue = calculateDCFValue(freeCashFlow, growthRate, terminalGrowth, wacc, sharesOutstanding);
+                const ddmValue = calculateDDMValue(dividendPerShare, growthRate, costOfEquity);
+
+                // Calculate margin of safety
+                const marginOfSafety = ((Math.max(dcfValue, ddmValue) - currentPrice) / Math.max(dcfValue, ddmValue)) * 100;
+
+                // Update results
+                document.getElementById('dcfValue').textContent = '$' + dcfValue.toFixed(2);
+                document.getElementById('ddmValue').textContent = '$' + ddmValue.toFixed(2);
+                document.getElementById('marginOfSafety').textContent = marginOfSafety.toFixed(1) + '%';
+                document.getElementById('costOfEquity').textContent = costOfEquity.toFixed(1) + '%';
+                document.getElementById('wacc').textContent = wacc.toFixed(1) + '%';
+                document.getElementById('enterpriseValue').textContent = '$' + (marketCap + debt - cash).toFixed(2) + 'M';
+                document.getElementById('netDebt').textContent = '$' + (debt - cash).toFixed(2) + 'M';
+
+                // Update valuation status
+                const valuationStatus = document.getElementById('valuationStatus');
+                if (marginOfSafety > 20) {
+                    valuationStatus.textContent = 'Potentially Undervalued';
+                    valuationStatus.className = 'h4 text-success';
+                } else if (marginOfSafety > -20) {
+                    valuationStatus.textContent = 'Fairly Valued';
+                    valuationStatus.className = 'h4 text-warning';
+                } else {
+                    valuationStatus.textContent = 'Potentially Overvalued';
+                    valuationStatus.className = 'h4 text-danger';
+                }
+
+                // Update charts
+                updateValuationChart(dcfValue, ddmValue, currentPrice);
+                updateSensitivityChart(dcfValue, growthRate, wacc);
+                
+                // Show results
+                results.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html> 

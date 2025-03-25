@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investment Calculator - Plan Your Investment Strategy - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Plan your investment strategy and calculate potential returns with our comprehensive investment calculator. Analyze different scenarios and optimize your portfolio.">
+    <meta name="keywords" content="investment calculator, portfolio planning, investment returns, financial planning, investment strategy">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">Investment Calculator</h1>
+                    <p class="tool-description">Plan your investment strategy and calculate potential returns. Compare different scenarios to make informed investment decisions.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="investmentForm" class="needs-validation" novalidate>
+                        <!-- Initial Investment -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Initial Investment</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="initialAmount" class="form-label">Initial Investment Amount ($)</label>
+                                    <input type="number" class="form-control" id="initialAmount" required min="0" step="0.01">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="monthlyContribution" class="form-label">Monthly Contribution ($)</label>
+                                    <input type="number" class="form-control" id="monthlyContribution" required min="0" step="0.01">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Investment Details -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Investment Details</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="annualReturn" class="form-label">Expected Annual Return (%)</label>
+                                    <input type="number" class="form-control" id="annualReturn" required min="0" max="100" step="0.1">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="investmentPeriod" class="form-label">Investment Period (Years)</label>
+                                    <input type="number" class="form-control" id="investmentPeriod" required min="1" step="1">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="inflationRate" class="form-label">Expected Inflation Rate (%)</label>
+                                    <input type="number" class="form-control" id="inflationRate" value="2.5" min="0" max="100" step="0.1">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Risk and Fees -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Risk and Fees</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="riskLevel" class="form-label">Risk Level</label>
+                                    <select class="form-select" id="riskLevel">
+                                        <option value="low">Conservative (Low Risk)</option>
+                                        <option value="medium" selected>Moderate (Medium Risk)</option>
+                                        <option value="high">Aggressive (High Risk)</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="managementFee" class="form-label">Annual Management Fee (%)</label>
+                                    <input type="number" class="form-control" id="managementFee" value="0.5" min="0" max="100" step="0.01">
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate Investment</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>Investment Analysis</h3>
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5>Investment Summary</h5>
+                                        <p>Total Invested: <strong>$<span id="totalInvested">0</span></strong></p>
+                                        <p>Total Return: <strong>$<span id="totalReturn">0</span></strong></p>
+                                        <p>Final Balance: <strong>$<span id="finalBalance">0</span></strong></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5>Adjusted Values</h5>
+                                        <p>After Inflation: <strong>$<span id="inflationAdjusted">0</span></strong></p>
+                                        <p>Total Fees: <strong>$<span id="totalFees">0</span></strong></p>
+                                        <p>Net Return: <strong><span id="netReturn">0</span>%</strong></p>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="text-center">
+                                    <p class="mb-2">Risk-Adjusted Return: <strong><span id="riskAdjustedReturn">0</span>%</strong></p>
+                                    <p class="mb-0 text-muted" id="riskMessage"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="compound-interest-calculator.html">Compound Interest Calculator</a></li>
+                            <li class="mb-2"><a href="apy-calculator.html">APY Calculator</a></li>
+                            <li class="mb-2"><a href="mortgage-calculator.html">Mortgage Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- How to Use Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter your initial investment amount</li>
+                            <li class="mb-2">Set your monthly contribution</li>
+                            <li class="mb-2">Input expected annual return</li>
+                            <li class="mb-2">Choose investment period</li>
+                            <li class="mb-2">Adjust risk level and fees</li>
+                            <li>Click calculate to see investment analysis</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('investmentForm');
+            const results = document.getElementById('results');
+
+            // Risk adjustment factors
+            const riskFactors = {
+                low: { return: 0.8, message: "Lower risk typically means more stable but potentially lower returns" },
+                medium: { return: 1.0, message: "Balanced approach with moderate risk and return potential" },
+                high: { return: 1.2, message: "Higher risk with potential for greater returns but also larger losses" }
+            };
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get input values
+                const initialAmount = parseFloat(document.getElementById('initialAmount').value);
+                const monthlyContribution = parseFloat(document.getElementById('monthlyContribution').value);
+                const annualReturn = parseFloat(document.getElementById('annualReturn').value) / 100;
+                const years = parseInt(document.getElementById('investmentPeriod').value);
+                const inflationRate = parseFloat(document.getElementById('inflationRate').value) / 100;
+                const managementFee = parseFloat(document.getElementById('managementFee').value) / 100;
+                const riskLevel = document.getElementById('riskLevel').value;
+
+                // Calculate monthly return rate
+                const monthlyRate = annualReturn / 12;
+                const totalMonths = years * 12;
+
+                // Calculate investment growth
+                let balance = initialAmount;
+                let totalContributions = initialAmount;
+                let totalFees = 0;
+
+                for (let i = 0; i < totalMonths; i++) {
+                    // Add monthly contribution
+                    balance += monthlyContribution;
+                    totalContributions += monthlyContribution;
+
+                    // Calculate monthly return
+                    const monthlyReturn = balance * monthlyRate;
+                    balance += monthlyReturn;
+
+                    // Calculate and subtract monthly fee
+                    const monthlyFee = balance * (managementFee / 12);
+                    balance -= monthlyFee;
+                    totalFees += monthlyFee;
+                }
+
+                // Calculate metrics
+                const totalReturn = balance - totalContributions;
+                const netReturn = (totalReturn / totalContributions) * 100;
+                const inflationAdjusted = balance / Math.pow(1 + inflationRate, years);
+                const riskAdjustedReturn = netReturn * riskFactors[riskLevel].return;
+
+                // Display results
+                document.getElementById('totalInvested').textContent = totalContributions.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                document.getElementById('totalReturn').textContent = totalReturn.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                document.getElementById('finalBalance').textContent = balance.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                document.getElementById('inflationAdjusted').textContent = inflationAdjusted.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                document.getElementById('totalFees').textContent = totalFees.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                document.getElementById('netReturn').textContent = netReturn.toFixed(2);
+                document.getElementById('riskAdjustedReturn').textContent = riskAdjustedReturn.toFixed(2);
+                document.getElementById('riskMessage').textContent = riskFactors[riskLevel].message;
+
+                results.style.display = 'block';
+            });
+
+            // Form validation
+            form.addEventListener('input', function(e) {
+                if (e.target.type === 'number') {
+                    const value = parseFloat(e.target.value);
+                    const min = parseFloat(e.target.min);
+                    const max = parseFloat(e.target.max);
+
+                    if (!isNaN(min) && value < min) {
+                        e.target.value = min;
+                    }
+                    if (!isNaN(max) && value > max) {
+                        e.target.value = max;
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Labor Cost Calculator - Calculate Employee Labor Costs - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate total labor costs including wages, benefits, and overhead with our comprehensive labor cost calculator.">
+    <meta name="keywords" content="labor cost calculator, employee cost calculator, wage calculator, HR tools, payroll calculator">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">Labor Cost Calculator</h1>
+                    <p class="tool-description">Calculate the true cost of employment including wages, benefits, taxes, and overhead expenses.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="laborCostForm" class="needs-validation" novalidate>
+                        <!-- Base Wage Section -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Base Wage Information</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="hourlyRate" class="form-label">Hourly Rate ($)</label>
+                                    <input type="number" class="form-control" id="hourlyRate" required min="0" step="0.01">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="hoursPerWeek" class="form-label">Hours Per Week</label>
+                                    <input type="number" class="form-control" id="hoursPerWeek" required min="0" max="168" value="40">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="weeksPerYear" class="form-label">Weeks Per Year</label>
+                                    <input type="number" class="form-control" id="weeksPerYear" required min="0" max="52" value="52">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Benefits Section -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Benefits and Additional Costs</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="healthInsurance" class="form-label">Monthly Health Insurance ($)</label>
+                                    <input type="number" class="form-control" id="healthInsurance" min="0" step="0.01" value="0">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="retirement" class="form-label">Retirement Contribution (%)</label>
+                                    <input type="number" class="form-control" id="retirement" min="0" max="100" step="0.1" value="0">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="otherBenefits" class="form-label">Other Monthly Benefits ($)</label>
+                                    <input type="number" class="form-control" id="otherBenefits" min="0" step="0.01" value="0">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Taxes and Overhead -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Taxes and Overhead</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="payrollTax" class="form-label">Payroll Tax Rate (%)</label>
+                                    <input type="number" class="form-control" id="payrollTax" min="0" max="100" step="0.1" value="7.65">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="overhead" class="form-label">Monthly Overhead Costs ($)</label>
+                                    <input type="number" class="form-control" id="overhead" min="0" step="0.01" value="0">
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate Total Labor Cost</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>Cost Analysis</h3>
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5>Annual Costs</h5>
+                                        <p>Base Salary: <strong>$<span id="annualBaseSalary">0</span></strong></p>
+                                        <p>Benefits: <strong>$<span id="annualBenefits">0</span></strong></p>
+                                        <p>Payroll Taxes: <strong>$<span id="annualTaxes">0</span></strong></p>
+                                        <p>Overhead: <strong>$<span id="annualOverhead">0</span></strong></p>
+                                        <p class="total-cost">Total Annual Cost: <strong>$<span id="totalAnnualCost">0</span></strong></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5>Monthly Costs</h5>
+                                        <p>Base Salary: <strong>$<span id="monthlyBaseSalary">0</span></strong></p>
+                                        <p>Benefits: <strong>$<span id="monthlyBenefits">0</span></strong></p>
+                                        <p>Payroll Taxes: <strong>$<span id="monthlyTaxes">0</span></strong></p>
+                                        <p>Overhead: <strong>$<span id="monthlyOverhead">0</span></strong></p>
+                                        <p class="total-cost">Total Monthly Cost: <strong>$<span id="totalMonthlyCost">0</span></strong></p>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="text-center">
+                                    <p class="mb-0">True Hourly Cost: <strong>$<span id="trueHourlyCost">0</span></strong></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="salary-calculator.html">Salary Calculator</a></li>
+                            <li class="mb-2"><a href="absence-calculator.html">Absence Calculator</a></li>
+                            <li class="mb-2"><a href="overtime-calculator.html">Overtime Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- How to Use Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter the employee's hourly rate</li>
+                            <li class="mb-2">Input weekly hours and annual weeks worked</li>
+                            <li class="mb-2">Add benefits costs and contribution percentages</li>
+                            <li class="mb-2">Include payroll taxes and overhead costs</li>
+                            <li>Click calculate to see the total labor cost breakdown</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('laborCostForm');
+            const results = document.getElementById('results');
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get base wage inputs
+                const hourlyRate = parseFloat(document.getElementById('hourlyRate').value);
+                const hoursPerWeek = parseFloat(document.getElementById('hoursPerWeek').value);
+                const weeksPerYear = parseFloat(document.getElementById('weeksPerYear').value);
+
+                // Get benefits inputs
+                const healthInsurance = parseFloat(document.getElementById('healthInsurance').value) || 0;
+                const retirement = parseFloat(document.getElementById('retirement').value) || 0;
+                const otherBenefits = parseFloat(document.getElementById('otherBenefits').value) || 0;
+
+                // Get tax and overhead inputs
+                const payrollTax = parseFloat(document.getElementById('payrollTax').value) || 0;
+                const overhead = parseFloat(document.getElementById('overhead').value) || 0;
+
+                // Calculate annual base salary
+                const annualBaseSalary = hourlyRate * hoursPerWeek * weeksPerYear;
+                const monthlyBaseSalary = annualBaseSalary / 12;
+
+                // Calculate annual benefits
+                const annualHealthInsurance = healthInsurance * 12;
+                const annualRetirement = annualBaseSalary * (retirement / 100);
+                const annualOtherBenefits = otherBenefits * 12;
+                const totalAnnualBenefits = annualHealthInsurance + annualRetirement + annualOtherBenefits;
+                const monthlyBenefits = totalAnnualBenefits / 12;
+
+                // Calculate taxes
+                const annualTaxes = annualBaseSalary * (payrollTax / 100);
+                const monthlyTaxes = annualTaxes / 12;
+
+                // Calculate overhead
+                const annualOverhead = overhead * 12;
+                const monthlyOverhead = overhead;
+
+                // Calculate totals
+                const totalAnnualCost = annualBaseSalary + totalAnnualBenefits + annualTaxes + annualOverhead;
+                const totalMonthlyCost = totalAnnualCost / 12;
+                const trueHourlyCost = totalAnnualCost / (hoursPerWeek * weeksPerYear);
+
+                // Display results
+                document.getElementById('annualBaseSalary').textContent = annualBaseSalary.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                document.getElementById('monthlyBaseSalary').textContent = monthlyBaseSalary.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                
+                document.getElementById('annualBenefits').textContent = totalAnnualBenefits.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                document.getElementById('monthlyBenefits').textContent = monthlyBenefits.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                
+                document.getElementById('annualTaxes').textContent = annualTaxes.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                document.getElementById('monthlyTaxes').textContent = monthlyTaxes.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                
+                document.getElementById('annualOverhead').textContent = annualOverhead.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                document.getElementById('monthlyOverhead').textContent = monthlyOverhead.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                
+                document.getElementById('totalAnnualCost').textContent = totalAnnualCost.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                document.getElementById('totalMonthlyCost').textContent = totalMonthlyCost.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                document.getElementById('trueHourlyCost').textContent = trueHourlyCost.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+                results.style.display = 'block';
+            });
+
+            // Form validation
+            form.addEventListener('input', function(e) {
+                if (e.target.type === 'number') {
+                    const value = parseFloat(e.target.value);
+                    const min = parseFloat(e.target.min);
+                    const max = parseFloat(e.target.max);
+
+                    if (!isNaN(min) && value < min) {
+                        e.target.value = min;
+                    }
+                    if (!isNaN(max) && value > max) {
+                        e.target.value = max;
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

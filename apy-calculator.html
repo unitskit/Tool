@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APY Calculator - Annual Percentage Yield Calculator - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate your Annual Percentage Yield (APY) with our free calculator. Compare different investment returns and compound interest rates.">
+    <meta name="keywords" content="APY calculator, annual percentage yield, compound interest, investment calculator">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">APY Calculator</h1>
+                    <p class="tool-description">Calculate the Annual Percentage Yield (APY) to understand your actual returns including compound interest.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="apyForm" class="needs-validation" novalidate>
+                        <div class="mb-4">
+                            <label for="nominalRate" class="form-label">Nominal Interest Rate (%)</label>
+                            <input type="number" class="form-control" id="nominalRate" required min="0" step="0.01">
+                            <div class="invalid-feedback">Please enter a valid interest rate.</div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="compoundingFrequency" class="form-label">Compounding Frequency</label>
+                            <select class="form-select" id="compoundingFrequency" required>
+                                <option value="1">Annually (1x per year)</option>
+                                <option value="2">Semi-annually (2x per year)</option>
+                                <option value="4">Quarterly (4x per year)</option>
+                                <option value="12">Monthly (12x per year)</option>
+                                <option value="24">Semi-monthly (24x per year)</option>
+                                <option value="26">Bi-weekly (26x per year)</option>
+                                <option value="52">Weekly (52x per year)</option>
+                                <option value="365">Daily (365x per year)</option>
+                                <option value="0">Continuous</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="principal" class="form-label">Principal Amount ($) (Optional)</label>
+                            <input type="number" class="form-control" id="principal" min="0" step="0.01">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate APY</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>Results</h3>
+                        <div class="card">
+                            <div class="card-body">
+                                <p class="mb-2">Annual Percentage Yield (APY): <strong><span id="apyResult">0</span>%</strong></p>
+                                <p class="mb-2">Effective Interest Rate: <strong><span id="effectiveRate">0</span>%</strong></p>
+                                <p class="mb-0" id="yearEndBalance" style="display: none;">
+                                    Balance After One Year: <strong>$<span id="finalBalance">0</span></strong>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="compound-interest-calculator.html">Compound Interest Calculator</a></li>
+                            <li class="mb-2"><a href="investment-calculator.html">Investment Calculator</a></li>
+                            <li class="mb-2"><a href="savings-calculator.html">Savings Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- How to Use Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter the nominal interest rate</li>
+                            <li class="mb-2">Select how often interest is compounded</li>
+                            <li class="mb-2">Optionally, enter the principal amount</li>
+                            <li>Click calculate to see your APY</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('apyForm');
+            const results = document.getElementById('results');
+            const yearEndBalance = document.getElementById('yearEndBalance');
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get input values
+                const nominalRate = parseFloat(document.getElementById('nominalRate').value) / 100;
+                const compoundingFrequency = parseInt(document.getElementById('compoundingFrequency').value);
+                const principal = parseFloat(document.getElementById('principal').value) || 0;
+
+                // Calculate APY
+                let apy;
+                if (compoundingFrequency === 0) {
+                    // Continuous compounding
+                    apy = (Math.exp(nominalRate) - 1) * 100;
+                } else {
+                    // Regular compounding
+                    apy = (Math.pow(1 + nominalRate/compoundingFrequency, compoundingFrequency) - 1) * 100;
+                }
+
+                // Calculate final balance if principal is provided
+                const finalBalance = principal * (1 + apy/100);
+
+                // Display results
+                document.getElementById('apyResult').textContent = apy.toFixed(4);
+                document.getElementById('effectiveRate').textContent = apy.toFixed(4);
+                
+                if (principal > 0) {
+                    document.getElementById('finalBalance').textContent = finalBalance.toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    });
+                    yearEndBalance.style.display = 'block';
+                } else {
+                    yearEndBalance.style.display = 'none';
+                }
+
+                results.style.display = 'block';
+            });
+
+            // Form validation
+            form.addEventListener('input', function(e) {
+                if (e.target.type === 'number') {
+                    if (e.target.value < 0) {
+                        e.target.value = 0;
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

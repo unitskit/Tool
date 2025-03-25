@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bond Risk Calculator - Fixed Income Tools - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate and analyze bond risk metrics including duration, convexity, and interest rate sensitivity. Essential for fixed income risk management.">
+    <meta name="keywords" content="bond risk, duration, convexity, interest rate risk, fixed income, risk management">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">Bond Risk Calculator</h1>
+                    <p class="tool-description">Calculate and analyze bond risk metrics including duration, convexity, and interest rate sensitivity. Essential for fixed income risk management and portfolio analysis.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="riskForm" class="needs-validation" novalidate>
+                        <!-- Bond Details -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Bond Details</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="parValue" class="form-label">Par Value</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" id="parValue" value="1000.00" step="0.01" required>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="marketPrice" class="form-label">Market Price</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" id="marketPrice" value="980.00" step="0.01" required>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="couponRate" class="form-label">Annual Coupon Rate (%)</label>
+                                    <input type="number" class="form-control" id="couponRate" value="5.00" step="0.01" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="yieldToMaturity" class="form-label">Yield to Maturity (%)</label>
+                                    <input type="number" class="form-control" id="yieldToMaturity" value="5.50" step="0.01" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="yearsToMaturity" class="form-label">Years to Maturity</label>
+                                    <input type="number" class="form-control" id="yearsToMaturity" value="10" step="1" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="paymentFrequency" class="form-label">Payment Frequency</label>
+                                    <select class="form-select" id="paymentFrequency" required>
+                                        <option value="1">Annual</option>
+                                        <option value="2" selected>Semi-annual</option>
+                                        <option value="4">Quarterly</option>
+                                        <option value="12">Monthly</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Risk Analysis Options -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Risk Analysis Options</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="rateChangeStep" class="form-label">Interest Rate Change Step (%)</label>
+                                    <input type="number" class="form-control" id="rateChangeStep" value="0.25" step="0.01" required>
+                                    <div class="form-text">Step size for interest rate sensitivity analysis</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="rateChangeRange" class="form-label">Interest Rate Change Range (±%)</label>
+                                    <input type="number" class="form-control" id="rateChangeRange" value="2.00" step="0.01" required>
+                                    <div class="form-text">Maximum rate change to analyze in both directions</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate Risk Metrics</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>Risk Analysis</h3>
+                        
+                        <!-- Duration Metrics -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Duration Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h6>Duration Metrics</h6>
+                                        <p>Macaulay Duration: <strong><span id="macaulayDuration">0.00</span> years</strong></p>
+                                        <p>Modified Duration: <strong><span id="modifiedDuration">0.00</span></strong></p>
+                                        <p>Dollar Duration: <strong>$<span id="dollarDuration">0.00</span></strong></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6>Price Sensitivity</h6>
+                                        <p>Duration Value at Risk: <strong>$<span id="durationVaR">0.00</span></strong></p>
+                                        <p>Price Value of a Basis Point: <strong>$<span id="pvbp">0.00</span></strong></p>
+                                        <p>Effective Duration: <strong><span id="effectiveDuration">0.00</span></strong></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Convexity Analysis -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Convexity Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h6>Convexity Metrics</h6>
+                                        <p>Convexity: <strong><span id="convexity">0.00</span></strong></p>
+                                        <p>Dollar Convexity: <strong>$<span id="dollarConvexity">0.00</span></strong></p>
+                                        <p>Convexity Effect: <strong><span id="convexityEffect">0.00</span>%</strong></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6>Total Price Effect</h6>
+                                        <p>Duration Effect: <strong><span id="durationEffect">0.00</span>%</strong></p>
+                                        <p>Total Effect: <strong><span id="totalEffect">0.00</span>%</strong></p>
+                                        <p>Price Change: <strong>$<span id="priceChange">0.00</span></strong></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Interest Rate Sensitivity -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Interest Rate Sensitivity</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="sensitivityChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Risk Metrics Table -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Price Change Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Rate Change</th>
+                                                <th>Duration Effect</th>
+                                                <th>Convexity Effect</th>
+                                                <th>Total Effect</th>
+                                                <th>New Price</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="riskTable"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="bond-duration-calculator.html">Bond Duration Calculator</a></li>
+                            <li class="mb-2"><a href="bond-convexity-calculator.html">Bond Convexity Calculator</a></li>
+                            <li class="mb-2"><a href="bond-yield-calculator.html">Bond Yield Calculator</a></li>
+                            <li class="mb-2"><a href="portfolio-risk-calculator.html">Portfolio Risk Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- How to Use Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter bond details (par value, price, coupon)</li>
+                            <li class="mb-2">Input yield and maturity information</li>
+                            <li class="mb-2">Set payment frequency</li>
+                            <li class="mb-2">Specify risk analysis parameters</li>
+                            <li>Click Calculate to view risk metrics</li>
+                        </ol>
+                        <div class="mt-3">
+                            <p class="mb-2"><strong>Note:</strong></p>
+                            <ul class="list-unstyled small">
+                                <li>Duration measures price sensitivity to yield changes</li>
+                                <li>Convexity captures the second-order effect</li>
+                                <li>Higher duration means higher interest rate risk</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('riskForm');
+            const results = document.getElementById('results');
+            let sensitivityChart = null;
+
+            function formatNumber(value, decimals = 2) {
+                return new Intl.NumberFormat('en-US', {
+                    minimumFractionDigits: decimals,
+                    maximumFractionDigits: decimals
+                }).format(value);
+            }
+
+            function calculatePresentValue(cashFlow, yield, time, frequency) {
+                const periodicYield = yield / (frequency * 100);
+                return cashFlow / Math.pow(1 + periodicYield, time);
+            }
+
+            function calculateDuration(parValue, marketPrice, couponRate, ytm, yearsToMaturity, frequency) {
+                const periodicRate = couponRate / (frequency * 100);
+                const periodicYield = ytm / (frequency * 100);
+                const totalPeriods = yearsToMaturity * frequency;
+                const couponPayment = parValue * periodicRate;
+                
+                let weightedTime = 0;
+                let presentValueSum = 0;
+                
+                for (let i = 1; i <= totalPeriods; i++) {
+                    const pv = calculatePresentValue(couponPayment, ytm, i, frequency);
+                    weightedTime += (i / frequency) * pv;
+                    presentValueSum += pv;
+                }
+                
+                // Add final principal payment
+                const finalPV = calculatePresentValue(parValue, ytm, totalPeriods, frequency);
+                weightedTime += (totalPeriods / frequency) * finalPV;
+                presentValueSum += finalPV;
+                
+                const macaulayDuration = weightedTime / marketPrice;
+                const modifiedDuration = macaulayDuration / (1 + periodicYield);
+                
+                return {
+                    macaulay: macaulayDuration,
+                    modified: modifiedDuration,
+                    dollar: modifiedDuration * marketPrice
+                };
+            }
+
+            function calculateConvexity(parValue, marketPrice, couponRate, ytm, yearsToMaturity, frequency) {
+                const periodicRate = couponRate / (frequency * 100);
+                const periodicYield = ytm / (frequency * 100);
+                const totalPeriods = yearsToMaturity * frequency;
+                const couponPayment = parValue * periodicRate;
+                
+                let convexitySum = 0;
+                
+                for (let i = 1; i <= totalPeriods; i++) {
+                    const t = i / frequency;
+                    const pv = calculatePresentValue(couponPayment, ytm, i, frequency);
+                    convexitySum += t * (t + 1) * pv;
+                }
+                
+                // Add final principal payment
+                const t = totalPeriods / frequency;
+                const finalPV = calculatePresentValue(parValue, ytm, totalPeriods, frequency);
+                convexitySum += t * (t + 1) * finalPV;
+                
+                const convexity = convexitySum / (marketPrice * Math.pow(1 + periodicYield, 2));
+                
+                return {
+                    convexity: convexity,
+                    dollar: convexity * marketPrice
+                };
+            }
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get input values
+                const parValue = parseFloat(document.getElementById('parValue').value);
+                const marketPrice = parseFloat(document.getElementById('marketPrice').value);
+                const couponRate = parseFloat(document.getElementById('couponRate').value);
+                const ytm = parseFloat(document.getElementById('yieldToMaturity').value);
+                const yearsToMaturity = parseInt(document.getElementById('yearsToMaturity').value);
+                const frequency = parseInt(document.getElementById('paymentFrequency').value);
+                const rateChangeStep = parseFloat(document.getElementById('rateChangeStep').value);
+                const rateChangeRange = parseFloat(document.getElementById('rateChangeRange').value);
+
+                // Calculate duration metrics
+                const duration = calculateDuration(parValue, marketPrice, couponRate, ytm, yearsToMaturity, frequency);
+                const convexity = calculateConvexity(parValue, marketPrice, couponRate, ytm, yearsToMaturity, frequency);
+
+                // Calculate additional risk metrics
+                const pvbp = duration.dollar * 0.0001;
+                const durationVaR = duration.dollar * (ytm * 0.1); // 10% of YTM as stress scenario
+                const effectiveDuration = duration.modified * (1 + ytm/(frequency * 100));
+
+                // Display duration results
+                document.getElementById('macaulayDuration').textContent = formatNumber(duration.macaulay);
+                document.getElementById('modifiedDuration').textContent = formatNumber(duration.modified);
+                document.getElementById('dollarDuration').textContent = formatNumber(duration.dollar);
+                document.getElementById('durationVaR').textContent = formatNumber(durationVaR);
+                document.getElementById('pvbp').textContent = formatNumber(pvbp);
+                document.getElementById('effectiveDuration').textContent = formatNumber(effectiveDuration);
+
+                // Display convexity results
+                document.getElementById('convexity').textContent = formatNumber(convexity.convexity);
+                document.getElementById('dollarConvexity').textContent = formatNumber(convexity.dollar);
+
+                // Generate risk analysis table
+                const steps = Math.floor(rateChangeRange / rateChangeStep) * 2 + 1;
+                const rateChanges = Array.from({length: steps}, (_, i) => -rateChangeRange + i * rateChangeStep);
+                
+                let tableHtml = '';
+                const chartLabels = [];
+                const durationEffects = [];
+                const totalEffects = [];
+
+                rateChanges.forEach(change => {
+                    const durationEffect = -duration.modified * change;
+                    const convexityEffect = 0.5 * convexity.convexity * Math.pow(change, 2);
+                    const totalEffect = durationEffect + convexityEffect;
+                    const newPrice = marketPrice * (1 + totalEffect/100);
+
+                    chartLabels.push(formatNumber(change) + '%');
+                    durationEffects.push(durationEffect);
+                    totalEffects.push(totalEffect);
+
+                    tableHtml += `
+                        <tr>
+                            <td>${change > 0 ? '+' : ''}${formatNumber(change)}%</td>
+                            <td>${formatNumber(durationEffect)}%</td>
+                            <td>${formatNumber(convexityEffect)}%</td>
+                            <td>${formatNumber(totalEffect)}%</td>
+                            <td>$${formatNumber(newPrice)}</td>
+                        </tr>
+                    `;
+                });
+                document.getElementById('riskTable').innerHTML = tableHtml;
+
+                // Display effects for 100bp change
+                document.getElementById('durationEffect').textContent = formatNumber(-duration.modified);
+                document.getElementById('convexityEffect').textContent = formatNumber(0.5 * convexity.convexity);
+                document.getElementById('totalEffect').textContent = formatNumber(-duration.modified + 0.5 * convexity.convexity);
+                document.getElementById('priceChange').textContent = formatNumber(-duration.dollar + 0.5 * convexity.dollar);
+
+                // Create/update sensitivity chart
+                const ctx = document.getElementById('sensitivityChart').getContext('2d');
+                
+                if (sensitivityChart) {
+                    sensitivityChart.destroy();
+                }
+
+                sensitivityChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: chartLabels,
+                        datasets: [{
+                            label: 'Duration Effect',
+                            data: durationEffects,
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            tension: 0.4
+                        }, {
+                            label: 'Total Effect (with Convexity)',
+                            data: totalEffects,
+                            borderColor: 'rgba(153, 102, 255, 1)',
+                            backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: false,
+                                title: {
+                                    display: true,
+                                    text: 'Price Change (%)'
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Interest Rate Change (%)'
+                                }
+                            }
+                        },
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Price Sensitivity to Interest Rate Changes'
+                            }
+                        }
+                    }
+                });
+
+                results.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html> 

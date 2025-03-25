@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Burndown Chart Calculator - Project Management Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <main class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <h1 class="mb-4">Burndown Chart Calculator</h1>
+                <div class="card">
+                    <div class="card-body">
+                        <p class="card-text mb-4">
+                            Create and analyze burndown charts to track project progress and identify potential issues. This tool helps you visualize work remaining over time and compare it with ideal progress.
+                        </p>
+                        
+                        <form id="burndownChartForm">
+                            <!-- Project Settings -->
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Project Settings</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="totalStoryPoints" class="form-label">Total Story Points</label>
+                                                <input type="number" class="form-control" id="totalStoryPoints" required min="0" step="0.1">
+                                                <div class="form-text">Total amount of work to be completed</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="sprintDuration" class="form-label">Sprint Duration (days)</label>
+                                                <input type="number" class="form-control" id="sprintDuration" required min="1" step="1">
+                                                <div class="form-text">Length of the sprint in days</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Daily Progress -->
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Daily Progress</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div id="dailyProgressContainer">
+                                        <!-- Daily progress entries will be added here dynamically -->
+                                    </div>
+                                    <button type="button" class="btn btn-secondary mt-3" id="addDayButton">
+                                        <i class="fas fa-plus"></i> Add Day
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-chart-line"></i> Generate Chart
+                            </button>
+                        </form>
+
+                        <div id="result" class="mt-4" style="display: none;">
+                            <h3>Burndown Chart</h3>
+                            <div class="card mb-4">
+                                <div class="card-body">
+                                    <canvas id="burndownChart"></canvas>
+                                </div>
+                            </div>
+
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Analysis</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div id="analysis"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <h3>How to Use</h3>
+                            <ol>
+                                <li>Enter the total story points for your sprint</li>
+                                <li>Specify the sprint duration in days</li>
+                                <li>Add daily progress entries with remaining story points</li>
+                                <li>Click Generate Chart to visualize your progress</li>
+                            </ol>
+                        </div>
+
+                        <div class="mt-4">
+                            <h3>Understanding the Chart</h3>
+                            <ul>
+                                <li><strong>Ideal Line:</strong> Shows the expected rate of progress</li>
+                                <li><strong>Actual Line:</strong> Shows your team's actual progress</li>
+                                <li><strong>Above Ideal:</strong> Indicates slower than expected progress</li>
+                                <li><strong>Below Ideal:</strong> Indicates faster than expected progress</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script src="../js/tools/burndown-chart-calculator.js"></script>
+</body>
+</html> 

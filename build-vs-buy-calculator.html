@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Build vs. Buy Calculator - Business Decision Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <main class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <h1 class="mb-4">Build vs. Buy Calculator</h1>
+                <div class="card">
+                    <div class="card-body">
+                        <p class="card-text mb-4">
+                            Make an informed decision about whether to develop a solution in-house or purchase it from a vendor. This calculator helps you compare costs, time, and long-term implications of both options.
+                        </p>
+                        
+                        <form id="buildVsBuyForm">
+                            <!-- Build Option -->
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Build Option</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label for="buildInitialCost" class="form-label">Initial Development Cost ($)</label>
+                                        <input type="number" class="form-control" id="buildInitialCost" required min="0" step="0.01">
+                                        <div class="form-text">Cost of development, including labor, tools, and resources</div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="buildTime" class="form-label">Development Time (months)</label>
+                                        <input type="number" class="form-control" id="buildTime" required min="0" step="0.1">
+                                        <div class="form-text">Estimated time to develop the solution</div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="buildMaintenanceCost" class="form-label">Annual Maintenance Cost ($)</label>
+                                        <input type="number" class="form-control" id="buildMaintenanceCost" required min="0" step="0.01">
+                                        <div class="form-text">Cost of maintaining and updating the solution annually</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Buy Option -->
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Buy Option</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label for="buyInitialCost" class="form-label">Initial Purchase Cost ($)</label>
+                                        <input type="number" class="form-control" id="buyInitialCost" required min="0" step="0.01">
+                                        <div class="form-text">Cost of purchasing the solution, including setup</div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="buyImplementationTime" class="form-label">Implementation Time (months)</label>
+                                        <input type="number" class="form-control" id="buyImplementationTime" required min="0" step="0.1">
+                                        <div class="form-text">Estimated time to implement the solution</div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="buyAnnualCost" class="form-label">Annual Cost ($)</label>
+                                        <input type="number" class="form-control" id="buyAnnualCost" required min="0" step="0.01">
+                                        <div class="form-text">Annual cost including licensing, support, and updates</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Analysis Period -->
+                            <div class="mb-4">
+                                <label for="analysisPeriod" class="form-label">Analysis Period (years)</label>
+                                <input type="number" class="form-control" id="analysisPeriod" required min="1" step="1" value="5">
+                                <div class="form-text">Time period over which to compare costs</div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-calculator"></i> Calculate
+                            </button>
+                        </form>
+
+                        <div id="result" class="mt-4" style="display: none;">
+                            <h3>Results</h3>
+                            <div class="alert" id="recommendation">
+                                <p class="mb-0" id="recommendationText"></p>
+                            </div>
+                            
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Cost Comparison</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h6>Build Option</h6>
+                                            <p>Total Cost: <strong id="buildTotalCost">$0</strong></p>
+                                            <p>Time to Market: <strong id="buildTimeToMarket">0 months</strong></p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6>Buy Option</h6>
+                                            <p>Total Cost: <strong id="buyTotalCost">$0</strong></p>
+                                            <p>Time to Market: <strong id="buyTimeToMarket">0 months</strong></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <h3>How to Use</h3>
+                            <ol>
+                                <li>Enter costs and time estimates for both Build and Buy options</li>
+                                <li>Specify the analysis period (in years)</li>
+                                <li>Click Calculate to see the cost comparison and recommendation</li>
+                            </ol>
+                        </div>
+
+                        <div class="mt-4">
+                            <h3>Factors to Consider</h3>
+                            <ul>
+                                <li>Initial development/purchase costs</li>
+                                <li>Implementation time</li>
+                                <li>Ongoing maintenance and support costs</li>
+                                <li>Customization needs</li>
+                                <li>Scalability requirements</li>
+                                <li>Internal expertise and resources</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script src="../js/tools/build-vs-buy-calculator.js"></script>
+</body>
+</html> 

@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dividend Payout Ratio Calculator - Investment Analysis Tools - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate and analyze dividend payout ratios to assess dividend sustainability and company earnings distribution. Evaluate dividend policies and financial health.">
+    <meta name="keywords" content="dividend payout ratio, earnings per share, dividend sustainability, financial analysis, dividend policy">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">Dividend Payout Ratio Calculator</h1>
+                    <p class="tool-description">Calculate and analyze the dividend payout ratio to assess how much of a company's earnings are distributed as dividends. This metric helps evaluate dividend sustainability and company reinvestment practices.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="payoutRatioForm" class="needs-validation" novalidate>
+                        <!-- Earnings Information -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Earnings Information</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="earningsPerShare" class="form-label">Earnings Per Share (EPS)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" id="earningsPerShare" step="0.01" value="2.50" required>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="netIncome" class="form-label">Net Income (Optional)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" id="netIncome" step="1000000" placeholder="Enter net income">
+                                    </div>
+                                    <div class="form-text">Enter in millions (e.g., 1000 for $1 billion)</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Dividend Information -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Dividend Information</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="dividendPerShare" class="form-label">Annual Dividend Per Share</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" id="dividendPerShare" step="0.01" value="1.00" required>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="totalDividends" class="form-label">Total Dividends Paid (Optional)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" id="totalDividends" step="1000000" placeholder="Enter total dividends">
+                                    </div>
+                                    <div class="form-text">Enter in millions (e.g., 500 for $500 million)</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Additional Metrics -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Additional Metrics</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="sharesOutstanding" class="form-label">Shares Outstanding (Optional)</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="sharesOutstanding" step="1000000" placeholder="Enter shares outstanding">
+                                        <span class="input-group-text">shares</span>
+                                    </div>
+                                    <div class="form-text">Enter in millions (e.g., 1000 for 1 billion shares)</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="stockPrice" class="form-label">Current Stock Price (Optional)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" id="stockPrice" step="0.01" placeholder="Enter stock price">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate Payout Ratio</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>Payout Analysis</h3>
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5>Key Ratios</h5>
+                                        <p>Dividend Payout Ratio: <strong><span id="payoutRatio">0</span>%</strong></p>
+                                        <p>Retention Ratio: <strong><span id="retentionRatio">0</span>%</strong></p>
+                                        <p>Dividend Yield: <strong><span id="dividendYield">0</span>%</strong></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5>Sustainability Analysis</h5>
+                                        <p>Risk Level: <strong><span id="riskLevel">N/A</span></strong></p>
+                                        <p>Coverage Ratio: <strong><span id="coverageRatio">0</span>x</strong></p>
+                                        <p>Reinvestment Rate: <strong><span id="reinvestmentRate">0</span>%</strong></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Detailed Analysis -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Detailed Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Metric</th>
+                                                <th>Per Share</th>
+                                                <th>Total Amount</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Earnings</td>
+                                                <td>$<span id="epsDisplay">0.00</span></td>
+                                                <td>$<span id="totalEarnings">0.00</span>M</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Dividends</td>
+                                                <td>$<span id="dpsDisplay">0.00</span></td>
+                                                <td>$<span id="totalDividendsDisplay">0.00</span>M</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Retained Earnings</td>
+                                                <td>$<span id="retainedEarningsPerShare">0.00</span></td>
+                                                <td>$<span id="totalRetainedEarnings">0.00</span>M</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Visual Representation -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Earnings Distribution</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="distributionChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="dividend-calculator.html">Dividend Calculator</a></li>
+                            <li class="mb-2"><a href="dividend-yield-calculator.html">Dividend Yield Calculator</a></li>
+                            <li class="mb-2"><a href="earnings-per-share-calculator.html">Earnings Per Share Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- How to Use Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter the company's earnings per share (EPS)</li>
+                            <li class="mb-2">Input the annual dividend per share</li>
+                            <li class="mb-2">Optionally add total figures and shares outstanding</li>
+                            <li class="mb-2">Include current stock price for yield calculation</li>
+                            <li>Click calculate to analyze the payout ratio</li>
+                        </ol>
+                        <div class="mt-3">
+                            <p class="mb-0"><strong>Note:</strong> A sustainable payout ratio varies by industry and company maturity</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('payoutRatioForm');
+            const results = document.getElementById('results');
+            let distributionChart = null;
+
+            function formatCurrency(value) {
+                return new Intl.NumberFormat('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }).format(value);
+            }
+
+            function formatMillions(value) {
+                return new Intl.NumberFormat('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }).format(value);
+            }
+
+            function assessRiskLevel(payoutRatio) {
+                if (payoutRatio <= 30) return 'Low Risk';
+                if (payoutRatio <= 50) return 'Moderate Risk';
+                if (payoutRatio <= 70) return 'High Risk';
+                return 'Very High Risk';
+            }
+
+            function calculateMetrics(eps, dps, netIncome, totalDividends, sharesOutstanding, stockPrice) {
+                const payoutRatio = (dps / eps) * 100;
+                const retentionRatio = 100 - payoutRatio;
+                const dividendYield = stockPrice ? (dps / stockPrice) * 100 : null;
+                const coverageRatio = eps / dps;
+                
+                let totalEarnings, totalDivs;
+                if (netIncome) {
+                    totalEarnings = netIncome;
+                    totalDivs = totalDividends || (dps * (sharesOutstanding || (netIncome / eps)));
+                } else if (sharesOutstanding) {
+                    totalEarnings = eps * sharesOutstanding;
+                    totalDivs = dps * sharesOutstanding;
+                } else {
+                    totalEarnings = null;
+                    totalDivs = null;
+                }
+
+                const retainedEarningsPerShare = eps - dps;
+                const totalRetainedEarnings = totalEarnings ? totalEarnings - totalDivs : null;
+
+                return {
+                    payoutRatio,
+                    retentionRatio,
+                    dividendYield,
+                    coverageRatio,
+                    riskLevel: assessRiskLevel(payoutRatio),
+                    reinvestmentRate: retentionRatio,
+                    totalEarnings,
+                    totalDividends: totalDivs,
+                    retainedEarningsPerShare,
+                    totalRetainedEarnings
+                };
+            }
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get input values
+                const eps = parseFloat(document.getElementById('earningsPerShare').value);
+                const dps = parseFloat(document.getElementById('dividendPerShare').value);
+                const netIncome = parseFloat(document.getElementById('netIncome').value || '0');
+                const totalDividends = parseFloat(document.getElementById('totalDividends').value || '0');
+                const sharesOutstanding = parseFloat(document.getElementById('sharesOutstanding').value || '0');
+                const stockPrice = parseFloat(document.getElementById('stockPrice').value || '0');
+
+                // Calculate metrics
+                const metrics = calculateMetrics(eps, dps, netIncome, totalDividends, sharesOutstanding, stockPrice);
+
+                // Display results
+                document.getElementById('payoutRatio').textContent = metrics.payoutRatio.toFixed(2);
+                document.getElementById('retentionRatio').textContent = metrics.retentionRatio.toFixed(2);
+                document.getElementById('dividendYield').textContent = metrics.dividendYield ? metrics.dividendYield.toFixed(2) : 'N/A';
+                document.getElementById('riskLevel').textContent = metrics.riskLevel;
+                document.getElementById('coverageRatio').textContent = metrics.coverageRatio.toFixed(2);
+                document.getElementById('reinvestmentRate').textContent = metrics.reinvestmentRate.toFixed(2);
+
+                // Display detailed analysis
+                document.getElementById('epsDisplay').textContent = formatCurrency(eps);
+                document.getElementById('dpsDisplay').textContent = formatCurrency(dps);
+                document.getElementById('retainedEarningsPerShare').textContent = formatCurrency(metrics.retainedEarningsPerShare);
+
+                document.getElementById('totalEarnings').textContent = metrics.totalEarnings ? formatMillions(metrics.totalEarnings) : 'N/A';
+                document.getElementById('totalDividendsDisplay').textContent = metrics.totalDividends ? formatMillions(metrics.totalDividends) : 'N/A';
+                document.getElementById('totalRetainedEarnings').textContent = metrics.totalRetainedEarnings ? formatMillions(metrics.totalRetainedEarnings) : 'N/A';
+
+                // Create/update chart
+                const ctx = document.getElementById('distributionChart').getContext('2d');
+                
+                if (distributionChart) {
+                    distributionChart.destroy();
+                }
+
+                distributionChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: ['Dividends Paid', 'Retained Earnings'],
+                        datasets: [{
+                            data: [metrics.payoutRatio, metrics.retentionRatio],
+                            backgroundColor: [
+                                'rgba(75, 192, 192, 0.5)',
+                                'rgba(255, 99, 132, 0.5)'
+                            ],
+                            borderColor: [
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(255, 99, 132, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Earnings Distribution'
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return `${context.label}: ${context.raw.toFixed(2)}%`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+
+                results.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html> 

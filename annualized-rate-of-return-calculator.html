@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Annualized Rate of Return Calculator - Investment Returns - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate your investment's annualized rate of return over any time period. Compare investments of different holding periods.">
+    <meta name="keywords" content="annualized rate of return calculator, investment return, annual return, investment performance">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">Annualized Rate of Return Calculator</h1>
+                    <p class="tool-description">Calculate the annualized rate of return for your investments to compare performance across different time periods.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="returnForm" class="needs-validation" novalidate>
+                        <!-- Investment Details -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Investment Details</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="initialValue" class="form-label">Initial Investment ($)</label>
+                                    <input type="number" class="form-control" id="initialValue" required min="0" step="0.01">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="finalValue" class="form-label">Final Investment Value ($)</label>
+                                    <input type="number" class="form-control" id="finalValue" required min="0" step="0.01">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="startDate" class="form-label">Start Date</label>
+                                    <input type="date" class="form-control" id="startDate" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="endDate" class="form-label">End Date</label>
+                                    <input type="date" class="form-control" id="endDate" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="additionalInvestments" class="form-label">Additional Investments/Withdrawals ($)</label>
+                                    <input type="number" class="form-control" id="additionalInvestments" value="0" step="0.01">
+                                    <div class="form-text">Enter positive values for investments, negative for withdrawals</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate Returns</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>Return Analysis</h3>
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5>Return Metrics</h5>
+                                        <p>Total Return: <strong><span id="totalReturn">0</span>%</strong></p>
+                                        <p>Annualized Return: <strong><span id="annualizedReturn">0</span>%</strong></p>
+                                        <p>Investment Period: <strong><span id="investmentPeriod">0</span></strong></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5>Value Changes</h5>
+                                        <p>Total Gain/Loss: <strong>$<span id="totalGainLoss">0</span></strong></p>
+                                        <p>Net Investment: <strong>$<span id="netInvestment">0</span></strong></p>
+                                        <p>Average Annual Gain: <strong>$<span id="annualGain">0</span></strong></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Performance Chart -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Investment Performance</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="performanceChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="roi-calculator.html">ROI Calculator</a></li>
+                            <li class="mb-2"><a href="investment-calculator.html">Investment Calculator</a></li>
+                            <li class="mb-2"><a href="compound-interest-calculator.html">Compound Interest Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- How to Use Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter your initial investment amount</li>
+                            <li class="mb-2">Input the final investment value</li>
+                            <li class="mb-2">Select the start and end dates</li>
+                            <li class="mb-2">Add any additional investments or withdrawals</li>
+                            <li>Click calculate to see your annualized returns</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('returnForm');
+            const results = document.getElementById('results');
+            let performanceChart = null;
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get input values
+                const initialValue = parseFloat(document.getElementById('initialValue').value);
+                const finalValue = parseFloat(document.getElementById('finalValue').value);
+                const startDate = new Date(document.getElementById('startDate').value);
+                const endDate = new Date(document.getElementById('endDate').value);
+                const additionalInvestments = parseFloat(document.getElementById('additionalInvestments').value) || 0;
+
+                // Calculate time period in years
+                const timePeriodDays = (endDate - startDate) / (1000 * 60 * 60 * 24);
+                const timePeriodYears = timePeriodDays / 365;
+
+                // Calculate net investment
+                const netInvestment = initialValue + additionalInvestments;
+
+                // Calculate total gain/loss
+                const totalGainLoss = finalValue - netInvestment;
+
+                // Calculate total return percentage
+                const totalReturnPct = ((finalValue - netInvestment) / netInvestment) * 100;
+
+                // Calculate annualized return
+                const annualizedReturn = (Math.pow((finalValue / netInvestment), (1 / timePeriodYears)) - 1) * 100;
+
+                // Calculate average annual gain
+                const annualGain = totalGainLoss / timePeriodYears;
+
+                // Format investment period
+                const years = Math.floor(timePeriodYears);
+                const months = Math.round((timePeriodYears - years) * 12);
+                const investmentPeriod = `${years} years${months > 0 ? ` ${months} months` : ''}`;
+
+                // Display results
+                document.getElementById('totalReturn').textContent = totalReturnPct.toFixed(2);
+                document.getElementById('annualizedReturn').textContent = annualizedReturn.toFixed(2);
+                document.getElementById('investmentPeriod').textContent = investmentPeriod;
+                document.getElementById('totalGainLoss').textContent = totalGainLoss.toFixed(2);
+                document.getElementById('netInvestment').textContent = netInvestment.toFixed(2);
+                document.getElementById('annualGain').textContent = annualGain.toFixed(2);
+
+                // Create performance chart
+                const ctx = document.getElementById('performanceChart').getContext('2d');
+                
+                // Destroy existing chart if it exists
+                if (performanceChart) {
+                    performanceChart.destroy();
+                }
+
+                // Create new chart
+                performanceChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Start', 'End'],
+                        datasets: [{
+                            label: 'Investment Value',
+                            data: [netInvestment, finalValue],
+                            borderColor: 'rgb(75, 192, 192)',
+                            tension: 0.1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: false,
+                                title: {
+                                    display: true,
+                                    text: 'Value ($)'
+                                }
+                            }
+                        }
+                    }
+                });
+
+                results.style.display = 'block';
+            });
+
+            // Form validation
+            form.addEventListener('input', function(e) {
+                if (e.target.type === 'number') {
+                    const value = parseFloat(e.target.value);
+                    const min = parseFloat(e.target.min);
+                    
+                    if (!isNaN(min) && value < min) {
+                        e.target.value = min;
+                    }
+                }
+            });
+
+            // Date validation
+            document.getElementById('endDate').addEventListener('change', function() {
+                const startDate = new Date(document.getElementById('startDate').value);
+                const endDate = new Date(this.value);
+                
+                if (endDate < startDate) {
+                    alert('End date must be after start date');
+                    this.value = document.getElementById('startDate').value;
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

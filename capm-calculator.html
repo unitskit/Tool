@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAPM Calculator - Capital Asset Pricing Model - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate expected return using the Capital Asset Pricing Model (CAPM). Determine required rate of return for investments based on risk-free rate, market return, and beta.">
+    <meta name="keywords" content="CAPM calculator, capital asset pricing model, required return, risk premium, beta, investment return">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">CAPM Calculator</h1>
+                    <p class="tool-description">Calculate the expected return of an investment using the Capital Asset Pricing Model (CAPM). This model helps determine the theoretically appropriate required rate of return based on the asset's systematic risk.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="capmForm" class="needs-validation" novalidate>
+                        <!-- Risk-Free Rate Input -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Risk-Free Rate</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="riskFreeRate" class="form-label">Risk-Free Rate (%)</label>
+                                    <input type="number" class="form-control" id="riskFreeRate" step="0.01" value="2.5" required>
+                                    <div class="form-text">Current risk-free rate (e.g., Treasury yield)</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Market Return Input -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Market Return</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="marketReturn" class="form-label">Expected Market Return (%)</label>
+                                    <input type="number" class="form-control" id="marketReturn" step="0.01" value="8.0" required>
+                                    <div class="form-text">Expected return of the market (e.g., S&P 500)</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Beta Input -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Asset Beta</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="beta" class="form-label">Asset Beta</label>
+                                    <input type="number" class="form-control" id="beta" step="0.01" value="1.0" required>
+                                    <div class="form-text">Measure of systematic risk relative to the market (Market Beta = 1.0)</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate CAPM</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>CAPM Analysis</h3>
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5>Required Return Components</h5>
+                                        <p>Risk-Free Rate: <strong><span id="riskFreeRateResult">0</span>%</strong></p>
+                                        <p>Market Risk Premium: <strong><span id="marketPremium">0</span>%</strong></p>
+                                        <p>Beta-Adjusted Risk Premium: <strong><span id="betaPremium">0</span>%</strong></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5>Final Results</h5>
+                                        <p>Required Return (CAPM): <strong><span id="requiredReturn">0</span>%</strong></p>
+                                        <p>Risk Premium: <strong><span id="riskPremium">0</span>%</strong></p>
+                                        <p>Systematic Risk Level: <strong><span id="riskLevel">Average</span></strong></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Risk Analysis -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Risk Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="riskAnalysis"></div>
+                            </div>
+                        </div>
+
+                        <!-- Visual Representation -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Return Components Breakdown</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="returnBreakdown"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="beta-stock-calculator.html">Beta Stock Calculator</a></li>
+                            <li class="mb-2"><a href="portfolio-beta-calculator.html">Portfolio Beta Calculator</a></li>
+                            <li class="mb-2"><a href="stock-calculator.html">Stock Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- How to Use Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter the current risk-free rate (e.g., Treasury yield)</li>
+                            <li class="mb-2">Input the expected market return</li>
+                            <li class="mb-2">Provide the asset's beta value</li>
+                            <li>Click calculate to see the CAPM analysis</li>
+                        </ol>
+                        <div class="mt-3">
+                            <p class="mb-0"><strong>Note:</strong> CAPM assumes a linear relationship between risk and return</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('capmForm');
+            const results = document.getElementById('results');
+            let returnChart = null;
+
+            function calculateCAPM(riskFreeRate, marketReturn, beta) {
+                const marketPremium = marketReturn - riskFreeRate;
+                const betaPremium = beta * marketPremium;
+                const requiredReturn = riskFreeRate + betaPremium;
+                
+                return {
+                    marketPremium,
+                    betaPremium,
+                    requiredReturn,
+                    riskPremium: requiredReturn - riskFreeRate
+                };
+            }
+
+            function getRiskLevel(beta) {
+                if (beta < 0) return "Negative (Inverse Market Relationship)";
+                if (beta < 0.5) return "Very Low";
+                if (beta < 0.8) return "Low";
+                if (beta < 1.2) return "Average";
+                if (beta < 1.5) return "Above Average";
+                return "High";
+            }
+
+            function analyzeRisk(beta, requiredReturn, riskFreeRate) {
+                let analysis = [];
+                
+                if (beta < 0) {
+                    analysis.push("This investment tends to move opposite to the market, which could be valuable for diversification.");
+                } else if (beta < 1) {
+                    analysis.push("This investment is less volatile than the market, suggesting lower systematic risk.");
+                } else if (beta > 1) {
+                    analysis.push("This investment is more volatile than the market, indicating higher systematic risk.");
+                }
+
+                const riskPremium = requiredReturn - riskFreeRate;
+                if (riskPremium > 10) {
+                    analysis.push("The high risk premium suggests investors demand significant compensation for the risk taken.");
+                } else if (riskPremium < 3) {
+                    analysis.push("The low risk premium indicates this is considered a relatively safe investment.");
+                }
+
+                return analysis.join(" ");
+            }
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get input values
+                const riskFreeRate = parseFloat(document.getElementById('riskFreeRate').value);
+                const marketReturn = parseFloat(document.getElementById('marketReturn').value);
+                const beta = parseFloat(document.getElementById('beta').value);
+                
+                // Calculate CAPM
+                const capm = calculateCAPM(riskFreeRate, marketReturn, beta);
+                
+                // Display results
+                document.getElementById('riskFreeRateResult').textContent = riskFreeRate.toFixed(2);
+                document.getElementById('marketPremium').textContent = capm.marketPremium.toFixed(2);
+                document.getElementById('betaPremium').textContent = capm.betaPremium.toFixed(2);
+                document.getElementById('requiredReturn').textContent = capm.requiredReturn.toFixed(2);
+                document.getElementById('riskPremium').textContent = capm.riskPremium.toFixed(2);
+                document.getElementById('riskLevel').textContent = getRiskLevel(beta);
+                
+                // Display risk analysis
+                document.getElementById('riskAnalysis').textContent = analyzeRisk(beta, capm.requiredReturn, riskFreeRate);
+
+                // Create/update chart
+                const ctx = document.getElementById('returnBreakdown').getContext('2d');
+                
+                if (returnChart) {
+                    returnChart.destroy();
+                }
+
+                returnChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Components of Required Return'],
+                        datasets: [
+                            {
+                                label: 'Risk-Free Rate',
+                                data: [riskFreeRate],
+                                backgroundColor: 'rgba(75, 192, 192, 0.5)'
+                            },
+                            {
+                                label: 'Beta-Adjusted Risk Premium',
+                                data: [capm.betaPremium],
+                                backgroundColor: 'rgba(255, 99, 132, 0.5)'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Return (%)'
+                                }
+                            }
+                        },
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'CAPM Return Components'
+                            }
+                        }
+                    }
+                });
+
+                results.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html> 

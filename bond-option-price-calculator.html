@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bond Option Price Calculator - Fixed Income Tools - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate bond option prices using the Black-76 model. Analyze option Greeks, volatility impact, and risk metrics for fixed income derivatives.">
+    <meta name="keywords" content="bond options, Black-76, option pricing, Greeks, volatility, fixed income derivatives, options trading">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">Bond Option Price Calculator</h1>
+                    <p class="tool-description">Calculate bond option prices using the Black-76 model. Analyze option Greeks, volatility impact, and risk metrics for fixed income derivatives.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="optionPriceForm" class="needs-validation" novalidate>
+                        <!-- Option Details -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Option Details</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="optionType" class="form-label">Option Type</label>
+                                            <select class="form-select" id="optionType" required>
+                                                <option value="call">Call Option</option>
+                                                <option value="put">Put Option</option>
+                                            </select>
+                                            <div class="form-text">Type of option contract</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="forwardPrice" class="form-label">Forward Price ($)</label>
+                                            <input type="number" class="form-control" id="forwardPrice" value="100" step="0.01" required>
+                                            <div class="form-text">Forward price of the underlying bond</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="strikePrice" class="form-label">Strike Price ($)</label>
+                                            <input type="number" class="form-control" id="strikePrice" value="100" step="0.01" required>
+                                            <div class="form-text">Option strike price</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="timeToExpiry" class="form-label">Time to Expiry (Years)</label>
+                                            <input type="number" class="form-control" id="timeToExpiry" value="1" step="0.01" required>
+                                            <div class="form-text">Time until option expiration</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="riskFreeRate" class="form-label">Risk-Free Rate (%)</label>
+                                            <input type="number" class="form-control" id="riskFreeRate" value="3" step="0.01" required>
+                                            <div class="form-text">Annual risk-free interest rate</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="volatility" class="form-label">Volatility (%)</label>
+                                            <input type="number" class="form-control" id="volatility" value="20" step="0.01" required>
+                                            <div class="form-text">Annual volatility of the underlying bond</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate Option Price</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>Option Analysis</h3>
+                        
+                        <!-- Option Price Results -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Option Price Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Option Price ($)</label>
+                                            <p id="optionPrice" class="h4">$0.00</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Intrinsic Value ($)</label>
+                                            <p id="intrinsicValue" class="h4">$0.00</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Time Value ($)</label>
+                                            <p id="timeValue" class="h4">$0.00</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Moneyness</label>
+                                            <p id="moneyness" class="h4">-</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Greeks Analysis -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Option Greeks</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Delta</label>
+                                            <p id="delta" class="h4">0.000</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Gamma</label>
+                                            <p id="gamma" class="h4">0.000</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Theta</label>
+                                            <p id="theta" class="h4">0.000</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Vega</label>
+                                            <p id="vega" class="h4">0.000</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sensitivity Chart -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Price Sensitivity Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="sensitivityChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Risk Metrics -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Risk Metrics</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Metric</th>
+                                                <th>Value</th>
+                                                <th>Description</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="riskTable">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="bond-price-calculator.html">Bond Price Calculator</a></li>
+                            <li class="mb-2"><a href="bond-yield-calculator.html">Bond Yield Calculator</a></li>
+                            <li class="mb-2"><a href="bond-duration-calculator.html">Bond Duration Calculator</a></li>
+                            <li class="mb-2"><a href="bond-volatility-calculator.html">Bond Volatility Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- How to Use Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Select option type (Call/Put)</li>
+                            <li class="mb-2">Enter forward and strike prices</li>
+                            <li class="mb-2">Specify time to expiry and rates</li>
+                            <li class="mb-2">Input volatility estimate</li>
+                            <li>Click Calculate to analyze option</li>
+                        </ol>
+                        <div class="mt-3">
+                            <p class="mb-2"><strong>Key Terms:</strong></p>
+                            <ul class="list-unstyled small">
+                                <li>• Black-76: Model for pricing bond options</li>
+                                <li>• Greeks: Option sensitivity measures</li>
+                                <li>• Volatility: Price variability measure</li>
+                                <li>• Moneyness: Option's profit potential</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('optionPriceForm');
+            const results = document.getElementById('results');
+            let sensitivityChart = null;
+
+            function normalCDF(x) {
+                const a1 = 0.254829592;
+                const a2 = -0.284496736;
+                const a3 = 1.421413741;
+                const a4 = -1.453152027;
+                const a5 = 1.061405429;
+                const p = 0.3275911;
+
+                const sign = x < 0 ? -1 : 1;
+                x = Math.abs(x) / Math.sqrt(2.0);
+
+                const t = 1.0 / (1.0 + p * x);
+                const y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-x * x);
+
+                return 0.5 * (1.0 + sign * y);
+            }
+
+            function calculateBlack76(type, F, K, T, r, sigma) {
+                const d1 = (Math.log(F/K) + (sigma * sigma * T / 2)) / (sigma * Math.sqrt(T));
+                const d2 = d1 - sigma * Math.sqrt(T);
+                const discountFactor = Math.exp(-r * T / 100);
+
+                let price, delta, gamma, theta, vega;
+                
+                if (type === 'call') {
+                    price = discountFactor * (F * normalCDF(d1) - K * normalCDF(d2));
+                    delta = discountFactor * normalCDF(d1);
+                    intrinsicValue = Math.max(0, F - K);
+                } else {
+                    price = discountFactor * (K * normalCDF(-d2) - F * normalCDF(-d1));
+                    delta = -discountFactor * normalCDF(-d1);
+                    intrinsicValue = Math.max(0, K - F);
+                }
+
+                gamma = discountFactor * Math.exp(-d1 * d1 / 2) / (F * sigma * Math.sqrt(T) * Math.sqrt(2 * Math.PI));
+                vega = F * discountFactor * Math.sqrt(T) * Math.exp(-d1 * d1 / 2) / Math.sqrt(2 * Math.PI) / 100;
+                theta = -(F * sigma * discountFactor * Math.exp(-d1 * d1 / 2)) / (2 * Math.sqrt(T) * Math.sqrt(2 * Math.PI)) / 365;
+
+                return {
+                    price: price,
+                    intrinsicValue: intrinsicValue,
+                    timeValue: price - intrinsicValue,
+                    delta: delta,
+                    gamma: gamma,
+                    theta: theta,
+                    vega: vega,
+                    d1: d1,
+                    d2: d2
+                };
+            }
+
+            function updateSensitivityChart(type, F, K, T, r, sigma) {
+                const ctx = document.getElementById('sensitivityChart').getContext('2d');
+                const priceRange = 0.2; // ±20% price range
+                const points = 50;
+                const prices = [];
+                const optionPrices = [];
+                
+                for (let i = 0; i < points; i++) {
+                    const price = F * (1 - priceRange + (2 * priceRange * i / (points - 1)));
+                    const result = calculateBlack76(type, price, K, T, r, sigma);
+                    
+                    prices.push(price);
+                    optionPrices.push(result.price);
+                }
+                
+                if (sensitivityChart) {
+                    sensitivityChart.destroy();
+                }
+                
+                sensitivityChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: prices.map(p => p.toFixed(2)),
+                        datasets: [{
+                            label: 'Option Price',
+                            data: optionPrices,
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Forward Price ($)'
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Option Price ($)'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            function updateRiskTable(results, type, F, K) {
+                const tbody = document.getElementById('riskTable');
+                const moneyness = F/K;
+                let moneynessStatus;
+                
+                if (type === 'call') {
+                    if (moneyness > 1.05) moneynessStatus = 'In-the-money';
+                    else if (moneyness < 0.95) moneynessStatus = 'Out-of-the-money';
+                    else moneynessStatus = 'At-the-money';
+                } else {
+                    if (moneyness < 0.95) moneynessStatus = 'In-the-money';
+                    else if (moneyness > 1.05) moneynessStatus = 'Out-of-the-money';
+                    else moneynessStatus = 'At-the-money';
+                }
+                
+                const rows = [
+                    {
+                        metric: 'Price Sensitivity (Delta)',
+                        value: results.delta.toFixed(4),
+                        description: 'Change in option price per $1 change in forward price'
+                    },
+                    {
+                        metric: 'Convexity (Gamma)',
+                        value: results.gamma.toFixed(4),
+                        description: 'Rate of change in Delta'
+                    },
+                    {
+                        metric: 'Time Decay (Theta)',
+                        value: results.theta.toFixed(4),
+                        description: 'Option price decay per day'
+                    },
+                    {
+                        metric: 'Volatility Sensitivity (Vega)',
+                        value: results.vega.toFixed(4),
+                        description: 'Change in option price per 1% change in volatility'
+                    },
+                    {
+                        metric: 'Moneyness Ratio',
+                        value: moneyness.toFixed(4),
+                        description: moneynessStatus
+                    }
+                ];
+                
+                tbody.innerHTML = rows.map(row => `
+                    <tr>
+                        <td>${row.metric}</td>
+                        <td>${row.value}</td>
+                        <td>${row.description}</td>
+                    </tr>
+                `).join('');
+            }
+
+            function formatCurrency(value) {
+                return new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }).format(value);
+            }
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const type = document.getElementById('optionType').value;
+                const F = parseFloat(document.getElementById('forwardPrice').value);
+                const K = parseFloat(document.getElementById('strikePrice').value);
+                const T = parseFloat(document.getElementById('timeToExpiry').value);
+                const r = parseFloat(document.getElementById('riskFreeRate').value);
+                const sigma = parseFloat(document.getElementById('volatility').value);
+
+                const results = calculateBlack76(type, F, K, T, r, sigma);
+                
+                document.getElementById('optionPrice').textContent = formatCurrency(results.price);
+                document.getElementById('intrinsicValue').textContent = formatCurrency(results.intrinsicValue);
+                document.getElementById('timeValue').textContent = formatCurrency(results.timeValue);
+                document.getElementById('moneyness').textContent = (F/K > 1.05 ? 'In-the-money' : F/K < 0.95 ? 'Out-of-the-money' : 'At-the-money');
+                
+                document.getElementById('delta').textContent = results.delta.toFixed(3);
+                document.getElementById('gamma').textContent = results.gamma.toFixed(3);
+                document.getElementById('theta').textContent = results.theta.toFixed(3);
+                document.getElementById('vega').textContent = results.vega.toFixed(3);
+
+                updateSensitivityChart(type, F, K, T, r, sigma);
+                updateRiskTable(results, type, F, K);
+                
+                results.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html> 

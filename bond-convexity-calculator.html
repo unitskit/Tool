@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bond Convexity Calculator - Fixed Income Tools - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate bond convexity and analyze interest rate risk. Understand price sensitivity to yield changes with comprehensive convexity metrics.">
+    <meta name="keywords" content="bond convexity, interest rate risk, duration, yield sensitivity, fixed income, bond calculator">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">Bond Convexity Calculator</h1>
+                    <p class="tool-description">Calculate bond convexity and analyze interest rate risk. Understand how bond prices respond to yield changes with comprehensive convexity metrics.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="convexityForm" class="needs-validation" novalidate>
+                        <!-- Bond Details -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Bond Details</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="parValue" class="form-label">Par Value ($)</label>
+                                            <input type="number" class="form-control" id="parValue" value="1000" step="100" required>
+                                            <div class="form-text">Face value of the bond</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="couponRate" class="form-label">Coupon Rate (%)</label>
+                                            <input type="number" class="form-control" id="couponRate" value="5" step="0.1" required>
+                                            <div class="form-text">Annual coupon rate</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="yearsToMaturity" class="form-label">Years to Maturity</label>
+                                            <input type="number" class="form-control" id="yearsToMaturity" value="10" step="0.5" required>
+                                            <div class="form-text">Time until bond matures</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="yieldToMaturity" class="form-label">Yield to Maturity (%)</label>
+                                            <input type="number" class="form-control" id="yieldToMaturity" value="6" step="0.1" required>
+                                            <div class="form-text">Current yield to maturity</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="paymentsPerYear" class="form-label">Payments Per Year</label>
+                                            <select class="form-select" id="paymentsPerYear" required>
+                                                <option value="1">Annual</option>
+                                                <option value="2" selected>Semi-annual</option>
+                                                <option value="4">Quarterly</option>
+                                                <option value="12">Monthly</option>
+                                            </select>
+                                            <div class="form-text">Frequency of coupon payments</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="yieldChange" class="form-label">Yield Change (bp)</label>
+                                            <input type="number" class="form-control" id="yieldChange" value="100" step="1" required>
+                                            <div class="form-text">Basis points for sensitivity analysis</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate Convexity Analysis</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>Convexity Analysis</h3>
+                        
+                        <!-- Convexity Metrics -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Convexity Metrics</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Modified Duration</label>
+                                            <p id="modifiedDuration" class="h4">0.00</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Convexity</label>
+                                            <p id="convexity" class="h4">0.00</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Price Value of Basis Point (PVBP)</label>
+                                            <p id="pvbp" class="h4">$0.00</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Duration Effect</label>
+                                            <p id="durationEffect" class="h4">0.00%</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Convexity Effect</label>
+                                            <p id="convexityEffect" class="h4">0.00%</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Total Price Effect</label>
+                                            <p id="totalEffect" class="h4">0.00%</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Price Sensitivity Chart -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Price Sensitivity Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="sensitivityChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Yield Scenarios -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Yield Scenarios</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Yield Change (bp)</th>
+                                                <th>New Yield (%)</th>
+                                                <th>Duration Effect (%)</th>
+                                                <th>Convexity Effect (%)</th>
+                                                <th>Price Change (%)</th>
+                                                <th>New Price ($)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="scenariosTable">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="bond-duration-calculator.html">Bond Duration Calculator</a></li>
+                            <li class="mb-2"><a href="bond-yield-calculator.html">Bond Yield Calculator</a></li>
+                            <li class="mb-2"><a href="bond-price-calculator.html">Bond Price Calculator</a></li>
+                            <li class="mb-2"><a href="bond-volatility-calculator.html">Bond Volatility Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- How to Use Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter bond details (par value, coupon rate)</li>
+                            <li class="mb-2">Specify maturity and yield information</li>
+                            <li class="mb-2">Select payment frequency</li>
+                            <li class="mb-2">Set yield change for analysis</li>
+                            <li>Click Calculate for convexity analysis</li>
+                        </ol>
+                        <div class="mt-3">
+                            <p class="mb-2"><strong>Key Terms:</strong></p>
+                            <ul class="list-unstyled small">
+                                <li>• Convexity: Second derivative of price-yield relationship</li>
+                                <li>• Duration: First-order price sensitivity</li>
+                                <li>• PVBP: Price value of a basis point change</li>
+                                <li>• Basis Point (bp): 0.01% change in yield</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('convexityForm');
+            const results = document.getElementById('results');
+            let sensitivityChart = null;
+
+            function calculateBondPrice(parValue, couponRate, ytm, yearsToMaturity, paymentsPerYear) {
+                const periodicRate = couponRate / (100 * paymentsPerYear);
+                const periodicYield = ytm / (100 * paymentsPerYear);
+                const totalPeriods = yearsToMaturity * paymentsPerYear;
+                const couponPayment = parValue * periodicRate;
+                
+                let price = 0;
+                for (let i = 1; i <= totalPeriods; i++) {
+                    price += couponPayment / Math.pow(1 + periodicYield, i);
+                }
+                price += parValue / Math.pow(1 + periodicYield, totalPeriods);
+                
+                return price;
+            }
+
+            function calculateModifiedDuration(parValue, couponRate, ytm, yearsToMaturity, paymentsPerYear) {
+                const deltaYield = 0.0001; // 0.01 basis point
+                const basePrice = calculateBondPrice(parValue, couponRate, ytm, yearsToMaturity, paymentsPerYear);
+                const higherPrice = calculateBondPrice(parValue, couponRate, ytm - deltaYield, yearsToMaturity, paymentsPerYear);
+                const lowerPrice = calculateBondPrice(parValue, couponRate, ytm + deltaYield, yearsToMaturity, paymentsPerYear);
+                
+                return -(higherPrice - lowerPrice) / (2 * basePrice * deltaYield);
+            }
+
+            function calculateConvexity(parValue, couponRate, ytm, yearsToMaturity, paymentsPerYear) {
+                const deltaYield = 0.0001; // 0.01 basis point
+                const basePrice = calculateBondPrice(parValue, couponRate, ytm, yearsToMaturity, paymentsPerYear);
+                const higherPrice = calculateBondPrice(parValue, couponRate, ytm + deltaYield, yearsToMaturity, paymentsPerYear);
+                const lowerPrice = calculateBondPrice(parValue, couponRate, ytm - deltaYield, yearsToMaturity, paymentsPerYear);
+                
+                return (higherPrice + lowerPrice - 2 * basePrice) / (basePrice * Math.pow(deltaYield, 2));
+            }
+
+            function updateSensitivityChart(parValue, couponRate, ytm, yearsToMaturity, paymentsPerYear, yieldChange) {
+                const ctx = document.getElementById('sensitivityChart').getContext('2d');
+                const basePrice = calculateBondPrice(parValue, couponRate, ytm, yearsToMaturity, paymentsPerYear);
+                const yieldPoints = [];
+                const actualPrices = [];
+                const durationPrices = [];
+                const convexityPrices = [];
+                
+                const modDuration = calculateModifiedDuration(parValue, couponRate, ytm, yearsToMaturity, paymentsPerYear);
+                const convexity = calculateConvexity(parValue, couponRate, ytm, yearsToMaturity, paymentsPerYear);
+                
+                for (let bpChange = -yieldChange; bpChange <= yieldChange; bpChange += yieldChange/10) {
+                    const deltaYield = bpChange / 10000;
+                    yieldPoints.push(ytm + bpChange/100);
+                    
+                    // Actual price
+                    const actualPrice = calculateBondPrice(parValue, couponRate, ytm + bpChange/100, yearsToMaturity, paymentsPerYear);
+                    actualPrices.push(actualPrice);
+                    
+                    // Duration approximation
+                    const durationEffect = -modDuration * deltaYield;
+                    const durationPrice = basePrice * (1 + durationEffect);
+                    durationPrices.push(durationPrice);
+                    
+                    // Duration + Convexity approximation
+                    const convexityEffect = 0.5 * convexity * Math.pow(deltaYield, 2);
+                    const convexityPrice = basePrice * (1 + durationEffect + convexityEffect);
+                    convexityPrices.push(convexityPrice);
+                }
+                
+                if (sensitivityChart) {
+                    sensitivityChart.destroy();
+                }
+                
+                sensitivityChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: yieldPoints.map(y => y.toFixed(2) + '%'),
+                        datasets: [{
+                            label: 'Actual Price',
+                            data: actualPrices,
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            fill: false
+                        }, {
+                            label: 'Duration Approximation',
+                            data: durationPrices,
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            borderDash: [5, 5],
+                            fill: false
+                        }, {
+                            label: 'Duration + Convexity',
+                            data: convexityPrices,
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderDash: [2, 2],
+                            fill: false
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Yield to Maturity (%)'
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Bond Price ($)'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            function updateScenariosTable(parValue, couponRate, ytm, yearsToMaturity, paymentsPerYear, yieldChange) {
+                const tbody = document.getElementById('scenariosTable');
+                const basePrice = calculateBondPrice(parValue, couponRate, ytm, yearsToMaturity, paymentsPerYear);
+                const modDuration = calculateModifiedDuration(parValue, couponRate, ytm, yearsToMaturity, paymentsPerYear);
+                const convexity = calculateConvexity(parValue, couponRate, ytm, yearsToMaturity, paymentsPerYear);
+                
+                const scenarios = [-yieldChange, -yieldChange/2, 0, yieldChange/2, yieldChange];
+                let html = '';
+                
+                scenarios.forEach(bpChange => {
+                    const deltaYield = bpChange / 10000;
+                    const newYield = ytm + bpChange/100;
+                    const durationEffect = -modDuration * deltaYield * 100;
+                    const convexityEffect = 0.5 * convexity * Math.pow(deltaYield, 2) * 100;
+                    const totalEffect = durationEffect + convexityEffect;
+                    const newPrice = basePrice * (1 + totalEffect/100);
+                    
+                    html += `
+                        <tr>
+                            <td>${bpChange.toFixed(0)}</td>
+                            <td>${newYield.toFixed(2)}</td>
+                            <td>${durationEffect.toFixed(2)}</td>
+                            <td>${convexityEffect.toFixed(2)}</td>
+                            <td>${totalEffect.toFixed(2)}</td>
+                            <td>${formatCurrency(newPrice)}</td>
+                        </tr>
+                    `;
+                });
+                
+                tbody.innerHTML = html;
+            }
+
+            function formatCurrency(value) {
+                return new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }).format(value);
+            }
+
+            function formatPercent(value) {
+                return new Intl.NumberFormat('en-US', {
+                    style: 'percent',
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }).format(value);
+            }
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const parValue = parseFloat(document.getElementById('parValue').value);
+                const couponRate = parseFloat(document.getElementById('couponRate').value);
+                const ytm = parseFloat(document.getElementById('yieldToMaturity').value);
+                const yearsToMaturity = parseFloat(document.getElementById('yearsToMaturity').value);
+                const paymentsPerYear = parseInt(document.getElementById('paymentsPerYear').value);
+                const yieldChange = parseInt(document.getElementById('yieldChange').value);
+
+                // Calculate metrics
+                const modDuration = calculateModifiedDuration(parValue, couponRate, ytm, yearsToMaturity, paymentsPerYear);
+                const convexity = calculateConvexity(parValue, couponRate, ytm, yearsToMaturity, paymentsPerYear);
+                const deltaYield = yieldChange / 10000;
+                const durationEffect = -modDuration * deltaYield * 100;
+                const convexityEffect = 0.5 * convexity * Math.pow(deltaYield, 2) * 100;
+                const totalEffect = durationEffect + convexityEffect;
+                const pvbp = modDuration * calculateBondPrice(parValue, couponRate, ytm, yearsToMaturity, paymentsPerYear) * 0.0001;
+
+                // Update display
+                document.getElementById('modifiedDuration').textContent = modDuration.toFixed(2);
+                document.getElementById('convexity').textContent = convexity.toFixed(2);
+                document.getElementById('pvbp').textContent = formatCurrency(pvbp);
+                document.getElementById('durationEffect').textContent = formatPercent(durationEffect/100);
+                document.getElementById('convexityEffect').textContent = formatPercent(convexityEffect/100);
+                document.getElementById('totalEffect').textContent = formatPercent(totalEffect/100);
+
+                // Update chart and table
+                updateSensitivityChart(parValue, couponRate, ytm, yearsToMaturity, paymentsPerYear, yieldChange);
+                updateScenariosTable(parValue, couponRate, ytm, yearsToMaturity, paymentsPerYear, yieldChange);
+                
+                results.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Additional Funds Needed Calculator - Business Tools - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate Additional Funds Needed (AFN) to determine external financing requirements. Analyze funding needs and plan business growth.">
+    <meta name="keywords" content="AFN, additional funds needed, external financing, funding requirements, business growth, financial planning">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">Additional Funds Needed Calculator</h1>
+                    <p class="tool-description">Calculate Additional Funds Needed (AFN) to determine external financing requirements. Analyze funding needs and plan business growth through comprehensive AFN analysis.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="afnForm" class="needs-validation" novalidate>
+                        <!-- Current Financial Position -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Current Financial Position</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="currentAssets" class="form-label">Current Assets ($)</label>
+                                    <input type="number" class="form-control" id="currentAssets" value="1000000" step="10000" required>
+                                    <div class="form-text">Total current assets</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="currentLiabilities" class="form-label">Current Liabilities ($)</label>
+                                    <input type="number" class="form-control" id="currentLiabilities" value="500000" step="10000" required>
+                                    <div class="form-text">Total current liabilities</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="fixedAssets" class="form-label">Fixed Assets ($)</label>
+                                    <input type="number" class="form-control" id="fixedAssets" value="2000000" step="10000" required>
+                                    <div class="form-text">Total fixed assets</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="longTermDebt" class="form-label">Long-term Debt ($)</label>
+                                    <input type="number" class="form-control" id="longTermDebt" value="1000000" step="10000" required>
+                                    <div class="form-text">Total long-term debt</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="equity" class="form-label">Equity ($)</label>
+                                    <input type="number" class="form-control" id="equity" value="1500000" step="10000" required>
+                                    <div class="form-text">Total equity</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sales and Profitability -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Sales and Profitability</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="currentSales" class="form-label">Current Sales ($)</label>
+                                    <input type="number" class="form-control" id="currentSales" value="5000000" step="10000" required>
+                                    <div class="form-text">Current annual sales</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="projectedSales" class="form-label">Projected Sales ($)</label>
+                                    <input type="number" class="form-control" id="projectedSales" value="6000000" step="10000" required>
+                                    <div class="form-text">Expected sales for next period</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="netIncome" class="form-label">Net Income ($)</label>
+                                    <input type="number" class="form-control" id="netIncome" value="500000" step="10000" required>
+                                    <div class="form-text">Current net income</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="dividendPayout" class="form-label">Dividend Payout Ratio (%)</label>
+                                    <input type="number" class="form-control" id="dividendPayout" value="40" step="1" required>
+                                    <div class="form-text">Percentage of earnings paid as dividends</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Growth Assumptions -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Growth Assumptions</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="spontaneousLiabilities" class="form-label">Spontaneous Liabilities Growth (%)</label>
+                                    <input type="number" class="form-control" id="spontaneousLiabilities" value="20" step="1" required>
+                                    <div class="form-text">Expected growth in spontaneous liabilities</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="fixedAssetGrowth" class="form-label">Fixed Asset Growth (%)</label>
+                                    <input type="number" class="form-control" id="fixedAssetGrowth" value="15" step="1" required>
+                                    <div class="form-text">Expected growth in fixed assets</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate AFN</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>AFN Analysis Results</h3>
+                        
+                        <!-- Key Metrics -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Key Metrics</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Additional Funds Needed (AFN)</label>
+                                            <p id="afn" class="h4">$0</p>
+                                            <small class="text-muted" id="afnStatus"></small>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Required Asset Increase</label>
+                                            <p id="requiredAssetIncrease" class="h4">$0</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Spontaneous Liability Increase</label>
+                                            <p id="spontaneousLiabilityIncrease" class="h4">$0</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Retained Earnings</label>
+                                            <p id="retainedEarnings" class="h4">$0</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Funding Analysis -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Funding Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="fundingChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Analysis Table -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Financial Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Metric</th>
+                                                <th>Value</th>
+                                                <th>Status</th>
+                                                <th>Recommendation</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="analysisTable">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="working-capital-calculator.html">Working Capital Calculator</a></li>
+                            <li class="mb-2"><a href="cash-flow-calculator.html">Cash Flow Calculator</a></li>
+                            <li class="mb-2"><a href="financial-ratio-calculator.html">Financial Ratio Calculator</a></li>
+                            <li class="mb-2"><a href="business-growth-calculator.html">Business Growth Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- How to Use Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter current financial position</li>
+                            <li class="mb-2">Input sales and profitability data</li>
+                            <li class="mb-2">Specify growth assumptions</li>
+                            <li class="mb-2">Click Calculate to see analysis</li>
+                            <li>Review AFN metrics and recommendations</li>
+                        </ol>
+                        <div class="mt-3">
+                            <p class="mb-2"><strong>Interpretation Guide:</strong></p>
+                            <ul class="list-unstyled small">
+                                <li>• Positive AFN: External funding needed</li>
+                                <li>• Negative AFN: Excess funds available</li>
+                                <li>• Consider funding sources</li>
+                                <li>• Review growth assumptions</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('afnForm');
+            const results = document.getElementById('results');
+            let fundingChart = null;
+
+            function calculateAFN(inputs) {
+                // Calculate required asset increase
+                const assetToSalesRatio = (inputs.currentAssets + inputs.fixedAssets) / inputs.currentSales;
+                const requiredAssetIncrease = (inputs.projectedSales - inputs.currentSales) * assetToSalesRatio;
+
+                // Calculate spontaneous liability increase
+                const liabilityToSalesRatio = inputs.currentLiabilities / inputs.currentSales;
+                const spontaneousLiabilityIncrease = (inputs.projectedSales - inputs.currentSales) * liabilityToSalesRatio;
+
+                // Calculate retained earnings
+                const profitMargin = inputs.netIncome / inputs.currentSales;
+                const retentionRatio = 1 - (inputs.dividendPayout / 100);
+                const retainedEarnings = inputs.projectedSales * profitMargin * retentionRatio;
+
+                // Calculate AFN
+                const afn = requiredAssetIncrease - spontaneousLiabilityIncrease - retainedEarnings;
+
+                return {
+                    afn,
+                    requiredAssetIncrease,
+                    spontaneousLiabilityIncrease,
+                    retainedEarnings,
+                    assetToSalesRatio,
+                    liabilityToSalesRatio,
+                    profitMargin,
+                    retentionRatio
+                };
+            }
+
+            function getAFNStatus(afn) {
+                if (afn > 0) return 'External funding needed';
+                if (afn < 0) return 'Excess funds available';
+                return 'Self-sustaining growth';
+            }
+
+            function updateAnalysisTable(metrics) {
+                const tbody = document.getElementById('analysisTable');
+                const rows = [
+                    {
+                        metric: 'AFN',
+                        value: formatCurrency(metrics.afn),
+                        status: metrics.afn > 0 ? 'Funding Required' : 
+                               metrics.afn < 0 ? 'Excess Funds' : 'Balanced',
+                        recommendation: metrics.afn > 0 ? 
+                            'Consider debt or equity financing' : 
+                            metrics.afn < 0 ? 'Consider investment opportunities' : 
+                            'Maintain current growth strategy'
+                    },
+                    {
+                        metric: 'Asset to Sales Ratio',
+                        value: (metrics.assetToSalesRatio * 100).toFixed(2) + '%',
+                        status: metrics.assetToSalesRatio > 0.5 ? 'High' : 
+                               metrics.assetToSalesRatio > 0.3 ? 'Moderate' : 'Low',
+                        recommendation: metrics.assetToSalesRatio > 0.5 ? 
+                            'Review asset efficiency' : 'Maintain current efficiency'
+                    },
+                    {
+                        metric: 'Profit Margin',
+                        value: (metrics.profitMargin * 100).toFixed(2) + '%',
+                        status: metrics.profitMargin > 0.15 ? 'Good' : 
+                               metrics.profitMargin > 0.1 ? 'Adequate' : 'Poor',
+                        recommendation: metrics.profitMargin < 0.1 ? 
+                            'Focus on improving profitability' : 'Maintain current margins'
+                    }
+                ];
+
+                tbody.innerHTML = rows.map(row => `
+                    <tr>
+                        <td>${row.metric}</td>
+                        <td>${row.value}</td>
+                        <td><span class="badge bg-${row.status === 'Good' || row.status === 'Excess Funds' ? 'success' : 
+                            row.status === 'Adequate' || row.status === 'Moderate' ? 'warning' : 'danger'}">${row.status}</span></td>
+                        <td>${row.recommendation}</td>
+                    </tr>
+                `).join('');
+            }
+
+            function updateFundingChart(metrics) {
+                const ctx = document.getElementById('fundingChart').getContext('2d');
+                
+                if (fundingChart) {
+                    fundingChart.destroy();
+                }
+
+                const data = {
+                    labels: ['Required Asset Increase', 'Spontaneous Liabilities', 'Retained Earnings', 'AFN'],
+                    datasets: [{
+                        data: [
+                            metrics.requiredAssetIncrease,
+                            metrics.spontaneousLiabilityIncrease,
+                            metrics.retainedEarnings,
+                            metrics.afn
+                        ],
+                        backgroundColor: [
+                            'rgba(54, 162, 235, 0.8)',
+                            'rgba(75, 192, 192, 0.8)',
+                            'rgba(153, 102, 255, 0.8)',
+                            'rgba(255, 99, 132, 0.8)'
+                        ]
+                    }]
+                };
+                
+                fundingChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: data,
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Amount ($)'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            function formatCurrency(value) {
+                return new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0
+                }).format(value);
+            }
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const inputs = {
+                    currentAssets: parseFloat(document.getElementById('currentAssets').value),
+                    currentLiabilities: parseFloat(document.getElementById('currentLiabilities').value),
+                    fixedAssets: parseFloat(document.getElementById('fixedAssets').value),
+                    longTermDebt: parseFloat(document.getElementById('longTermDebt').value),
+                    equity: parseFloat(document.getElementById('equity').value),
+                    currentSales: parseFloat(document.getElementById('currentSales').value),
+                    projectedSales: parseFloat(document.getElementById('projectedSales').value),
+                    netIncome: parseFloat(document.getElementById('netIncome').value),
+                    dividendPayout: parseFloat(document.getElementById('dividendPayout').value),
+                    spontaneousLiabilities: parseFloat(document.getElementById('spontaneousLiabilities').value),
+                    fixedAssetGrowth: parseFloat(document.getElementById('fixedAssetGrowth').value)
+                };
+                
+                const metrics = calculateAFN(inputs);
+                
+                // Update display
+                document.getElementById('afn').textContent = formatCurrency(metrics.afn);
+                document.getElementById('afnStatus').textContent = getAFNStatus(metrics.afn);
+                document.getElementById('requiredAssetIncrease').textContent = formatCurrency(metrics.requiredAssetIncrease);
+                document.getElementById('spontaneousLiabilityIncrease').textContent = formatCurrency(metrics.spontaneousLiabilityIncrease);
+                document.getElementById('retainedEarnings').textContent = formatCurrency(metrics.retainedEarnings);
+                
+                // Update chart and analysis table
+                updateFundingChart(metrics);
+                updateAnalysisTable(metrics);
+                
+                results.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html> 

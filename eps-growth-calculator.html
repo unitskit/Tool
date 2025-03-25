@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EPS Growth Calculator - Financial Analysis Tools - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate earnings per share (EPS) growth rates and analyze historical EPS trends. Project future earnings growth and evaluate company performance.">
+    <meta name="keywords" content="eps growth calculator, earnings growth, eps trend, financial analysis, company performance, earnings projection">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">EPS Growth Calculator</h1>
+                    <p class="tool-description">Calculate and analyze earnings per share (EPS) growth rates over different time periods. Project future earnings growth and evaluate company performance trends.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="epsGrowthForm" class="needs-validation" novalidate>
+                        <!-- Historical EPS Data -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Historical EPS Data</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="initialEPS" class="form-label">Initial EPS</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" id="initialEPS" step="0.01" value="2.00" required>
+                                    </div>
+                                    <div class="form-text">Starting earnings per share value</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="finalEPS" class="form-label">Final EPS</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" id="finalEPS" step="0.01" value="3.50" required>
+                                    </div>
+                                    <div class="form-text">Ending earnings per share value</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="timePeriod" class="form-label">Time Period (Years)</label>
+                                    <input type="number" class="form-control" id="timePeriod" step="1" value="5" required>
+                                    <div class="form-text">Number of years between initial and final EPS</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Growth Projection -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Growth Projection</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="projectionYears" class="form-label">Projection Period (Years)</label>
+                                    <input type="number" class="form-control" id="projectionYears" step="1" value="3">
+                                    <div class="form-text">Number of years to project future EPS</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate Growth</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>Growth Analysis</h3>
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5>Growth Metrics</h5>
+                                        <p>Total Growth: <strong><span id="totalGrowth">0</span>%</strong></p>
+                                        <p>CAGR: <strong><span id="cagr">0</span>%</strong></p>
+                                        <p>Average Annual Growth: <strong><span id="avgGrowth">0</span>%</strong></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5>Value Changes</h5>
+                                        <p>Absolute Change: <strong>$<span id="absoluteChange">0.00</span></strong></p>
+                                        <p>Average Annual Change: <strong>$<span id="avgChange">0.00</span></strong></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Growth Projection -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Future EPS Projections</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Year</th>
+                                                <th>Projected EPS</th>
+                                                <th>Year-over-Year Growth</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="projectionTable"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Visual Representation -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">EPS Growth Trend</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="growthChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="earnings-per-share-calculator.html">EPS Calculator</a></li>
+                            <li class="mb-2"><a href="pe-ratio-calculator.html">P/E Ratio Calculator</a></li>
+                            <li class="mb-2"><a href="peg-ratio-calculator.html">PEG Ratio Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- How to Use Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter the initial EPS value</li>
+                            <li class="mb-2">Input the final EPS value</li>
+                            <li class="mb-2">Specify the time period in years</li>
+                            <li class="mb-2">Set projection years (optional)</li>
+                            <li>Click calculate to analyze growth</li>
+                        </ol>
+                        <div class="mt-3">
+                            <p class="mb-0"><strong>Note:</strong> Past growth rates may not indicate future performance</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('epsGrowthForm');
+            const results = document.getElementById('results');
+            let growthChart = null;
+
+            function formatNumber(value) {
+                return new Intl.NumberFormat('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }).format(value);
+            }
+
+            function calculateGrowthMetrics(initialEPS, finalEPS, years) {
+                const totalGrowth = ((finalEPS - initialEPS) / initialEPS) * 100;
+                const cagr = (Math.pow(finalEPS / initialEPS, 1/years) - 1) * 100;
+                const avgGrowth = totalGrowth / years;
+                const absoluteChange = finalEPS - initialEPS;
+                const avgChange = absoluteChange / years;
+                
+                return {
+                    totalGrowth,
+                    cagr,
+                    avgGrowth,
+                    absoluteChange,
+                    avgChange
+                };
+            }
+
+            function projectFutureEPS(finalEPS, cagr, years) {
+                let projections = [];
+                let currentEPS = finalEPS;
+                
+                for (let i = 1; i <= years; i++) {
+                    currentEPS *= (1 + cagr/100);
+                    projections.push({
+                        year: i,
+                        eps: currentEPS,
+                        growth: cagr
+                    });
+                }
+                
+                return projections;
+            }
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get input values
+                const initialEPS = parseFloat(document.getElementById('initialEPS').value);
+                const finalEPS = parseFloat(document.getElementById('finalEPS').value);
+                const timePeriod = parseInt(document.getElementById('timePeriod').value);
+                const projectionYears = parseInt(document.getElementById('projectionYears').value || '0');
+                
+                // Calculate growth metrics
+                const metrics = calculateGrowthMetrics(initialEPS, finalEPS, timePeriod);
+                
+                // Display results
+                document.getElementById('totalGrowth').textContent = formatNumber(metrics.totalGrowth);
+                document.getElementById('cagr').textContent = formatNumber(metrics.cagr);
+                document.getElementById('avgGrowth').textContent = formatNumber(metrics.avgGrowth);
+                document.getElementById('absoluteChange').textContent = formatNumber(metrics.absoluteChange);
+                document.getElementById('avgChange').textContent = formatNumber(metrics.avgChange);
+                
+                // Generate projections
+                const projections = projectFutureEPS(finalEPS, metrics.cagr, projectionYears);
+                const projectionHtml = projections.map(p => `
+                    <tr>
+                        <td>Year ${p.year}</td>
+                        <td>$${formatNumber(p.eps)}</td>
+                        <td>${formatNumber(p.growth)}%</td>
+                    </tr>
+                `).join('');
+                document.getElementById('projectionTable').innerHTML = projectionHtml;
+
+                // Create/update chart
+                const ctx = document.getElementById('growthChart').getContext('2d');
+                
+                if (growthChart) {
+                    growthChart.destroy();
+                }
+
+                const historicalData = [initialEPS];
+                const historicalLabels = ['Initial'];
+                
+                // Add final EPS to historical data
+                historicalData.push(finalEPS);
+                historicalLabels.push('Final');
+                
+                // Add projections to chart data
+                const projectedData = projections.map(p => p.eps);
+                const projectedLabels = projections.map(p => `Year ${p.year}`);
+
+                growthChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: historicalLabels.concat(projectedLabels),
+                        datasets: [
+                            {
+                                label: 'Historical EPS',
+                                data: historicalData,
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                fill: true
+                            },
+                            {
+                                label: 'Projected EPS',
+                                data: Array(historicalData.length - 1).fill(null).concat([finalEPS], projectedData),
+                                borderColor: 'rgba(255, 99, 132, 1)',
+                                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                borderDash: [5, 5],
+                                fill: true
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'EPS ($)'
+                                }
+                            }
+                        },
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'EPS Growth Trend and Projections'
+                            }
+                        }
+                    }
+                });
+
+                document.getElementById('results').style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html> 

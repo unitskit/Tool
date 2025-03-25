@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bond Forward Rate Calculator - Fixed Income Tools - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bond Forward Rate Calculator - Fixed Income Tools - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate implied forward rates between different time periods and analyze the term structure of interest rates. Essential for fixed income analysis and interest rate forecasting.">
+    <meta name="keywords" content="forward rate, interest rates, term structure, yield curve, fixed income, bond analysis">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">Bond Forward Rate Calculator</h1>
+                    <p class="tool-description">Calculate implied forward rates between different time periods and analyze the term structure of interest rates. Understand future interest rate expectations and yield curve dynamics.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="forwardRateForm" class="needs-validation" novalidate>
+                        <!-- Rate Inputs -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Interest Rate Inputs</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="spotRate1" class="form-label">First Spot Rate (%)</label>
+                                    <input type="number" class="form-control" id="spotRate1" value="3.00" step="0.01" required>
+                                    <div class="form-text">Enter the spot rate for the first period</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="period1" class="form-label">First Period (years)</label>
+                                    <input type="number" class="form-control" id="period1" value="1" step="0.5" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="spotRate2" class="form-label">Second Spot Rate (%)</label>
+                                    <input type="number" class="form-control" id="spotRate2" value="3.50" step="0.01" required>
+                                    <div class="form-text">Enter the spot rate for the second period</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="period2" class="form-label">Second Period (years)</label>
+                                    <input type="number" class="form-control" id="period2" value="2" step="0.5" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Additional Parameters -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Additional Parameters</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="compoundingFrequency" class="form-label">Compounding Frequency</label>
+                                    <select class="form-select" id="compoundingFrequency">
+                                        <option value="1">Annual</option>
+                                        <option value="2" selected>Semi-annual</option>
+                                        <option value="4">Quarterly</option>
+                                        <option value="12">Monthly</option>
+                                        <option value="365">Daily</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="notionalAmount" class="form-label">Notional Amount</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" id="notionalAmount" value="1000000">
+                                    </div>
+                                    <div class="form-text">Optional: For calculating forward rate agreement (FRA) value</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate Forward Rate</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>Forward Rate Analysis</h3>
+                        
+                        <!-- Forward Rate Results -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Forward Rate Results</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h6>Core Metrics</h6>
+                                        <p>Forward Rate: <strong><span id="forwardRate">0.00</span>%</strong></p>
+                                        <p>Effective Annual Rate: <strong><span id="effectiveRate">0.00</span>%</strong></p>
+                                        <p>Forward Period: <strong><span id="forwardPeriod">0.00</span> years</strong></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6>Additional Metrics</h6>
+                                        <p>Discount Factor: <strong><span id="discountFactor">0.00</span></strong></p>
+                                        <p>Forward Value: <strong>$<span id="forwardValue">0.00</span></strong></p>
+                                        <p>Present Value: <strong>$<span id="presentValue">0.00</span></strong></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Rate Comparison -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Rate Comparison</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Period</th>
+                                                <th>Time (Years)</th>
+                                                <th>Spot Rate</th>
+                                                <th>Forward Rate</th>
+                                                <th>Discount Factor</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="rateTable"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Visual Representation -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Rate Structure Visualization</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="rateChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="bond-yield-calculator.html">Bond Yield Calculator</a></li>
+                            <li class="mb-2"><a href="bond-duration-calculator.html">Bond Duration Calculator</a></li>
+                            <li class="mb-2"><a href="bond-convexity-calculator.html">Bond Convexity Calculator</a></li>
+                            <li class="mb-2"><a href="bond-price-calculator.html">Bond Price Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- How to Use Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter the first spot rate and period</li>
+                            <li class="mb-2">Enter the second spot rate and period</li>
+                            <li class="mb-2">Select compounding frequency</li>
+                            <li class="mb-2">Optionally enter notional amount</li>
+                            <li>Click calculate to view forward rates</li>
+                        </ol>
+                        <div class="mt-3">
+                            <p class="mb-2"><strong>Note:</strong></p>
+                            <ul class="list-unstyled small">
+                                <li>Forward rates represent implied future interest rates</li>
+                                <li>Rates are derived from the term structure of interest rates</li>
+                                <li>Results assume no-arbitrage conditions in efficient markets</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('forwardRateForm');
+            const results = document.getElementById('results');
+            let rateChart = null;
+
+            function formatNumber(value, decimals = 2) {
+                return new Intl.NumberFormat('en-US', {
+                    minimumFractionDigits: decimals,
+                    maximumFractionDigits: decimals
+                }).format(value);
+            }
+
+            function calculateDiscountFactor(rate, time, frequency) {
+                const periodicRate = rate / (100 * frequency);
+                return Math.pow(1 + periodicRate, -time * frequency);
+            }
+
+            function calculateForwardRate(rate1, time1, rate2, time2, frequency) {
+                const r1 = rate1 / 100;
+                const r2 = rate2 / 100;
+                const t1 = time1;
+                const t2 = time2;
+                const n = frequency;
+
+                // Calculate discount factors
+                const df1 = Math.pow(1 + r1/n, -n * t1);
+                const df2 = Math.pow(1 + r2/n, -n * t2);
+                
+                // Calculate forward rate
+                const forwardPeriod = t2 - t1;
+                const forwardRate = Math.pow(df1/df2, 1/(n * forwardPeriod)) - 1;
+                
+                return forwardRate * 100 * n;
+            }
+
+            function calculateEffectiveRate(rate, frequency) {
+                const periodicRate = rate / (100 * frequency);
+                return (Math.pow(1 + periodicRate, frequency) - 1) * 100;
+            }
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get input values
+                const spotRate1 = parseFloat(document.getElementById('spotRate1').value);
+                const period1 = parseFloat(document.getElementById('period1').value);
+                const spotRate2 = parseFloat(document.getElementById('spotRate2').value);
+                const period2 = parseFloat(document.getElementById('period2').value);
+                const frequency = parseInt(document.getElementById('compoundingFrequency').value);
+                const notionalAmount = parseFloat(document.getElementById('notionalAmount').value);
+
+                // Calculate forward rate
+                const forwardRate = calculateForwardRate(spotRate1, period1, spotRate2, period2, frequency);
+                const effectiveRate = calculateEffectiveRate(forwardRate, frequency);
+                const forwardPeriod = period2 - period1;
+                
+                // Calculate discount factors and values
+                const df1 = calculateDiscountFactor(spotRate1, period1, frequency);
+                const df2 = calculateDiscountFactor(spotRate2, period2, frequency);
+                const forwardValue = notionalAmount * (1 + forwardRate/100);
+                const presentValue = forwardValue * df2;
+
+                // Display results
+                document.getElementById('forwardRate').textContent = formatNumber(forwardRate);
+                document.getElementById('effectiveRate').textContent = formatNumber(effectiveRate);
+                document.getElementById('forwardPeriod').textContent = formatNumber(forwardPeriod);
+                document.getElementById('discountFactor').textContent = formatNumber(df2);
+                document.getElementById('forwardValue').textContent = formatNumber(forwardValue);
+                document.getElementById('presentValue').textContent = formatNumber(presentValue);
+
+                // Generate rate table
+                const tableHtml = `
+                    <tr>
+                        <td>1</td>
+                        <td>${formatNumber(period1)}</td>
+                        <td>${formatNumber(spotRate1)}%</td>
+                        <td>-</td>
+                        <td>${formatNumber(df1)}</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>${formatNumber(period2)}</td>
+                        <td>${formatNumber(spotRate2)}%</td>
+                        <td>${formatNumber(forwardRate)}%</td>
+                        <td>${formatNumber(df2)}</td>
+                    </tr>
+                `;
+                document.getElementById('rateTable').innerHTML = tableHtml;
+
+                // Create/update rate chart
+                const ctx = document.getElementById('rateChart').getContext('2d');
+                const periods = [0, period1, period2];
+                const spotRates = [spotRate1, spotRate1, spotRate2];
+                const forwardRates = [null, spotRate1, forwardRate];
+                
+                if (rateChart) {
+                    rateChart.destroy();
+                }
+
+                rateChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: periods.map(p => p.toFixed(1) + ' years'),
+                        datasets: [{
+                            label: 'Spot Rate Curve',
+                            data: spotRates,
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Forward Rate',
+                            data: forwardRates,
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Rate (%)'
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Time (Years)'
+                                }
+                            }
+                        },
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Spot Rate Curve and Forward Rate'
+                            }
+                        }
+                    }
+                });
+
+                results.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yield to Maturity Calculator - Investment Tools - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate bond yield to maturity (YTM) and analyze total returns. Compare different bonds and evaluate investment opportunities.">
+    <meta name="keywords" content="yield to maturity, YTM, bond yield, bond calculator, fixed income, investment analysis">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">Yield to Maturity Calculator</h1>
+                    <p class="tool-description">Calculate the yield to maturity (YTM) for bonds and analyze potential returns. Compare different bonds and evaluate investment opportunities with comprehensive yield analysis.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="ytmForm" class="needs-validation" novalidate>
+                        <!-- Bond Details -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Bond Details</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="faceValue" class="form-label">Face Value ($)</label>
+                                            <input type="number" class="form-control" id="faceValue" value="1000" step="100" required>
+                                            <div class="form-text">Par value of the bond</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="marketPrice" class="form-label">Market Price ($)</label>
+                                            <input type="number" class="form-control" id="marketPrice" value="950" step="0.01" required>
+                                            <div class="form-text">Current market price of the bond</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="couponRate" class="form-label">Coupon Rate (%)</label>
+                                            <input type="number" class="form-control" id="couponRate" value="5" step="0.1" required>
+                                            <div class="form-text">Annual coupon rate</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="yearsToMaturity" class="form-label">Years to Maturity</label>
+                                            <input type="number" class="form-control" id="yearsToMaturity" value="10" step="0.5" required>
+                                            <div class="form-text">Time until bond matures</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="paymentsPerYear" class="form-label">Payments Per Year</label>
+                                            <select class="form-select" id="paymentsPerYear" required>
+                                                <option value="1">Annual</option>
+                                                <option value="2" selected>Semi-annual</option>
+                                                <option value="4">Quarterly</option>
+                                                <option value="12">Monthly</option>
+                                            </select>
+                                            <div class="form-text">Frequency of coupon payments</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="taxRate" class="form-label">Tax Rate (%)</label>
+                                            <input type="number" class="form-control" id="taxRate" value="25" step="1" required>
+                                            <div class="form-text">Marginal tax rate for interest income</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Market Conditions -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Market Conditions</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="inflationRate" class="form-label">Inflation Rate (%)</label>
+                                            <input type="number" class="form-control" id="inflationRate" value="2.5" step="0.1" required>
+                                            <div class="form-text">Expected annual inflation rate</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="riskFreeRate" class="form-label">Risk-Free Rate (%)</label>
+                                            <input type="number" class="form-control" id="riskFreeRate" value="3" step="0.1" required>
+                                            <div class="form-text">Current risk-free interest rate</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate YTM</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>Yield Analysis Results</h3>
+                        
+                        <!-- Yield Metrics -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Yield Metrics</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Yield to Maturity (YTM)</label>
+                                            <p id="ytm" class="h4">0.00%</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Current Yield</label>
+                                            <p id="currentYield" class="h4">0.00%</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">After-Tax YTM</label>
+                                            <p id="afterTaxYtm" class="h4">0.00%</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Real YTM</label>
+                                            <p id="realYtm" class="h4">0.00%</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Risk Premium</label>
+                                            <p id="riskPremium" class="h4">0.00%</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Bond Status</label>
+                                            <p id="bondStatus" class="h4">-</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Cash Flow Analysis -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Cash Flow Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Period</th>
+                                                <th>Payment Date</th>
+                                                <th>Coupon Payment</th>
+                                                <th>Present Value</th>
+                                                <th>After-Tax Payment</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="cashFlowTable">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Yield Comparison Chart -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Yield Comparison</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="yieldComparisonChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="bond-price-calculator.html">Bond Price Calculator</a></li>
+                            <li class="mb-2"><a href="bond-duration-calculator.html">Bond Duration Calculator</a></li>
+                            <li class="mb-2"><a href="bond-convexity-calculator.html">Bond Convexity Calculator</a></li>
+                            <li class="mb-2"><a href="bond-yield-to-call-calculator.html">Yield to Call Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- How to Use Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter bond face value and market price</li>
+                            <li class="mb-2">Input coupon rate and years to maturity</li>
+                            <li class="mb-2">Select payment frequency</li>
+                            <li class="mb-2">Specify tax rate and market conditions</li>
+                            <li>Click Calculate to see detailed analysis</li>
+                        </ol>
+                        <div class="mt-3">
+                            <p class="mb-2"><strong>Key Terms:</strong></p>
+                            <ul class="list-unstyled small">
+                                <li>• YTM: Total return if held to maturity</li>
+                                <li>• Current Yield: Annual coupon/market price</li>
+                                <li>• Real YTM: Return adjusted for inflation</li>
+                                <li>• Risk Premium: Spread over risk-free rate</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('ytmForm');
+            const results = document.getElementById('results');
+            let yieldComparisonChart = null;
+
+            function calculateYTM(faceValue, marketPrice, couponRate, yearsToMaturity, paymentsPerYear) {
+                const periodicCoupon = (faceValue * couponRate / 100) / paymentsPerYear;
+                const totalPeriods = yearsToMaturity * paymentsPerYear;
+                
+                // Newton-Raphson method to find YTM
+                let ytm = couponRate / 100; // Initial guess
+                const tolerance = 0.0000001;
+                let maxIterations = 100;
+                
+                while (maxIterations > 0) {
+                    let price = 0;
+                    let derivative = 0;
+                    const r = ytm / paymentsPerYear;
+                    
+                    for (let i = 1; i <= totalPeriods; i++) {
+                        price += periodicCoupon / Math.pow(1 + r, i);
+                        derivative -= i * periodicCoupon / Math.pow(1 + r, i + 1);
+                    }
+                    price += faceValue / Math.pow(1 + r, totalPeriods);
+                    derivative -= totalPeriods * faceValue / Math.pow(1 + r, totalPeriods + 1);
+                    
+                    const diff = price - marketPrice;
+                    if (Math.abs(diff) < tolerance) {
+                        break;
+                    }
+                    
+                    ytm = ytm - diff / derivative;
+                    maxIterations--;
+                }
+                
+                return ytm;
+            }
+
+            function calculateCurrentYield(marketPrice, couponRate, faceValue) {
+                return (faceValue * couponRate / 100) / marketPrice * 100;
+            }
+
+            function calculateAfterTaxYTM(ytm, taxRate) {
+                return ytm * (1 - taxRate / 100);
+            }
+
+            function calculateRealYTM(ytm, inflationRate) {
+                return ((1 + ytm) / (1 + inflationRate / 100) - 1) * 100;
+            }
+
+            function getBondStatus(marketPrice, faceValue) {
+                if (marketPrice > faceValue) return 'Premium Bond';
+                if (marketPrice < faceValue) return 'Discount Bond';
+                return 'Par Bond';
+            }
+
+            function updateCashFlowTable(inputs, ytm) {
+                const tbody = document.getElementById('cashFlowTable');
+                const periodicRate = ytm / inputs.paymentsPerYear;
+                const periodicCoupon = (inputs.faceValue * inputs.couponRate / 100) / inputs.paymentsPerYear;
+                const totalPeriods = inputs.yearsToMaturity * inputs.paymentsPerYear;
+                const afterTaxRate = 1 - inputs.taxRate / 100;
+                
+                let html = '';
+                const today = new Date();
+                
+                for (let i = 1; i <= totalPeriods; i++) {
+                    const paymentDate = new Date(today);
+                    paymentDate.setMonth(today.getMonth() + Math.floor(12 * i / inputs.paymentsPerYear));
+                    
+                    const payment = i === totalPeriods ? periodicCoupon + inputs.faceValue : periodicCoupon;
+                    const pv = payment / Math.pow(1 + periodicRate, i);
+                    const afterTaxPayment = periodicCoupon * afterTaxRate + (i === totalPeriods ? inputs.faceValue : 0);
+                    
+                    html += `
+                        <tr>
+                            <td>${i}</td>
+                            <td>${paymentDate.toLocaleDateString()}</td>
+                            <td>${formatCurrency(payment)}</td>
+                            <td>${formatCurrency(pv)}</td>
+                            <td>${formatCurrency(afterTaxPayment)}</td>
+                        </tr>
+                    `;
+                }
+                
+                tbody.innerHTML = html;
+            }
+
+            function updateYieldComparisonChart(inputs, ytm) {
+                const ctx = document.getElementById('yieldComparisonChart').getContext('2d');
+                
+                const yields = [
+                    {
+                        label: 'YTM',
+                        value: ytm * 100
+                    },
+                    {
+                        label: 'Current Yield',
+                        value: calculateCurrentYield(inputs.marketPrice, inputs.couponRate, inputs.faceValue)
+                    },
+                    {
+                        label: 'Coupon Rate',
+                        value: inputs.couponRate
+                    },
+                    {
+                        label: 'Risk-Free Rate',
+                        value: inputs.riskFreeRate
+                    }
+                ];
+                
+                if (yieldComparisonChart) {
+                    yieldComparisonChart.destroy();
+                }
+                
+                yieldComparisonChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: yields.map(y => y.label),
+                        datasets: [{
+                            label: 'Yield Comparison (%)',
+                            data: yields.map(y => y.value),
+                            backgroundColor: [
+                                'rgba(54, 162, 235, 0.5)',
+                                'rgba(255, 99, 132, 0.5)',
+                                'rgba(75, 192, 192, 0.5)',
+                                'rgba(255, 206, 86, 0.5)'
+                            ],
+                            borderColor: [
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(255, 206, 86, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Yield (%)'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            function formatCurrency(value) {
+                return new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }).format(value);
+            }
+
+            function formatPercent(value) {
+                return new Intl.NumberFormat('en-US', {
+                    style: 'percent',
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }).format(value / 100);
+            }
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const inputs = {
+                    faceValue: parseFloat(document.getElementById('faceValue').value),
+                    marketPrice: parseFloat(document.getElementById('marketPrice').value),
+                    couponRate: parseFloat(document.getElementById('couponRate').value),
+                    yearsToMaturity: parseFloat(document.getElementById('yearsToMaturity').value),
+                    paymentsPerYear: parseInt(document.getElementById('paymentsPerYear').value),
+                    taxRate: parseFloat(document.getElementById('taxRate').value),
+                    inflationRate: parseFloat(document.getElementById('inflationRate').value),
+                    riskFreeRate: parseFloat(document.getElementById('riskFreeRate').value)
+                };
+                
+                const ytm = calculateYTM(inputs.faceValue, inputs.marketPrice, inputs.couponRate, 
+                    inputs.yearsToMaturity, inputs.paymentsPerYear);
+                const currentYield = calculateCurrentYield(inputs.marketPrice, inputs.couponRate, inputs.faceValue);
+                const afterTaxYtm = calculateAfterTaxYTM(ytm, inputs.taxRate);
+                const realYtm = calculateRealYTM(ytm, inputs.inflationRate);
+                const riskPremium = ytm * 100 - inputs.riskFreeRate;
+                const bondStatus = getBondStatus(inputs.marketPrice, inputs.faceValue);
+                
+                // Update display
+                document.getElementById('ytm').textContent = formatPercent(ytm * 100);
+                document.getElementById('currentYield').textContent = formatPercent(currentYield);
+                document.getElementById('afterTaxYtm').textContent = formatPercent(afterTaxYtm * 100);
+                document.getElementById('realYtm').textContent = formatPercent(realYtm);
+                document.getElementById('riskPremium').textContent = formatPercent(riskPremium);
+                document.getElementById('bondStatus').textContent = bondStatus;
+                
+                // Update cash flow table and chart
+                updateCashFlowTable(inputs, ytm);
+                updateYieldComparisonChart(inputs, ytm);
+                
+                results.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html> 

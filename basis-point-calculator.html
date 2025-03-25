@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basis Point Calculator - Convert BPS to Percentage - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Convert between basis points (BPS) and percentages. Calculate changes in interest rates, yields, and financial metrics using basis points.">
+    <meta name="keywords" content="basis point calculator, BPS calculator, percentage conversion, interest rate, yield spread">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">Basis Point Calculator</h1>
+                    <p class="tool-description">Convert between basis points (BPS) and percentages, and calculate value changes based on basis point adjustments.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="bpsForm" class="needs-validation" novalidate>
+                        <!-- Conversion Section -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Basis Point Conversion</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="basisPoints" class="form-label">Basis Points (BPS)</label>
+                                            <input type="number" class="form-control" id="basisPoints" step="1">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="percentage" class="form-label">Percentage (%)</label>
+                                            <input type="number" class="form-control" id="percentage" step="0.01">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Value Change Calculator -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Value Change Calculator</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="initialValue" class="form-label">Initial Value ($)</label>
+                                    <input type="number" class="form-control" id="initialValue" min="0" step="0.01">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="bpsChange" class="form-label">Basis Point Change</label>
+                                    <input type="number" class="form-control" id="bpsChange" step="1">
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>Results</h3>
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5>Conversion Results</h5>
+                                        <p>Basis Points: <strong><span id="resultBPS">0</span> BPS</strong></p>
+                                        <p>Percentage: <strong><span id="resultPercentage">0</span>%</strong></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5>Value Change Results</h5>
+                                        <p>Initial Value: <strong>$<span id="resultInitialValue">0</span></strong></p>
+                                        <p>Value Change: <strong>$<span id="valueChange">0</span></strong></p>
+                                        <p>Final Value: <strong>$<span id="finalValue">0</span></strong></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Common BPS Reference -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Common BPS References</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Basis Points (BPS)</th>
+                                                <th>Percentage (%)</th>
+                                                <th>Common Usage</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>100 BPS</td>
+                                                <td>1.00%</td>
+                                                <td>Full percentage point</td>
+                                            </tr>
+                                            <tr>
+                                                <td>50 BPS</td>
+                                                <td>0.50%</td>
+                                                <td>Half percentage point</td>
+                                            </tr>
+                                            <tr>
+                                                <td>25 BPS</td>
+                                                <td>0.25%</td>
+                                                <td>Quarter percentage point</td>
+                                            </tr>
+                                            <tr>
+                                                <td>10 BPS</td>
+                                                <td>0.10%</td>
+                                                <td>Tenth of a percent</td>
+                                            </tr>
+                                            <tr>
+                                                <td>1 BPS</td>
+                                                <td>0.01%</td>
+                                                <td>Smallest common increment</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="interest-rate-calculator.html">Interest Rate Calculator</a></li>
+                            <li class="mb-2"><a href="yield-calculator.html">Yield Calculator</a></li>
+                            <li class="mb-2"><a href="percentage-calculator.html">Percentage Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- How to Use Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter either basis points or percentage for conversion</li>
+                            <li class="mb-2">For value changes, enter the initial value</li>
+                            <li class="mb-2">Input the basis point change (positive or negative)</li>
+                            <li>Click calculate to see results</li>
+                        </ol>
+                        <div class="mt-3">
+                            <p class="mb-0"><strong>Note:</strong> 1 basis point (BPS) = 0.01%</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('bpsForm');
+            const results = document.getElementById('results');
+            const bpsInput = document.getElementById('basisPoints');
+            const percentageInput = document.getElementById('percentage');
+
+            // Convert BPS to percentage
+            function bpsToPercentage(bps) {
+                return bps / 100;
+            }
+
+            // Convert percentage to BPS
+            function percentageToBPS(percentage) {
+                return percentage * 100;
+            }
+
+            // Handle BPS input
+            bpsInput.addEventListener('input', function() {
+                if (this.value) {
+                    const percentage = bpsToPercentage(parseFloat(this.value));
+                    percentageInput.value = percentage.toFixed(4);
+                } else {
+                    percentageInput.value = '';
+                }
+            });
+
+            // Handle percentage input
+            percentageInput.addEventListener('input', function() {
+                if (this.value) {
+                    const bps = percentageToBPS(parseFloat(this.value));
+                    bpsInput.value = bps.toFixed(0);
+                } else {
+                    bpsInput.value = '';
+                }
+            });
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get input values
+                const bps = parseFloat(bpsInput.value) || 0;
+                const percentage = parseFloat(percentageInput.value) || 0;
+                const initialValue = parseFloat(document.getElementById('initialValue').value) || 0;
+                const bpsChange = parseFloat(document.getElementById('bpsChange').value) || 0;
+
+                // Calculate value changes
+                const changePercentage = bpsChange / 10000; // Convert BPS to decimal
+                const valueChange = initialValue * changePercentage;
+                const finalValue = initialValue + valueChange;
+
+                // Display results
+                document.getElementById('resultBPS').textContent = bps.toFixed(0);
+                document.getElementById('resultPercentage').textContent = percentage.toFixed(4);
+                document.getElementById('resultInitialValue').textContent = initialValue.toFixed(2);
+                document.getElementById('valueChange').textContent = valueChange.toFixed(2);
+                document.getElementById('finalValue').textContent = finalValue.toFixed(2);
+
+                results.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html> 

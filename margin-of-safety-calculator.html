@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Margin of Safety Calculator - Investment Tools - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate the margin of safety for investments using multiple valuation methods. Determine the safety buffer between current price and intrinsic value to make informed investment decisions.">
+    <meta name="keywords" content="margin of safety, investment safety, value investing, stock valuation, intrinsic value, investment analysis, Benjamin Graham">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">Margin of Safety Calculator</h1>
+                    <p class="tool-description">Calculate the margin of safety for your investments using multiple valuation methods. Determine the safety buffer between current price and intrinsic value to make informed investment decisions.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="marginOfSafetyForm" class="needs-validation" novalidate>
+                        <!-- Current Market Data -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Current Market Data</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="currentPrice" class="form-label">Current Stock Price ($)</label>
+                                            <input type="number" class="form-control" id="currentPrice" value="100" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="marketCap" class="form-label">Market Cap ($M)</label>
+                                            <input type="number" class="form-control" id="marketCap" value="100000" step="0.01" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="sharesOutstanding" class="form-label">Shares Outstanding (M)</label>
+                                            <input type="number" class="form-control" id="sharesOutstanding" value="1000" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="beta" class="form-label">Beta</label>
+                                            <input type="number" class="form-control" id="beta" value="1.2" step="0.01" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Intrinsic Value Components -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Intrinsic Value Components</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="bookValue" class="form-label">Book Value per Share ($)</label>
+                                            <input type="number" class="form-control" id="bookValue" value="50" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="earningsPerShare" class="form-label">Earnings per Share ($)</label>
+                                            <input type="number" class="form-control" id="earningsPerShare" value="5" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="dividendPerShare" class="form-label">Dividend per Share ($)</label>
+                                            <input type="number" class="form-control" id="dividendPerShare" value="2" step="0.01" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="growthRate" class="form-label">Growth Rate (%)</label>
+                                            <input type="number" class="form-control" id="growthRate" value="5" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="peRatio" class="form-label">P/E Ratio</label>
+                                            <input type="number" class="form-control" id="peRatio" value="20" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="pbRatio" class="form-label">P/B Ratio</label>
+                                            <input type="number" class="form-control" id="pbRatio" value="2" step="0.01" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Risk Factors -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Risk Factors</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="debtToEquity" class="form-label">Debt to Equity Ratio</label>
+                                            <input type="number" class="form-control" id="debtToEquity" value="1.5" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="currentRatio" class="form-label">Current Ratio</label>
+                                            <input type="number" class="form-control" id="currentRatio" value="1.8" step="0.01" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="interestCoverage" class="form-label">Interest Coverage Ratio</label>
+                                            <input type="number" class="form-control" id="interestCoverage" value="4" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="operatingMargin" class="form-label">Operating Margin (%)</label>
+                                            <input type="number" class="form-control" id="operatingMargin" value="15" step="0.01" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate Margin of Safety</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>Margin of Safety Analysis</h3>
+                        
+                        <!-- Overall Safety Score -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Overall Safety Score</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Price-Based Margin of Safety</label>
+                                            <p id="priceMargin" class="h4">0%</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Value-Based Margin of Safety</label>
+                                            <p id="valueMargin" class="h4">0%</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Risk-Adjusted Safety Score</label>
+                                            <p id="riskScore" class="h4">0/100</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Investment Recommendation</label>
+                                            <p id="recommendation" class="h4">-</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Valuation Metrics -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Valuation Metrics</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Intrinsic Value per Share</label>
+                                            <p id="intrinsicValue" class="h4">$0.00</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Fair P/E Ratio</label>
+                                            <p id="fairPE" class="h4">0.00</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Fair P/B Ratio</label>
+                                            <p id="fairPB" class="h4">0.00</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Risk Premium</label>
+                                            <p id="riskPremium" class="h4">0%</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Safety Analysis Chart -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Safety Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="safetyChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Risk Analysis Chart -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Risk Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="riskChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="intrinsic-value-calculator.html">Intrinsic Value Calculator</a></li>
+                            <li class="mb-2"><a href="pe-ratio-calculator.html">P/E Ratio Calculator</a></li>
+                            <li class="mb-2"><a href="pb-ratio-calculator.html">P/B Ratio Calculator</a></li>
+                            <li class="mb-2"><a href="risk-analysis-calculator.html">Risk Analysis Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Formula Reference -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Formula Reference</h5>
+                    </div>
+                    <div class="card-body">
+                        <h6>Price-Based Margin of Safety</h6>
+                        <p class="small mb-3">MOS = (IV - CP) / IV × 100%</p>
+                        
+                        <h6>Value-Based Margin of Safety</h6>
+                        <p class="small mb-3">V-MOS = (BV + 10×EPS) / CP × 100%</p>
+                        
+                        <h6>Risk Score Components</h6>
+                        <ul class="small mb-0">
+                            <li>Financial Strength (30%)</li>
+                            <li>Valuation (30%)</li>
+                            <li>Growth (20%)</li>
+                            <li>Market Position (20%)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Usage Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter current market data</li>
+                            <li class="mb-2">Input intrinsic value components</li>
+                            <li class="mb-2">Add risk factor metrics</li>
+                            <li class="mb-2">Click "Calculate" to analyze safety margin</li>
+                            <li class="mb-2">Review comprehensive safety analysis</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('marginOfSafetyForm');
+            const results = document.getElementById('results');
+            let safetyChart = null;
+            let riskChart = null;
+
+            function calculateIntrinsicValue(bookValue, earningsPerShare) {
+                // Benjamin Graham's formula
+                return bookValue + (earningsPerShare * 10);
+            }
+
+            function calculatePriceMarginOfSafety(intrinsicValue, currentPrice) {
+                return ((intrinsicValue - currentPrice) / intrinsicValue) * 100;
+            }
+
+            function calculateValueMarginOfSafety(bookValue, earningsPerShare, currentPrice) {
+                return ((bookValue + (earningsPerShare * 10)) / currentPrice) * 100;
+            }
+
+            function calculateRiskScore(debtToEquity, currentRatio, interestCoverage, operatingMargin) {
+                let score = 100;
+                
+                // Financial Strength (30%)
+                if (debtToEquity > 2) score -= 15;
+                if (currentRatio < 1.5) score -= 15;
+                
+                // Interest Coverage (20%)
+                if (interestCoverage < 3) score -= 20;
+                
+                // Operating Margin (20%)
+                if (operatingMargin < 10) score -= 20;
+                
+                // Additional Risk Factors (30%)
+                if (beta > 1.5) score -= 15;
+                if (peRatio > 25) score -= 15;
+                
+                return Math.max(0, Math.min(100, score));
+            }
+
+            function updateSafetyChart(priceMargin, valueMargin, riskScore) {
+                const ctx = document.getElementById('safetyChart').getContext('2d');
+                
+                if (safetyChart) safetyChart.destroy();
+
+                safetyChart = new Chart(ctx, {
+                    type: 'radar',
+                    data: {
+                        labels: ['Price Safety', 'Value Safety', 'Risk Score'],
+                        datasets: [{
+                            label: 'Safety Metrics',
+                            data: [priceMargin, valueMargin, riskScore],
+                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            r: {
+                                beginAtZero: true,
+                                max: 100
+                            }
+                        }
+                    }
+                });
+            }
+
+            function updateRiskChart(debtToEquity, currentRatio, interestCoverage, operatingMargin) {
+                const ctx = document.getElementById('riskChart').getContext('2d');
+                
+                if (riskChart) riskChart.destroy();
+
+                riskChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Debt/Equity', 'Current Ratio', 'Interest Coverage', 'Operating Margin'],
+                        datasets: [{
+                            label: 'Risk Metrics',
+                            data: [debtToEquity, currentRatio, interestCoverage, operatingMargin],
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.5)',
+                                'rgba(54, 162, 235, 0.5)',
+                                'rgba(75, 192, 192, 0.5)',
+                                'rgba(255, 206, 86, 0.5)'
+                            ],
+                            borderColor: [
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(255, 206, 86, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get input values
+                const currentPrice = parseFloat(document.getElementById('currentPrice').value);
+                const bookValue = parseFloat(document.getElementById('bookValue').value);
+                const earningsPerShare = parseFloat(document.getElementById('earningsPerShare').value);
+                const dividendPerShare = parseFloat(document.getElementById('dividendPerShare').value);
+                const growthRate = parseFloat(document.getElementById('growthRate').value);
+                const peRatio = parseFloat(document.getElementById('peRatio').value);
+                const pbRatio = parseFloat(document.getElementById('pbRatio').value);
+                const debtToEquity = parseFloat(document.getElementById('debtToEquity').value);
+                const currentRatio = parseFloat(document.getElementById('currentRatio').value);
+                const interestCoverage = parseFloat(document.getElementById('interestCoverage').value);
+                const operatingMargin = parseFloat(document.getElementById('operatingMargin').value);
+                const beta = parseFloat(document.getElementById('beta').value);
+
+                // Calculate intrinsic value and margins
+                const intrinsicValue = calculateIntrinsicValue(bookValue, earningsPerShare);
+                const priceMargin = calculatePriceMarginOfSafety(intrinsicValue, currentPrice);
+                const valueMargin = calculateValueMarginOfSafety(bookValue, earningsPerShare, currentPrice);
+                const riskScore = calculateRiskScore(debtToEquity, currentRatio, interestCoverage, operatingMargin);
+
+                // Calculate fair ratios
+                const fairPE = 15; // Conservative P/E ratio
+                const fairPB = 1.5; // Conservative P/B ratio
+                const riskPremium = (beta * 5); // Market risk premium
+
+                // Update results
+                document.getElementById('priceMargin').textContent = priceMargin.toFixed(1) + '%';
+                document.getElementById('valueMargin').textContent = valueMargin.toFixed(1) + '%';
+                document.getElementById('riskScore').textContent = riskScore.toFixed(0) + '/100';
+                document.getElementById('intrinsicValue').textContent = '$' + intrinsicValue.toFixed(2);
+                document.getElementById('fairPE').textContent = fairPE.toFixed(2);
+                document.getElementById('fairPB').textContent = fairPB.toFixed(2);
+                document.getElementById('riskPremium').textContent = riskPremium.toFixed(1) + '%';
+
+                // Update recommendation
+                const recommendation = document.getElementById('recommendation');
+                if (priceMargin > 30 && riskScore > 70) {
+                    recommendation.textContent = 'Strong Buy';
+                    recommendation.className = 'h4 text-success';
+                } else if (priceMargin > 20 && riskScore > 60) {
+                    recommendation.textContent = 'Buy';
+                    recommendation.className = 'h4 text-success';
+                } else if (priceMargin > 10 && riskScore > 50) {
+                    recommendation.textContent = 'Hold';
+                    recommendation.className = 'h4 text-warning';
+                } else {
+                    recommendation.textContent = 'Sell';
+                    recommendation.className = 'h4 text-danger';
+                }
+
+                // Update charts
+                updateSafetyChart(priceMargin, valueMargin, riskScore);
+                updateRiskChart(debtToEquity, currentRatio, interestCoverage, operatingMargin);
+                
+                // Show results
+                results.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html> 

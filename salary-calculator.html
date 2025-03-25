@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salary Calculator - Convert Pay Rates - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Convert between hourly, weekly, monthly, and annual salary rates. Calculate take-home pay and compare different pay structures.">
+    <meta name="keywords" content="salary calculator, wage converter, pay rate calculator, income calculator, payroll calculator">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">Salary Calculator</h1>
+                    <p class="tool-description">Convert between different salary rates and calculate take-home pay. Compare various pay structures to understand your total compensation.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="salaryForm" class="needs-validation" novalidate>
+                        <!-- Pay Rate Input -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Enter Pay Rate</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="payAmount" class="form-label">Amount</label>
+                                        <input type="number" class="form-control" id="payAmount" required min="0" step="0.01">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="payType" class="form-label">Pay Period</label>
+                                        <select class="form-select" id="payType" required>
+                                            <option value="hourly">Hourly</option>
+                                            <option value="daily">Daily</option>
+                                            <option value="weekly">Weekly</option>
+                                            <option value="biweekly">Bi-weekly</option>
+                                            <option value="monthly">Monthly</option>
+                                            <option value="annual">Annual</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Work Schedule -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Work Schedule</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="hoursPerDay" class="form-label">Hours per Day</label>
+                                            <input type="number" class="form-control" id="hoursPerDay" value="8" min="0" max="24" step="0.5">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="daysPerWeek" class="form-label">Days per Week</label>
+                                            <input type="number" class="form-control" id="daysPerWeek" value="5" min="1" max="7" step="0.5">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="vacationDays" class="form-label">Vacation Days per Year</label>
+                                            <input type="number" class="form-control" id="vacationDays" value="10" min="0" step="1">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="holidays" class="form-label">Paid Holidays per Year</label>
+                                            <input type="number" class="form-control" id="holidays" value="10" min="0" step="1">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Deductions -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Deductions (Optional)</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="taxRate" class="form-label">Tax Rate (%)</label>
+                                            <input type="number" class="form-control" id="taxRate" value="20" min="0" max="100" step="0.1">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="otherDeductions" class="form-label">Other Deductions (%)</label>
+                                            <input type="number" class="form-control" id="otherDeductions" value="0" min="0" max="100" step="0.1">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate Salary</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>Salary Breakdown</h3>
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5>Pay Rates</h5>
+                                        <p>Hourly Rate: <strong>$<span id="hourlyRate">0</span></strong></p>
+                                        <p>Daily Rate: <strong>$<span id="dailyRate">0</span></strong></p>
+                                        <p>Weekly Rate: <strong>$<span id="weeklyRate">0</span></strong></p>
+                                        <p>Monthly Rate: <strong>$<span id="monthlyRate">0</span></strong></p>
+                                        <p>Annual Salary: <strong>$<span id="annualRate">0</span></strong></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5>Take-Home Pay</h5>
+                                        <p>Gross Annual: <strong>$<span id="grossAnnual">0</span></strong></p>
+                                        <p>Total Deductions: <strong>$<span id="totalDeductions">0</span></strong></p>
+                                        <p>Net Annual: <strong>$<span id="netAnnual">0</span></strong></p>
+                                        <p>Net Monthly: <strong>$<span id="netMonthly">0</span></strong></p>
+                                        <p>Net Weekly: <strong>$<span id="netWeekly">0</span></strong></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="overtime-calculator.html">Overtime Calculator</a></li>
+                            <li class="mb-2"><a href="labor-cost-calculator.html">Labor Cost Calculator</a></li>
+                            <li class="mb-2"><a href="productivity-calculator.html">Productivity Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- How to Use Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter your pay rate and select period</li>
+                            <li class="mb-2">Adjust work schedule if needed</li>
+                            <li class="mb-2">Add vacation days and holidays</li>
+                            <li class="mb-2">Input tax rate and deductions</li>
+                            <li>Click calculate to see salary breakdown</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('salaryForm');
+            const results = document.getElementById('results');
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get input values
+                const payAmount = parseFloat(document.getElementById('payAmount').value);
+                const payType = document.getElementById('payType').value;
+                const hoursPerDay = parseFloat(document.getElementById('hoursPerDay').value);
+                const daysPerWeek = parseFloat(document.getElementById('daysPerWeek').value);
+                const vacationDays = parseInt(document.getElementById('vacationDays').value);
+                const holidays = parseInt(document.getElementById('holidays').value);
+                const taxRate = parseFloat(document.getElementById('taxRate').value) / 100;
+                const otherDeductions = parseFloat(document.getElementById('otherDeductions').value) / 100;
+
+                // Calculate working days per year
+                const totalWorkingDays = (52 * daysPerWeek) - vacationDays - holidays;
+                const totalWorkingHours = totalWorkingDays * hoursPerDay;
+
+                // Calculate hourly rate based on pay type
+                let hourlyRate;
+                switch(payType) {
+                    case 'hourly':
+                        hourlyRate = payAmount;
+                        break;
+                    case 'daily':
+                        hourlyRate = payAmount / hoursPerDay;
+                        break;
+                    case 'weekly':
+                        hourlyRate = payAmount / (hoursPerDay * daysPerWeek);
+                        break;
+                    case 'biweekly':
+                        hourlyRate = payAmount / (hoursPerDay * daysPerWeek * 2);
+                        break;
+                    case 'monthly':
+                        hourlyRate = (payAmount * 12) / totalWorkingHours;
+                        break;
+                    case 'annual':
+                        hourlyRate = payAmount / totalWorkingHours;
+                        break;
+                }
+
+                // Calculate other rates
+                const dailyRate = hourlyRate * hoursPerDay;
+                const weeklyRate = dailyRate * daysPerWeek;
+                const monthlyRate = (weeklyRate * 52) / 12;
+                const annualRate = monthlyRate * 12;
+
+                // Calculate take-home pay
+                const totalDeductionRate = taxRate + otherDeductions;
+                const deductionAmount = annualRate * totalDeductionRate;
+                const netAnnual = annualRate - deductionAmount;
+                const netMonthly = netAnnual / 12;
+                const netWeekly = netAnnual / 52;
+
+                // Display results
+                document.getElementById('hourlyRate').textContent = hourlyRate.toFixed(2);
+                document.getElementById('dailyRate').textContent = dailyRate.toFixed(2);
+                document.getElementById('weeklyRate').textContent = weeklyRate.toFixed(2);
+                document.getElementById('monthlyRate').textContent = monthlyRate.toFixed(2);
+                document.getElementById('annualRate').textContent = annualRate.toFixed(2);
+                
+                document.getElementById('grossAnnual').textContent = annualRate.toFixed(2);
+                document.getElementById('totalDeductions').textContent = deductionAmount.toFixed(2);
+                document.getElementById('netAnnual').textContent = netAnnual.toFixed(2);
+                document.getElementById('netMonthly').textContent = netMonthly.toFixed(2);
+                document.getElementById('netWeekly').textContent = netWeekly.toFixed(2);
+
+                results.style.display = 'block';
+            });
+
+            // Form validation
+            form.addEventListener('input', function(e) {
+                if (e.target.type === 'number') {
+                    const value = parseFloat(e.target.value);
+                    const min = parseFloat(e.target.min);
+                    const max = parseFloat(e.target.max);
+
+                    if (!isNaN(min) && value < min) {
+                        e.target.value = min;
+                    }
+                    if (!isNaN(max) && value > max) {
+                        e.target.value = max;
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

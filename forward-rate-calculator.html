@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forward Rate Calculator - Investment Tools - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate forward rates in foreign exchange and fixed income markets. Features comprehensive analysis including interest rate differentials, time value of money, and market implications.">
+    <meta name="keywords" content="forward rate, spot rate, interest rate differential, forex, fixed income, time value of money, market analysis">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">Forward Rate Calculator</h1>
+                    <p class="tool-description">Calculate forward rates in foreign exchange and fixed income markets. Features comprehensive analysis including interest rate differentials, time value of money, and market implications.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="forwardRateForm" class="needs-validation" novalidate>
+                        <!-- Market Parameters -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Market Parameters</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="marketType" class="form-label">Market Type</label>
+                                            <select class="form-select" id="marketType" required>
+                                                <option value="forex">Foreign Exchange</option>
+                                                <option value="fixed_income">Fixed Income</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="spotRate" class="form-label">Spot Rate</label>
+                                            <input type="number" class="form-control" id="spotRate" value="1.0000" step="0.0001" required>
+                                            <div class="form-text">Current spot rate or price</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="timePeriod" class="form-label">Time Period (Days)</label>
+                                            <input type="number" class="form-control" id="timePeriod" value="90" step="1" required>
+                                            <div class="form-text">Number of days until forward contract maturity</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="dayCount" class="form-label">Day Count Convention</label>
+                                            <select class="form-select" id="dayCount" required>
+                                                <option value="360">360/360</option>
+                                                <option value="365">365/365</option>
+                                                <option value="actual">Actual/Actual</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Interest Rates -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Interest Rates</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="domesticRate" class="form-label">Domestic Rate (%)</label>
+                                            <input type="number" class="form-control" id="domesticRate" value="5.00" step="0.01" required>
+                                            <div class="form-text">Interest rate for domestic currency or security</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="foreignRate" class="form-label">Foreign Rate (%)</label>
+                                            <input type="number" class="form-control" id="foreignRate" value="3.00" step="0.01" required>
+                                            <div class="form-text">Interest rate for foreign currency or security</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate Forward Rate</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>Forward Rate Analysis Results</h3>
+                        
+                        <!-- Rate Metrics -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Rate Metrics</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Forward Rate</label>
+                                            <p id="forwardRate" class="h4">0.0000</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Forward Premium/Discount (%)</label>
+                                            <p id="forwardPremium" class="h4">0.00%</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Interest Rate Differential (%)</label>
+                                            <p id="rateDifferential" class="h4">0.00%</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Status</label>
+                                            <p id="rateStatus" class="h4">Neutral</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Analysis Chart -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Rate Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="rateChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Analysis Table -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Detailed Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Metric</th>
+                                                <th>Value</th>
+                                                <th>Status</th>
+                                                <th>Recommendation</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="analysisTable">
+                                            <!-- Analysis rows will be populated by JavaScript -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="forward-premium-calculator.html">Forward Premium Calculator</a></li>
+                            <li class="mb-2"><a href="currency-converter.html">Currency Converter</a></li>
+                            <li class="mb-2"><a href="interest-rate-differential-calculator.html">Interest Rate Differential Calculator</a></li>
+                            <li class="mb-2"><a href="cross-rate-calculator.html">Cross Rate Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Formula Reference -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Forward Rate Formula</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="mb-2">Forward Rate:</p>
+                        <p class="text-monospace">F = S × (1 + r_d × t) / (1 + r_f × t)</p>
+                        <p class="mb-2">Where:</p>
+                        <ul class="list-unstyled small">
+                            <li>F = Forward Rate</li>
+                            <li>S = Spot Rate</li>
+                            <li>r_d = Domestic Interest Rate</li>
+                            <li>r_f = Foreign Interest Rate</li>
+                            <li>t = Time Period (in years)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- How to Use Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Select market type (Forex or Fixed Income)</li>
+                            <li class="mb-2">Enter spot rate and time period</li>
+                            <li class="mb-2">Choose day count convention</li>
+                            <li class="mb-2">Input domestic and foreign interest rates</li>
+                            <li>Review forward rate analysis and recommendations</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('forwardRateForm');
+            const results = document.getElementById('results');
+            let rateChart = null;
+
+            function calculateForwardRate(inputs) {
+                const spotRate = inputs.spotRate;
+                const domesticRate = inputs.domesticRate / 100;
+                const foreignRate = inputs.foreignRate / 100;
+                const days = inputs.timePeriod;
+                const dayCount = inputs.dayCount === 'actual' ? 365 : parseInt(inputs.dayCount);
+                const timePeriod = days / dayCount;
+
+                // Calculate forward rate
+                const forwardRate = spotRate * (1 + domesticRate * timePeriod) / (1 + foreignRate * timePeriod);
+                const premium = ((forwardRate - spotRate) / spotRate) * 100;
+                const rateDifferential = (domesticRate - foreignRate) * 100;
+
+                // Determine status
+                let status;
+                if (premium > 0.1) {
+                    status = 'Premium';
+                } else if (premium < -0.1) {
+                    status = 'Discount';
+                } else {
+                    status = 'Neutral';
+                }
+
+                return {
+                    forwardRate,
+                    premium,
+                    rateDifferential,
+                    status
+                };
+            }
+
+            function updateChart(inputs, results) {
+                const ctx = document.getElementById('rateChart').getContext('2d');
+                
+                if (rateChart) rateChart.destroy();
+
+                // Generate time series data
+                const timePoints = Array.from({length: 12}, (_, i) => i * 30); // 12 months
+                const rates = timePoints.map(days => {
+                    const tempInputs = {...inputs, timePeriod: days};
+                    return calculateForwardRate(tempInputs).forwardRate;
+                });
+
+                rateChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: timePoints.map(days => `${days} days`),
+                        datasets: [{
+                            label: 'Forward Rate',
+                            data: rates,
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Time Period'
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Forward Rate'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            function updateAnalysisTable(inputs, results) {
+                const table = document.getElementById('analysisTable');
+                table.innerHTML = '';
+
+                // Create analysis rows
+                const rows = [
+                    {
+                        metric: 'Forward Rate',
+                        value: results.forwardRate.toFixed(4),
+                        status: results.premium > 0 ? 'Premium' : results.premium < 0 ? 'Discount' : 'Neutral',
+                        recommendation: results.premium > 0 ? 'Consider hedging against currency appreciation' : 
+                                     results.premium < 0 ? 'Consider hedging against currency depreciation' : 
+                                     'No significant premium/discount'
+                    },
+                    {
+                        metric: 'Forward Premium/Discount',
+                        value: `${results.premium.toFixed(4)}%`,
+                        status: results.premium > 0 ? 'Premium' : results.premium < 0 ? 'Discount' : 'Neutral',
+                        recommendation: results.premium > 0 ? 'Higher cost for forward contracts' : 
+                                     results.premium < 0 ? 'Lower cost for forward contracts' : 
+                                     'Standard pricing'
+                    },
+                    {
+                        metric: 'Interest Rate Differential',
+                        value: `${results.rateDifferential.toFixed(2)}%`,
+                        status: Math.abs(results.rateDifferential) > 1 ? 'Significant' : 'Normal',
+                        recommendation: Math.abs(results.rateDifferential) > 1 ? 
+                                     'Consider impact on funding costs' : 
+                                     'Standard interest rate environment'
+                    }
+                ];
+
+                // Add rows to table
+                rows.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${row.metric}</td>
+                        <td>${row.value}</td>
+                        <td>${row.status}</td>
+                        <td>${row.recommendation}</td>
+                    `;
+                    table.appendChild(tr);
+                });
+            }
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const inputs = {
+                    marketType: document.getElementById('marketType').value,
+                    spotRate: parseFloat(document.getElementById('spotRate').value),
+                    timePeriod: parseInt(document.getElementById('timePeriod').value),
+                    dayCount: document.getElementById('dayCount').value,
+                    domesticRate: parseFloat(document.getElementById('domesticRate').value),
+                    foreignRate: parseFloat(document.getElementById('foreignRate').value)
+                };
+                
+                const result = calculateForwardRate(inputs);
+                
+                // Update display
+                document.getElementById('forwardRate').textContent = result.forwardRate.toFixed(4);
+                document.getElementById('forwardPremium').textContent = result.premium.toFixed(4) + '%';
+                document.getElementById('rateDifferential').textContent = result.rateDifferential.toFixed(2) + '%';
+                document.getElementById('rateStatus').textContent = result.status;
+                
+                // Update chart and analysis table
+                updateChart(inputs, result);
+                updateAnalysisTable(inputs, result);
+                
+                results.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html> 

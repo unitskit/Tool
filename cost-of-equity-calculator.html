@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cost of Equity Calculator - Required Return Analysis - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate the cost of equity using various methods including CAPM, dividend growth model, and bond yield plus risk premium approach.">
+    <meta name="keywords" content="cost of equity calculator, CAPM, dividend growth model, required return, equity risk premium">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">Cost of Equity Calculator</h1>
+                    <p class="tool-description">Calculate the cost of equity using multiple approaches including the Capital Asset Pricing Model (CAPM), Dividend Growth Model, and Bond Yield Plus Risk Premium method.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="costOfEquityForm" class="needs-validation" novalidate>
+                        <!-- Method Selection -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Calculation Method</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <select class="form-select" id="calculationMethod">
+                                        <option value="capm" selected>CAPM Method</option>
+                                        <option value="dividend">Dividend Growth Model</option>
+                                        <option value="bond">Bond Yield Plus Risk Premium</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CAPM Inputs -->
+                        <div id="capmInputs" class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">CAPM Parameters</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="riskFreeRate" class="form-label">Risk-Free Rate (%)</label>
+                                    <input type="number" class="form-control" id="riskFreeRate" step="0.01" value="2.5" required>
+                                    <div class="form-text">Current risk-free rate (e.g., Treasury yield)</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="beta" class="form-label">Stock Beta</label>
+                                    <input type="number" class="form-control" id="beta" step="0.01" value="1.0" required>
+                                    <div class="form-text">Measure of systematic risk relative to the market</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="marketReturn" class="form-label">Expected Market Return (%)</label>
+                                    <input type="number" class="form-control" id="marketReturn" step="0.01" value="8.0" required>
+                                    <div class="form-text">Expected return of the market (e.g., S&P 500)</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Dividend Growth Model Inputs -->
+                        <div id="dividendInputs" class="card mb-4" style="display: none;">
+                            <div class="card-header">
+                                <h5 class="mb-0">Dividend Growth Parameters</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="currentDividend" class="form-label">Current Annual Dividend</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" id="currentDividend" step="0.01" value="2.0">
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="stockPrice" class="form-label">Current Stock Price</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" id="stockPrice" step="0.01" value="50.0">
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="growthRate" class="form-label">Expected Growth Rate (%)</label>
+                                    <input type="number" class="form-control" id="growthRate" step="0.01" value="3.0">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bond Yield Plus Risk Premium Inputs -->
+                        <div id="bondInputs" class="card mb-4" style="display: none;">
+                            <div class="card-header">
+                                <h5 class="mb-0">Bond Yield Parameters</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="bondYield" class="form-label">Government Bond Yield (%)</label>
+                                    <input type="number" class="form-control" id="bondYield" step="0.01" value="3.0">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="riskPremium" class="form-label">Equity Risk Premium (%)</label>
+                                    <input type="number" class="form-control" id="riskPremium" step="0.01" value="5.0">
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate Cost of Equity</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>Cost of Equity Analysis</h3>
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5>Primary Results</h5>
+                                        <p>Cost of Equity: <strong><span id="costOfEquity">0</span>%</strong></p>
+                                        <p>Risk Premium: <strong><span id="equityRiskPremium">0</span>%</strong></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5>Method-Specific Results</h5>
+                                        <div id="methodSpecificResults"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Analysis -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="analysis"></div>
+                            </div>
+                        </div>
+
+                        <!-- Visual Representation -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Components Breakdown</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="componentsChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="capm-calculator.html">CAPM Calculator</a></li>
+                            <li class="mb-2"><a href="cost-of-capital-calculator.html">Cost of Capital Calculator</a></li>
+                            <li class="mb-2"><a href="dividend-calculator.html">Dividend Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- How to Use Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Select your preferred calculation method</li>
+                            <li class="mb-2">Enter the required parameters</li>
+                            <li class="mb-2">Click calculate to see the analysis</li>
+                        </ol>
+                        <div class="mt-3">
+                            <p class="mb-0"><strong>Note:</strong> Different methods may yield different results based on their underlying assumptions</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('costOfEquityForm');
+            const results = document.getElementById('results');
+            const methodSelect = document.getElementById('calculationMethod');
+            let componentsChart = null;
+
+            // Show/hide input sections based on selected method
+            methodSelect.addEventListener('change', function() {
+                document.getElementById('capmInputs').style.display = 'none';
+                document.getElementById('dividendInputs').style.display = 'none';
+                document.getElementById('bondInputs').style.display = 'none';
+                
+                document.getElementById(this.value + 'Inputs').style.display = 'block';
+            });
+
+            function calculateCAPM(riskFreeRate, beta, marketReturn) {
+                const marketPremium = marketReturn - riskFreeRate;
+                const costOfEquity = riskFreeRate + (beta * marketPremium);
+                
+                return {
+                    costOfEquity,
+                    riskPremium: costOfEquity - riskFreeRate,
+                    components: {
+                        riskFreeRate,
+                        betaPremium: beta * marketPremium
+                    }
+                };
+            }
+
+            function calculateDividendGrowth(currentDividend, stockPrice, growthRate) {
+                const dividendYield = (currentDividend / stockPrice) * 100;
+                const costOfEquity = dividendYield + growthRate;
+                
+                return {
+                    costOfEquity,
+                    riskPremium: costOfEquity - parseFloat(document.getElementById('riskFreeRate').value),
+                    components: {
+                        dividendYield,
+                        growthRate
+                    }
+                };
+            }
+
+            function calculateBondYieldPlus(bondYield, riskPremium) {
+                const costOfEquity = bondYield + riskPremium;
+                
+                return {
+                    costOfEquity,
+                    riskPremium,
+                    components: {
+                        bondYield,
+                        riskPremium
+                    }
+                };
+            }
+
+            function analyzeResults(method, results) {
+                let analysis = [];
+                
+                if (results.costOfEquity < 8) {
+                    analysis.push("The calculated cost of equity is relatively low, suggesting lower perceived risk or stable market conditions.");
+                } else if (results.costOfEquity > 15) {
+                    analysis.push("The high cost of equity indicates significant perceived risk or market uncertainty.");
+                }
+                
+                switch(method) {
+                    case 'capm':
+                        if (results.components.betaPremium > 10) {
+                            analysis.push("The large beta premium suggests high systematic risk exposure.");
+                        }
+                        break;
+                    case 'dividend':
+                        if (results.components.dividendYield < 2) {
+                            analysis.push("The low dividend yield might indicate growth-focused investment characteristics.");
+                        }
+                        break;
+                    case 'bond':
+                        if (results.components.riskPremium > 7) {
+                            analysis.push("The substantial risk premium indicates higher perceived equity risk.");
+                        }
+                        break;
+                }
+                
+                return analysis.join(" ");
+            }
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const method = methodSelect.value;
+                let calculationResults;
+                
+                switch(method) {
+                    case 'capm':
+                        calculationResults = calculateCAPM(
+                            parseFloat(document.getElementById('riskFreeRate').value),
+                            parseFloat(document.getElementById('beta').value),
+                            parseFloat(document.getElementById('marketReturn').value)
+                        );
+                        break;
+                    case 'dividend':
+                        calculationResults = calculateDividendGrowth(
+                            parseFloat(document.getElementById('currentDividend').value),
+                            parseFloat(document.getElementById('stockPrice').value),
+                            parseFloat(document.getElementById('growthRate').value)
+                        );
+                        break;
+                    case 'bond':
+                        calculationResults = calculateBondYieldPlus(
+                            parseFloat(document.getElementById('bondYield').value),
+                            parseFloat(document.getElementById('riskPremium').value)
+                        );
+                        break;
+                }
+                
+                // Display results
+                document.getElementById('costOfEquity').textContent = calculationResults.costOfEquity.toFixed(2);
+                document.getElementById('equityRiskPremium').textContent = calculationResults.riskPremium.toFixed(2);
+                
+                // Display method-specific results
+                let specificResults = '';
+                switch(method) {
+                    case 'capm':
+                        specificResults = `
+                            <p>Market Risk Premium: ${(calculationResults.components.betaPremium / parseFloat(document.getElementById('beta').value)).toFixed(2)}%</p>
+                            <p>Beta-Adjusted Premium: ${calculationResults.components.betaPremium.toFixed(2)}%</p>
+                        `;
+                        break;
+                    case 'dividend':
+                        specificResults = `
+                            <p>Dividend Yield: ${calculationResults.components.dividendYield.toFixed(2)}%</p>
+                            <p>Growth Component: ${calculationResults.components.growthRate.toFixed(2)}%</p>
+                        `;
+                        break;
+                    case 'bond':
+                        specificResults = `
+                            <p>Base Bond Yield: ${calculationResults.components.bondYield.toFixed(2)}%</p>
+                            <p>Risk Premium: ${calculationResults.components.riskPremium.toFixed(2)}%</p>
+                        `;
+                        break;
+                }
+                document.getElementById('methodSpecificResults').innerHTML = specificResults;
+                
+                // Display analysis
+                document.getElementById('analysis').textContent = analyzeResults(method, calculationResults);
+
+                // Create/update chart
+                const ctx = document.getElementById('componentsChart').getContext('2d');
+                
+                if (componentsChart) {
+                    componentsChart.destroy();
+                }
+
+                let chartData = {
+                    labels: [],
+                    datasets: [{
+                        data: [],
+                        backgroundColor: [
+                            'rgba(75, 192, 192, 0.5)',
+                            'rgba(255, 99, 132, 0.5)'
+                        ]
+                    }]
+                };
+
+                switch(method) {
+                    case 'capm':
+                        chartData.labels = ['Risk-Free Rate', 'Beta Premium'];
+                        chartData.datasets[0].data = [
+                            calculationResults.components.riskFreeRate,
+                            calculationResults.components.betaPremium
+                        ];
+                        break;
+                    case 'dividend':
+                        chartData.labels = ['Dividend Yield', 'Growth Rate'];
+                        chartData.datasets[0].data = [
+                            calculationResults.components.dividendYield,
+                            calculationResults.components.growthRate
+                        ];
+                        break;
+                    case 'bond':
+                        chartData.labels = ['Bond Yield', 'Risk Premium'];
+                        chartData.datasets[0].data = [
+                            calculationResults.components.bondYield,
+                            calculationResults.components.riskPremium
+                        ];
+                        break;
+                }
+
+                componentsChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: chartData,
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Cost of Equity Components'
+                            }
+                        }
+                    }
+                });
+
+                results.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html> 

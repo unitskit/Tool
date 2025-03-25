@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fixed Charge Coverage Ratio Calculator - Fixed Income Tools - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate Fixed Charge Coverage Ratio (FCCR) to assess a company's ability to meet all fixed payment obligations. Analyze financial health and debt servicing capacity.">
+    <meta name="keywords" content="fixed charge coverage ratio, FCCR, debt service, lease payments, financial metrics, credit analysis">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">Fixed Charge Coverage Ratio Calculator</h1>
+                    <p class="tool-description">Calculate and analyze the Fixed Charge Coverage Ratio (FCCR) to assess a company's ability to meet all fixed payment obligations, including lease payments and preferred dividends.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="fccrForm" class="needs-validation" novalidate>
+                        <!-- Operating Income Section -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Operating Income Details</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="ebit" class="form-label">EBIT ($)</label>
+                                            <input type="number" class="form-control" id="ebit" required>
+                                            <div class="form-text">Earnings Before Interest and Taxes</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="leasePayments" class="form-label">Lease Payments ($)</label>
+                                            <input type="number" class="form-control" id="leasePayments" required>
+                                            <div class="form-text">Annual operating lease payments</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fixed Charges Section -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Fixed Charges Details</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="interestExpense" class="form-label">Interest Expense ($)</label>
+                                            <input type="number" class="form-control" id="interestExpense" required>
+                                            <div class="form-text">Annual interest payment obligations</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="preferredDividends" class="form-label">Preferred Dividends ($)</label>
+                                            <input type="number" class="form-control" id="preferredDividends" value="0">
+                                            <div class="form-text">Annual preferred stock dividend payments</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="capitalizedLeases" class="form-label">Capitalized Lease Obligations ($)</label>
+                                    <input type="number" class="form-control" id="capitalizedLeases" value="0">
+                                    <div class="form-text">Principal portion of capitalized lease payments</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tax Information -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Tax Information</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="taxRate" class="form-label">Tax Rate (%)</label>
+                                    <input type="number" class="form-control" id="taxRate" value="21" min="0" max="100">
+                                    <div class="form-text">Corporate tax rate for tax shield calculations</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate FCCR</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>FCCR Analysis</h3>
+                        
+                        <!-- FCCR Results -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Coverage Ratios</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h2 class="display-4 text-center" id="fccrValue">0.00x</h2>
+                                        <p class="text-center" id="fccrInterpretation"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="alert" id="fccrAlert" role="alert"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Detailed Analysis -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Component Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Component</th>
+                                                <th>Amount ($)</th>
+                                                <th>Percentage</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="componentTable"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Visualization -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Coverage Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="coverageChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Fixed Charges Breakdown -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Fixed Charges Distribution</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="distributionChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="interest-coverage-ratio-calculator.html">Interest Coverage Ratio Calculator</a></li>
+                            <li class="mb-2"><a href="debt-service-coverage-ratio-calculator.html">DSCR Calculator</a></li>
+                            <li class="mb-2"><a href="debt-to-equity-calculator.html">Debt to Equity Calculator</a></li>
+                            <li class="mb-2"><a href="operating-leverage-calculator.html">Operating Leverage Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- How to Use Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter EBIT and lease payment values</li>
+                            <li class="mb-2">Input interest expense and preferred dividends</li>
+                            <li class="mb-2">Add capitalized lease obligations if applicable</li>
+                            <li class="mb-2">Specify the tax rate</li>
+                            <li>Click Calculate to analyze FCCR</li>
+                        </ol>
+                        <div class="mt-3">
+                            <p class="mb-2"><strong>Interpretation:</strong></p>
+                            <ul class="list-unstyled small">
+                                <li>FCCR > 2.0: Strong coverage</li>
+                                <li>1.5 < FCCR < 2.0: Adequate coverage</li>
+                                <li>FCCR < 1.5: Weak coverage</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('fccrForm');
+            const results = document.getElementById('results');
+            let coverageChart = null;
+            let distributionChart = null;
+
+            function calculateFCCR(ebit, leasePayments, interestExpense, preferredDividends, capitalizedLeases, taxRate) {
+                const taxMultiplier = 1 - (taxRate / 100);
+                const numerator = ebit + leasePayments;
+                const denominator = interestExpense + leasePayments + (preferredDividends / taxMultiplier) + capitalizedLeases;
+                return numerator / denominator;
+            }
+
+            function interpretFCCR(fccr) {
+                if (fccr > 2.0) {
+                    return {
+                        interpretation: "Strong Coverage",
+                        message: "The company has strong ability to meet fixed charges with significant cushion.",
+                        alertClass: "alert-success"
+                    };
+                } else if (fccr > 1.5) {
+                    return {
+                        interpretation: "Adequate Coverage",
+                        message: "The company can meet fixed charges but has limited cushion.",
+                        alertClass: "alert-warning"
+                    };
+                } else {
+                    return {
+                        interpretation: "Weak Coverage",
+                        message: "The company may have difficulty meeting fixed charges.",
+                        alertClass: "alert-danger"
+                    };
+                }
+            }
+
+            function formatCurrency(value) {
+                return new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0
+                }).format(value);
+            }
+
+            function formatPercentage(value) {
+                return new Intl.NumberFormat('en-US', {
+                    style: 'percent',
+                    minimumFractionDigits: 1,
+                    maximumFractionDigits: 1
+                }).format(value);
+            }
+
+            function updateCoverageChart(operatingIncome, totalCharges) {
+                const ctx = document.getElementById('coverageChart').getContext('2d');
+                
+                if (coverageChart) {
+                    coverageChart.destroy();
+                }
+
+                coverageChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Operating Income', 'Fixed Charges'],
+                        datasets: [{
+                            label: 'Amount ($)',
+                            data: [operatingIncome, totalCharges],
+                            backgroundColor: [
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(255, 99, 132, 0.2)'
+                            ],
+                            borderColor: [
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(255, 99, 132, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Amount ($)'
+                                }
+                            }
+                        },
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Income vs. Fixed Charges'
+                            }
+                        }
+                    }
+                });
+            }
+
+            function updateDistributionChart(charges) {
+                const ctx = document.getElementById('distributionChart').getContext('2d');
+                
+                if (distributionChart) {
+                    distributionChart.destroy();
+                }
+
+                distributionChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: Object.keys(charges),
+                        datasets: [{
+                            data: Object.values(charges),
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.2)',
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(255, 206, 86, 0.2)',
+                                'rgba(75, 192, 192, 0.2)'
+                            ],
+                            borderColor: [
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Fixed Charges Distribution'
+                            }
+                        }
+                    }
+                });
+            }
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get input values
+                const ebit = parseFloat(document.getElementById('ebit').value);
+                const leasePayments = parseFloat(document.getElementById('leasePayments').value);
+                const interestExpense = parseFloat(document.getElementById('interestExpense').value);
+                const preferredDividends = parseFloat(document.getElementById('preferredDividends').value) || 0;
+                const capitalizedLeases = parseFloat(document.getElementById('capitalizedLeases').value) || 0;
+                const taxRate = parseFloat(document.getElementById('taxRate').value);
+
+                // Calculate FCCR
+                const fccr = calculateFCCR(ebit, leasePayments, interestExpense, preferredDividends, capitalizedLeases, taxRate);
+                const interpretation = interpretFCCR(fccr);
+
+                // Update display
+                document.getElementById('fccrValue').textContent = fccr.toFixed(2) + 'x';
+                document.getElementById('fccrInterpretation').textContent = interpretation.interpretation;
+                
+                const alert = document.getElementById('fccrAlert');
+                alert.className = `alert ${interpretation.alertClass}`;
+                alert.textContent = interpretation.message;
+
+                // Calculate totals
+                const operatingIncome = ebit + leasePayments;
+                const totalCharges = interestExpense + leasePayments + preferredDividends + capitalizedLeases;
+
+                // Update component table
+                const components = [
+                    { name: 'Operating Income (EBIT)', amount: ebit },
+                    { name: 'Lease Payments', amount: leasePayments },
+                    { name: 'Interest Expense', amount: interestExpense },
+                    { name: 'Preferred Dividends', amount: preferredDividends },
+                    { name: 'Capitalized Leases', amount: capitalizedLeases }
+                ];
+
+                let tableHtml = components.map(component => `
+                    <tr>
+                        <td>${component.name}</td>
+                        <td>${formatCurrency(component.amount)}</td>
+                        <td>${formatPercentage(component.amount / operatingIncome)}</td>
+                    </tr>
+                `).join('');
+                document.getElementById('componentTable').innerHTML = tableHtml;
+
+                // Update charts
+                updateCoverageChart(operatingIncome, totalCharges);
+                
+                const chargesDistribution = {
+                    'Interest Expense': interestExpense,
+                    'Lease Payments': leasePayments,
+                    'Preferred Dividends': preferredDividends,
+                    'Capitalized Leases': capitalizedLeases
+                };
+                updateDistributionChart(chargesDistribution);
+
+                results.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html> 

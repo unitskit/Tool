@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loss Given Default (LGD) Calculator - Credit Risk Analysis - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate and analyze Loss Given Default (LGD) for credit risk assessment. Evaluate potential losses from loan defaults and make informed lending decisions.">
+    <meta name="keywords" content="LGD, loss given default, credit risk, loan default, risk assessment, financial analysis">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">Loss Given Default (LGD) Calculator</h1>
+                    <p class="tool-description">Calculate and analyze potential losses from loan defaults to assess credit risk and make informed lending decisions.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="lgdForm" class="needs-validation" novalidate>
+                        <!-- Loan Information -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Loan Information</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="loanAmount" class="form-label">Loan Amount ($)</label>
+                                            <input type="number" class="form-control" id="loanAmount" value="100000" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="collateralValue" class="form-label">Collateral Value ($)</label>
+                                            <input type="number" class="form-control" id="collateralValue" value="80000" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="recoveryAmount" class="form-label">Expected Recovery Amount ($)</label>
+                                            <input type="number" class="form-control" id="recoveryAmount" value="60000" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="recoveryTime" class="form-label">Recovery Time (months)</label>
+                                            <input type="number" class="form-control" id="recoveryTime" value="12" step="0.01" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="interestRate" class="form-label">Interest Rate (%)</label>
+                                            <input type="number" class="form-control" id="interestRate" value="5.00" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="defaultProbability" class="form-label">Default Probability (%)</label>
+                                            <input type="number" class="form-control" id="defaultProbability" value="2.00" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="recoveryCosts" class="form-label">Recovery Costs ($)</label>
+                                            <input type="number" class="form-control" id="recoveryCosts" value="5000" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="discountRate" class="form-label">Discount Rate (%)</label>
+                                            <input type="number" class="form-control" id="discountRate" value="3.00" step="0.01" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Collateral Details -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Collateral Details</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="collateralType" class="form-label">Collateral Type</label>
+                                            <select class="form-select" id="collateralType" required>
+                                                <option value="real_estate">Real Estate</option>
+                                                <option value="equipment">Equipment</option>
+                                                <option value="inventory">Inventory</option>
+                                                <option value="receivables">Accounts Receivable</option>
+                                                <option value="securities">Securities</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="collateralQuality" class="form-label">Collateral Quality</label>
+                                            <select class="form-select" id="collateralQuality" required>
+                                                <option value="high">High</option>
+                                                <option value="medium">Medium</option>
+                                                <option value="low">Low</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="liquidationValue" class="form-label">Liquidation Value ($)</label>
+                                            <input type="number" class="form-control" id="liquidationValue" value="70000" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="marketVolatility" class="form-label">Market Volatility (%)</label>
+                                            <input type="number" class="form-control" id="marketVolatility" value="10.00" step="0.01" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate LGD</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>LGD Analysis</h3>
+                        
+                        <!-- LGD Metrics -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">LGD Metrics</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Loss Given Default (%)</label>
+                                            <p id="lgdPercentage" class="h4">0.00%</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Expected Loss ($)</label>
+                                            <p id="expectedLoss" class="h4">$0.00</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Recovery Rate (%)</label>
+                                            <p id="recoveryRate" class="h4">0.00%</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Risk Assessment</label>
+                                            <p id="riskAssessment" class="h4">-</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Collateral Coverage</label>
+                                            <p id="collateralCoverage" class="h4">0.00%</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Risk-Adjusted Return</label>
+                                            <p id="riskAdjustedReturn" class="h4">0.00%</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Loss Analysis Chart -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Loss Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="lossChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Recovery Timeline Chart -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Recovery Timeline</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="recoveryChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="probability-of-default-calculator.html">Probability of Default Calculator</a></li>
+                            <li class="mb-2"><a href="expected-loss-calculator.html">Expected Loss Calculator</a></li>
+                            <li class="mb-2"><a href="credit-risk-calculator.html">Credit Risk Calculator</a></li>
+                            <li class="mb-2"><a href="risk-adjusted-return-calculator.html">Risk-Adjusted Return Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Formula Reference -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Formula Reference</h5>
+                    </div>
+                    <div class="card-body">
+                        <h6>Loss Given Default</h6>
+                        <p class="small mb-3">LGD = (Exposure - Recovery Amount) / Exposure</p>
+                        
+                        <h6>Expected Loss</h6>
+                        <p class="small mb-3">EL = Exposure × PD × LGD</p>
+                        
+                        <h6>Recovery Rate</h6>
+                        <p class="small mb-3">RR = Recovery Amount / Exposure</p>
+                        
+                        <h6>Risk-Adjusted Return</h6>
+                        <p class="small mb-3">RAR = Interest Rate - (PD × LGD)</p>
+                    </div>
+                </div>
+
+                <!-- LGD Interpretation -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">LGD Interpretation</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="small mb-0">
+                            <li>LGD < 30%: Low Risk</li>
+                            <li>LGD 30-50%: Moderate Risk</li>
+                            <li>LGD 50-70%: High Risk</li>
+                            <li>LGD > 70%: Very High Risk</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Usage Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter loan details</li>
+                            <li class="mb-2">Input collateral information</li>
+                            <li class="mb-2">Specify recovery parameters</li>
+                            <li class="mb-2">Click "Calculate" to analyze</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('lgdForm');
+            const results = document.getElementById('results');
+            let lossChart = null;
+            let recoveryChart = null;
+
+            function calculateLGD(exposure, recoveryAmount) {
+                return (exposure - recoveryAmount) / exposure;
+            }
+
+            function calculateExpectedLoss(exposure, pd, lgd) {
+                return exposure * (pd / 100) * lgd;
+            }
+
+            function calculateRecoveryRate(recoveryAmount, exposure) {
+                return recoveryAmount / exposure;
+            }
+
+            function calculateCollateralCoverage(collateralValue, exposure) {
+                return (collateralValue / exposure) * 100;
+            }
+
+            function calculateRiskAdjustedReturn(interestRate, pd, lgd) {
+                return interestRate - (pd / 100) * lgd;
+            }
+
+            function getRiskAssessment(lgd) {
+                if (lgd < 0.3) return 'Low Risk';
+                if (lgd < 0.5) return 'Moderate Risk';
+                if (lgd < 0.7) return 'High Risk';
+                return 'Very High Risk';
+            }
+
+            function updateLossChart(exposure, recoveryAmount, recoveryCosts) {
+                const ctx = document.getElementById('lossChart').getContext('2d');
+                
+                if (lossChart) lossChart.destroy();
+
+                lossChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: ['Recovery Amount', 'Recovery Costs', 'Net Loss'],
+                        datasets: [{
+                            data: [
+                                recoveryAmount,
+                                recoveryCosts,
+                                exposure - recoveryAmount - recoveryCosts
+                            ],
+                            backgroundColor: [
+                                'rgba(75, 192, 192, 0.5)',
+                                'rgba(255, 206, 86, 0.5)',
+                                'rgba(255, 99, 132, 0.5)'
+                            ],
+                            borderColor: [
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(255, 99, 132, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true
+                    }
+                });
+            }
+
+            function updateRecoveryChart(recoveryTime, recoveryAmount, discountRate) {
+                const ctx = document.getElementById('recoveryChart').getContext('2d');
+                
+                if (recoveryChart) recoveryChart.destroy();
+
+                const months = Array.from({length: recoveryTime}, (_, i) => i + 1);
+                const monthlyRecovery = recoveryAmount / recoveryTime;
+                const presentValues = months.map(month => 
+                    monthlyRecovery / Math.pow(1 + discountRate/100, month/12)
+                );
+
+                recoveryChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: months.map(m => `Month ${m}`),
+                        datasets: [{
+                            label: 'Present Value of Recovery',
+                            data: presentValues,
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get input values
+                const loanAmount = parseFloat(document.getElementById('loanAmount').value);
+                const recoveryAmount = parseFloat(document.getElementById('recoveryAmount').value);
+                const recoveryCosts = parseFloat(document.getElementById('recoveryCosts').value);
+                const defaultProbability = parseFloat(document.getElementById('defaultProbability').value);
+                const interestRate = parseFloat(document.getElementById('interestRate').value);
+                const collateralValue = parseFloat(document.getElementById('collateralValue').value);
+                const recoveryTime = parseFloat(document.getElementById('recoveryTime').value);
+                const discountRate = parseFloat(document.getElementById('discountRate').value);
+
+                // Calculate metrics
+                const lgd = calculateLGD(loanAmount, recoveryAmount);
+                const expectedLoss = calculateExpectedLoss(loanAmount, defaultProbability, lgd);
+                const recoveryRate = calculateRecoveryRate(recoveryAmount, loanAmount);
+                const collateralCoverage = calculateCollateralCoverage(collateralValue, loanAmount);
+                const riskAdjustedReturn = calculateRiskAdjustedReturn(interestRate, defaultProbability, lgd);
+                const riskAssessment = getRiskAssessment(lgd);
+
+                // Update results
+                document.getElementById('lgdPercentage').textContent = (lgd * 100).toFixed(2) + '%';
+                document.getElementById('expectedLoss').textContent = '$' + expectedLoss.toFixed(2);
+                document.getElementById('recoveryRate').textContent = (recoveryRate * 100).toFixed(2) + '%';
+                document.getElementById('riskAssessment').textContent = riskAssessment;
+                document.getElementById('collateralCoverage').textContent = collateralCoverage.toFixed(2) + '%';
+                document.getElementById('riskAdjustedReturn').textContent = riskAdjustedReturn.toFixed(2) + '%';
+
+                // Update charts
+                updateLossChart(loanAmount, recoveryAmount, recoveryCosts);
+                updateRecoveryChart(recoveryTime, recoveryAmount, discountRate);
+                
+                // Show results
+                results.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html> 

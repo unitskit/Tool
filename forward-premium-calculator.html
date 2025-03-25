@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forward Premium Calculator - Investment Tools - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate forward premiums in foreign exchange markets. Features comprehensive analysis including annualized rates, interest rate differentials, and currency pair analysis.">
+    <meta name="keywords" content="forward premium, forex, currency exchange, interest rate differential, spot rate, forward rate, foreign exchange">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">Forward Premium Calculator</h1>
+                    <p class="tool-description">Calculate and analyze forward premiums in foreign exchange markets. Features comprehensive analysis including annualized rates, interest rate differentials, and currency pair analysis.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="forwardPremiumForm" class="needs-validation" novalidate>
+                        <!-- Currency Pair Parameters -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Currency Pair Parameters</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="baseCurrency" class="form-label">Base Currency</label>
+                                            <select class="form-select" id="baseCurrency" required>
+                                                <option value="USD">USD (US Dollar)</option>
+                                                <option value="EUR">EUR (Euro)</option>
+                                                <option value="GBP">GBP (British Pound)</option>
+                                                <option value="JPY">JPY (Japanese Yen)</option>
+                                                <option value="AUD">AUD (Australian Dollar)</option>
+                                                <option value="CAD">CAD (Canadian Dollar)</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="quoteCurrency" class="form-label">Quote Currency</label>
+                                            <select class="form-select" id="quoteCurrency" required>
+                                                <option value="EUR">EUR (Euro)</option>
+                                                <option value="USD">USD (US Dollar)</option>
+                                                <option value="GBP">GBP (British Pound)</option>
+                                                <option value="JPY">JPY (Japanese Yen)</option>
+                                                <option value="AUD">AUD (Australian Dollar)</option>
+                                                <option value="CAD">CAD (Canadian Dollar)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="spotRate" class="form-label">Spot Rate</label>
+                                            <input type="number" class="form-control" id="spotRate" value="1.0000" step="0.0001" required>
+                                            <div class="form-text">Current spot exchange rate</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="forwardRate" class="form-label">Forward Rate</label>
+                                            <input type="number" class="form-control" id="forwardRate" value="1.0100" step="0.0001" required>
+                                            <div class="form-text">Forward exchange rate</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Interest Rates -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Interest Rates</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="baseInterestRate" class="form-label">Base Currency Interest Rate (%)</label>
+                                            <input type="number" class="form-control" id="baseInterestRate" value="5.00" step="0.01" required>
+                                            <div class="form-text">Annual interest rate for base currency</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="quoteInterestRate" class="form-label">Quote Currency Interest Rate (%)</label>
+                                            <input type="number" class="form-control" id="quoteInterestRate" value="3.00" step="0.01" required>
+                                            <div class="form-text">Annual interest rate for quote currency</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Time Period -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Time Period</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="timePeriod" class="form-label">Time Period (Days)</label>
+                                            <input type="number" class="form-control" id="timePeriod" value="90" step="1" required>
+                                            <div class="form-text">Number of days until forward contract maturity</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate Forward Premium</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>Forward Premium Analysis Results</h3>
+                        
+                        <!-- Premium Metrics -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Premium Metrics</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Forward Premium/Discount (%)</label>
+                                            <p id="forwardPremium" class="h4">0.00%</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Annualized Premium/Discount (%)</label>
+                                            <p id="annualizedPremium" class="h4">0.00%</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Interest Rate Differential (%)</label>
+                                            <p id="interestRateDifferential" class="h4">0.00%</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Status</label>
+                                            <p id="premiumStatus" class="h4">Neutral</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Analysis Chart -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Premium Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="premiumChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Analysis Table -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Detailed Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Metric</th>
+                                                <th>Value</th>
+                                                <th>Status</th>
+                                                <th>Recommendation</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="analysisTable">
+                                            <!-- Analysis rows will be populated by JavaScript -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="forward-rate-calculator.html">Forward Rate Calculator</a></li>
+                            <li class="mb-2"><a href="currency-converter.html">Currency Converter</a></li>
+                            <li class="mb-2"><a href="interest-rate-differential-calculator.html">Interest Rate Differential Calculator</a></li>
+                            <li class="mb-2"><a href="cross-rate-calculator.html">Cross Rate Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Formula Reference -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Forward Premium Formula</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="mb-2">Forward Premium/Discount:</p>
+                        <p class="text-monospace">Premium = ((F - S) / S) × 100</p>
+                        <p class="mb-2">Annualized Premium:</p>
+                        <p class="text-monospace">Annualized = Premium × (365 / Days)</p>
+                        <p class="mb-2">Where:</p>
+                        <ul class="list-unstyled small">
+                            <li>F = Forward Rate</li>
+                            <li>S = Spot Rate</li>
+                            <li>Days = Time Period</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- How to Use Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Select base and quote currencies</li>
+                            <li class="mb-2">Enter spot and forward rates</li>
+                            <li class="mb-2">Input interest rates for both currencies</li>
+                            <li class="mb-2">Specify time period in days</li>
+                            <li>Review premium analysis and recommendations</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('forwardPremiumForm');
+            const results = document.getElementById('results');
+            let premiumChart = null;
+
+            function calculateForwardPremium(inputs) {
+                const spotRate = inputs.spotRate;
+                const forwardRate = inputs.forwardRate;
+                const days = inputs.timePeriod;
+                const baseRate = inputs.baseInterestRate / 100;
+                const quoteRate = inputs.quoteInterestRate / 100;
+
+                // Calculate forward premium/discount
+                const premium = ((forwardRate - spotRate) / spotRate) * 100;
+                const annualizedPremium = premium * (365 / days);
+                const interestRateDifferential = (baseRate - quoteRate) * 100;
+
+                // Determine status
+                let status;
+                if (premium > 0.1) {
+                    status = 'Premium';
+                } else if (premium < -0.1) {
+                    status = 'Discount';
+                } else {
+                    status = 'Neutral';
+                }
+
+                return {
+                    premium,
+                    annualizedPremium,
+                    interestRateDifferential,
+                    status
+                };
+            }
+
+            function updateChart(inputs, results) {
+                const ctx = document.getElementById('premiumChart').getContext('2d');
+                
+                if (premiumChart) premiumChart.destroy();
+
+                // Generate time series data
+                const timePoints = Array.from({length: 12}, (_, i) => i * 30); // 12 months
+                const premiums = timePoints.map(days => {
+                    const tempInputs = {...inputs, timePeriod: days};
+                    return calculateForwardPremium(tempInputs).annualizedPremium;
+                });
+
+                premiumChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: timePoints.map(days => `${days} days`),
+                        datasets: [{
+                            label: 'Annualized Premium/Discount (%)',
+                            data: premiums,
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Time Period'
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Annualized Premium/Discount (%)'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            function updateAnalysisTable(inputs, results) {
+                const table = document.getElementById('analysisTable');
+                table.innerHTML = '';
+
+                // Create analysis rows
+                const rows = [
+                    {
+                        metric: 'Forward Premium/Discount',
+                        value: `${results.premium.toFixed(4)}%`,
+                        status: results.premium > 0 ? 'Premium' : results.premium < 0 ? 'Discount' : 'Neutral',
+                        recommendation: results.premium > 0 ? 'Consider hedging against currency appreciation' : 
+                                     results.premium < 0 ? 'Consider hedging against currency depreciation' : 
+                                     'No significant premium/discount'
+                    },
+                    {
+                        metric: 'Annualized Premium/Discount',
+                        value: `${results.annualizedPremium.toFixed(4)}%`,
+                        status: results.annualizedPremium > 0 ? 'Premium' : results.annualizedPremium < 0 ? 'Discount' : 'Neutral',
+                        recommendation: results.annualizedPremium > 0 ? 'Higher cost for forward contracts' : 
+                                     results.annualizedPremium < 0 ? 'Lower cost for forward contracts' : 
+                                     'Standard pricing'
+                    },
+                    {
+                        metric: 'Interest Rate Differential',
+                        value: `${results.interestRateDifferential.toFixed(2)}%`,
+                        status: Math.abs(results.interestRateDifferential) > 1 ? 'Significant' : 'Normal',
+                        recommendation: Math.abs(results.interestRateDifferential) > 1 ? 
+                                     'Consider impact on funding costs' : 
+                                     'Standard interest rate environment'
+                    }
+                ];
+
+                // Add rows to table
+                rows.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${row.metric}</td>
+                        <td>${row.value}</td>
+                        <td>${row.status}</td>
+                        <td>${row.recommendation}</td>
+                    `;
+                    table.appendChild(tr);
+                });
+            }
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const inputs = {
+                    baseCurrency: document.getElementById('baseCurrency').value,
+                    quoteCurrency: document.getElementById('quoteCurrency').value,
+                    spotRate: parseFloat(document.getElementById('spotRate').value),
+                    forwardRate: parseFloat(document.getElementById('forwardRate').value),
+                    baseInterestRate: parseFloat(document.getElementById('baseInterestRate').value),
+                    quoteInterestRate: parseFloat(document.getElementById('quoteInterestRate').value),
+                    timePeriod: parseInt(document.getElementById('timePeriod').value)
+                };
+                
+                const result = calculateForwardPremium(inputs);
+                
+                // Update display
+                document.getElementById('forwardPremium').textContent = result.premium.toFixed(4) + '%';
+                document.getElementById('annualizedPremium').textContent = result.annualizedPremium.toFixed(4) + '%';
+                document.getElementById('interestRateDifferential').textContent = result.interestRateDifferential.toFixed(2) + '%';
+                document.getElementById('premiumStatus').textContent = result.status;
+                
+                // Update chart and analysis table
+                updateChart(inputs, result);
+                updateAnalysisTable(inputs, result);
+                
+                results.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html> 

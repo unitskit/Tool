@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Price to Book Ratio Calculator - Stock Valuation - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate and analyze Price to Book (P/B) ratio for stock valuation. Compare companies and make informed investment decisions.">
+    <meta name="keywords" content="P/B ratio, price to book, stock valuation, investment analysis, company comparison">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">Price to Book Ratio Calculator</h1>
+                    <p class="tool-description">Calculate and analyze P/B ratios to evaluate stock valuations and compare companies based on their book value.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="pbForm" class="needs-validation" novalidate>
+                        <!-- Company Information -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Company Information</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="stockPrice" class="form-label">Current Stock Price ($)</label>
+                                            <input type="number" class="form-control" id="stockPrice" value="50.00" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="totalAssets" class="form-label">Total Assets ($)</label>
+                                            <input type="number" class="form-control" id="totalAssets" value="1000000" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="totalLiabilities" class="form-label">Total Liabilities ($)</label>
+                                            <input type="number" class="form-control" id="totalLiabilities" value="600000" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="sharesOutstanding" class="form-label">Shares Outstanding</label>
+                                            <input type="number" class="form-control" id="sharesOutstanding" value="100000" step="0.01" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="intangibleAssets" class="form-label">Intangible Assets ($)</label>
+                                            <input type="number" class="form-control" id="intangibleAssets" value="100000" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="goodwill" class="form-label">Goodwill ($)</label>
+                                            <input type="number" class="form-control" id="goodwill" value="50000" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="returnOnEquity" class="form-label">Return on Equity (%)</label>
+                                            <input type="number" class="form-control" id="returnOnEquity" value="15.00" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="growthRate" class="form-label">Growth Rate (%)</label>
+                                            <input type="number" class="form-control" id="growthRate" value="10.00" step="0.01" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Industry Comparison -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Industry Comparison</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="industryPB" class="form-label">Industry Average P/B</label>
+                                            <input type="number" class="form-control" id="industryPB" value="2.50" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="industryROE" class="form-label">Industry ROE (%)</label>
+                                            <input type="number" class="form-control" id="industryROE" value="12.00" step="0.01" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="marketPB" class="form-label">Market Average P/B</label>
+                                            <input type="number" class="form-control" id="marketPB" value="2.00" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="marketROE" class="form-label">Market ROE (%)</label>
+                                            <input type="number" class="form-control" id="marketROE" value="10.00" step="0.01" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate P/B Ratio</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>P/B Ratio Analysis</h3>
+                        
+                        <!-- P/B Metrics -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">P/B Metrics</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Book Value Per Share</label>
+                                            <p id="bookValuePerShare" class="h4">$0.00</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">P/B Ratio</label>
+                                            <p id="pbRatio" class="h4">0.00</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Tangible Book Value</label>
+                                            <p id="tangibleBookValue" class="h4">$0.00</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">P/Tangible Book</label>
+                                            <p id="ptangibleBook" class="h4">0.00</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Valuation Assessment</label>
+                                            <p id="valuationAssessment" class="h4">-</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Fair Value Range</label>
+                                            <p id="fairValueRange" class="h4">$0.00 - $0.00</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Comparison Chart -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Valuation Comparison</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="comparisonChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- ROE Analysis Chart -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">ROE Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="roeChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="price-to-earnings-ratio-calculator.html">P/E Ratio Calculator</a></li>
+                            <li class="mb-2"><a href="return-on-equity-calculator.html">Return on Equity Calculator</a></li>
+                            <li class="mb-2"><a href="book-value-calculator.html">Book Value Calculator</a></li>
+                            <li class="mb-2"><a href="intrinsic-value-calculator.html">Intrinsic Value Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Formula Reference -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Formula Reference</h5>
+                    </div>
+                    <div class="card-body">
+                        <h6>Book Value Per Share</h6>
+                        <p class="small mb-3">BVPS = (Total Assets - Total Liabilities) / Shares Outstanding</p>
+                        
+                        <h6>P/B Ratio</h6>
+                        <p class="small mb-3">P/B = Stock Price / Book Value Per Share</p>
+                        
+                        <h6>Tangible Book Value</h6>
+                        <p class="small mb-3">TBV = Total Assets - Total Liabilities - Intangible Assets - Goodwill</p>
+                        
+                        <h6>P/Tangible Book</h6>
+                        <p class="small mb-3">P/TB = Stock Price / (Tangible Book Value / Shares Outstanding)</p>
+                    </div>
+                </div>
+
+                <!-- P/B Interpretation -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">P/B Ratio Interpretation</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="small mb-0">
+                            <li>P/B < 1: Trading below book value</li>
+                            <li>P/B = 1: Trading at book value</li>
+                            <li>P/B > 1: Trading above book value</li>
+                            <li>High P/B: Strong growth potential</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Usage Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter company financial data</li>
+                            <li class="mb-2">Input industry comparison data</li>
+                            <li class="mb-2">Click "Calculate" to analyze</li>
+                            <li class="mb-2">Review results and charts</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('pbForm');
+            const results = document.getElementById('results');
+            let comparisonChart = null;
+            let roeChart = null;
+
+            function calculateBookValuePerShare(totalAssets, totalLiabilities, sharesOutstanding) {
+                return (totalAssets - totalLiabilities) / sharesOutstanding;
+            }
+
+            function calculatePBRatio(stockPrice, bookValuePerShare) {
+                return stockPrice / bookValuePerShare;
+            }
+
+            function calculateTangibleBookValue(totalAssets, totalLiabilities, intangibleAssets, goodwill) {
+                return totalAssets - totalLiabilities - intangibleAssets - goodwill;
+            }
+
+            function calculatePTangibleBook(stockPrice, tangibleBookValue, sharesOutstanding) {
+                return stockPrice / (tangibleBookValue / sharesOutstanding);
+            }
+
+            function getValuationAssessment(currentPB, industryPB, marketPB) {
+                if (currentPB < industryPB * 0.8) return 'Potentially Undervalued';
+                if (currentPB > industryPB * 1.2) return 'Potentially Overvalued';
+                return 'Fairly Valued';
+            }
+
+            function calculateFairValueRange(bookValuePerShare, industryPB) {
+                const lowerBound = bookValuePerShare * (industryPB * 0.8);
+                const upperBound = bookValuePerShare * (industryPB * 1.2);
+                return [lowerBound, upperBound];
+            }
+
+            function updateComparisonChart(currentPB, industryPB, marketPB) {
+                const ctx = document.getElementById('comparisonChart').getContext('2d');
+                
+                if (comparisonChart) comparisonChart.destroy();
+
+                comparisonChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Current P/B', 'Industry P/B', 'Market P/B'],
+                        datasets: [{
+                            label: 'P/B Ratio Comparison',
+                            data: [currentPB, industryPB, marketPB],
+                            backgroundColor: [
+                                'rgba(54, 162, 235, 0.5)',
+                                'rgba(75, 192, 192, 0.5)',
+                                'rgba(255, 206, 86, 0.5)'
+                            ],
+                            borderColor: [
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(255, 206, 86, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+
+            function updateROEChart(companyROE, industryROE, marketROE) {
+                const ctx = document.getElementById('roeChart').getContext('2d');
+                
+                if (roeChart) roeChart.destroy();
+
+                roeChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Company ROE', 'Industry ROE', 'Market ROE'],
+                        datasets: [{
+                            label: 'Return on Equity Comparison (%)',
+                            data: [companyROE, industryROE, marketROE],
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.5)',
+                                'rgba(75, 192, 192, 0.5)',
+                                'rgba(255, 206, 86, 0.5)'
+                            ],
+                            borderColor: [
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(255, 206, 86, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get input values
+                const stockPrice = parseFloat(document.getElementById('stockPrice').value);
+                const totalAssets = parseFloat(document.getElementById('totalAssets').value);
+                const totalLiabilities = parseFloat(document.getElementById('totalLiabilities').value);
+                const sharesOutstanding = parseFloat(document.getElementById('sharesOutstanding').value);
+                const intangibleAssets = parseFloat(document.getElementById('intangibleAssets').value);
+                const goodwill = parseFloat(document.getElementById('goodwill').value);
+                const returnOnEquity = parseFloat(document.getElementById('returnOnEquity').value);
+                const industryPB = parseFloat(document.getElementById('industryPB').value);
+                const industryROE = parseFloat(document.getElementById('industryROE').value);
+                const marketPB = parseFloat(document.getElementById('marketPB').value);
+                const marketROE = parseFloat(document.getElementById('marketROE').value);
+
+                // Calculate metrics
+                const bookValuePerShare = calculateBookValuePerShare(totalAssets, totalLiabilities, sharesOutstanding);
+                const pbRatio = calculatePBRatio(stockPrice, bookValuePerShare);
+                const tangibleBookValue = calculateTangibleBookValue(totalAssets, totalLiabilities, intangibleAssets, goodwill);
+                const ptangibleBook = calculatePTangibleBook(stockPrice, tangibleBookValue, sharesOutstanding);
+                const valuationAssessment = getValuationAssessment(pbRatio, industryPB, marketPB);
+                const fairValueRange = calculateFairValueRange(bookValuePerShare, industryPB);
+
+                // Update results
+                document.getElementById('bookValuePerShare').textContent = '$' + bookValuePerShare.toFixed(2);
+                document.getElementById('pbRatio').textContent = pbRatio.toFixed(2);
+                document.getElementById('tangibleBookValue').textContent = '$' + tangibleBookValue.toFixed(2);
+                document.getElementById('ptangibleBook').textContent = ptangibleBook.toFixed(2);
+                document.getElementById('valuationAssessment').textContent = valuationAssessment;
+                document.getElementById('fairValueRange').textContent = `$${fairValueRange[0].toFixed(2)} - $${fairValueRange[1].toFixed(2)}`;
+
+                // Update charts
+                updateComparisonChart(pbRatio, industryPB, marketPB);
+                updateROEChart(returnOnEquity, industryROE, marketROE);
+                
+                // Show results
+                results.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html> 

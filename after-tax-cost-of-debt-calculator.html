@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>After-tax Cost of Debt Calculator - Fixed Income Tools - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate the effective cost of debt financing after considering tax deductions. Analyze how tax benefits affect your true borrowing costs.">
+    <meta name="keywords" content="cost of debt, tax shield, effective interest rate, debt financing, corporate finance, tax deduction">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">After-tax Cost of Debt Calculator</h1>
+                    <p class="tool-description">Calculate the effective cost of debt financing after considering tax deductions. Analyze how tax benefits affect your true borrowing costs.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="debtForm" class="needs-validation" novalidate>
+                        <!-- Basic Inputs -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Debt Details</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="interestRate" class="form-label">Interest Rate (%)</label>
+                                            <input type="number" class="form-control" id="interestRate" value="5.00" step="0.01" required>
+                                            <div class="form-text">The nominal interest rate on the debt</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="taxRate" class="form-label">Tax Rate (%)</label>
+                                            <input type="number" class="form-control" id="taxRate" value="21.00" step="0.01" required>
+                                            <div class="form-text">Your marginal corporate tax rate</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="debtAmount" class="form-label">Debt Amount ($)</label>
+                                            <input type="number" class="form-control" id="debtAmount" value="1000000" step="1000" required>
+                                            <div class="form-text">Total amount of debt</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="term" class="form-label">Term (Years)</label>
+                                            <input type="number" class="form-control" id="term" value="5" step="1" required>
+                                            <div class="form-text">Length of the debt term</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Advanced Options -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Advanced Options</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="paymentFrequency" class="form-label">Payment Frequency</label>
+                                            <select class="form-select" id="paymentFrequency" required>
+                                                <option value="12">Monthly</option>
+                                                <option value="4">Quarterly</option>
+                                                <option value="2">Semi-annual</option>
+                                                <option value="1">Annual</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="compoundingFrequency" class="form-label">Compounding Frequency</label>
+                                            <select class="form-select" id="compoundingFrequency" required>
+                                                <option value="12">Monthly</option>
+                                                <option value="4">Quarterly</option>
+                                                <option value="2">Semi-annual</option>
+                                                <option value="1">Annual</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>Cost Analysis</h3>
+                        
+                        <!-- Summary Results -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Summary</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p>Pre-tax Cost of Debt: <strong><span id="preTaxCost">0</span>%</strong></p>
+                                        <p>After-tax Cost of Debt: <strong><span id="afterTaxCost">0</span>%</strong></p>
+                                        <p>Tax Shield Value: <strong>$<span id="taxShieldValue">0</span></strong></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p>Annual Interest Payment: <strong>$<span id="annualInterest">0</span></strong></p>
+                                        <p>Annual Tax Savings: <strong>$<span id="annualTaxSavings">0</span></strong></p>
+                                        <p>Effective Interest Payment: <strong>$<span id="effectiveInterest">0</span></strong></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Detailed Analysis -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Payment Schedule</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Period</th>
+                                                <th>Interest Payment</th>
+                                                <th>Tax Shield</th>
+                                                <th>After-tax Payment</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="scheduleTable"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Visualization -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Cost Comparison</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="costChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="cost-of-capital-calculator.html">Cost of Capital Calculator</a></li>
+                            <li class="mb-2"><a href="debt-service-coverage-ratio-calculator.html">DSCR Calculator</a></li>
+                            <li class="mb-2"><a href="interest-coverage-ratio-calculator.html">Interest Coverage Ratio Calculator</a></li>
+                            <li class="mb-2"><a href="tax-equivalent-yield-calculator.html">Tax-Equivalent Yield Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- How to Use Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter the interest rate on your debt</li>
+                            <li class="mb-2">Input your corporate tax rate</li>
+                            <li class="mb-2">Specify debt amount and term</li>
+                            <li class="mb-2">Select payment and compounding frequencies</li>
+                            <li>Click Calculate to view analysis</li>
+                        </ol>
+                        <div class="mt-3">
+                            <p class="mb-2"><strong>Formula:</strong></p>
+                            <p>After-tax Cost = Pre-tax Cost × (1 - Tax Rate)</p>
+                            <p class="mb-2"><strong>Note:</strong></p>
+                            <ul class="list-unstyled small">
+                                <li>Tax shield reduces effective borrowing cost</li>
+                                <li>Higher tax rates increase tax shield value</li>
+                                <li>Consider payment frequency impact</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('debtForm');
+            const results = document.getElementById('results');
+            let costChart = null;
+
+            function calculateAfterTaxCost(interestRate, taxRate) {
+                return interestRate * (1 - taxRate / 100);
+            }
+
+            function calculatePaymentSchedule(amount, rate, term, frequency) {
+                const periods = term * frequency;
+                const periodicRate = rate / frequency;
+                const schedule = [];
+
+                for (let i = 1; i <= periods; i++) {
+                    const payment = amount * (periodicRate / 100);
+                    schedule.push({
+                        period: i,
+                        payment: payment
+                    });
+                }
+
+                return schedule;
+            }
+
+            function formatCurrency(value) {
+                return new Intl.NumberFormat('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }).format(value);
+            }
+
+            function updateCharts(preTaxCost, afterTaxCost) {
+                const ctx = document.getElementById('costChart').getContext('2d');
+                
+                if (costChart) {
+                    costChart.destroy();
+                }
+
+                costChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Pre-tax Cost', 'After-tax Cost'],
+                        datasets: [{
+                            label: 'Cost of Debt (%)',
+                            data: [preTaxCost, afterTaxCost],
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.2)',
+                                'rgba(75, 192, 192, 0.2)'
+                            ],
+                            borderColor: [
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(75, 192, 192, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Percentage (%)'
+                                }
+                            }
+                        },
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Cost of Debt Comparison'
+                            }
+                        }
+                    }
+                });
+            }
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get input values
+                const interestRate = parseFloat(document.getElementById('interestRate').value);
+                const taxRate = parseFloat(document.getElementById('taxRate').value);
+                const debtAmount = parseFloat(document.getElementById('debtAmount').value);
+                const term = parseInt(document.getElementById('term').value);
+                const paymentFrequency = parseInt(document.getElementById('paymentFrequency').value);
+
+                // Calculate metrics
+                const afterTaxCost = calculateAfterTaxCost(interestRate, taxRate);
+                const schedule = calculatePaymentSchedule(debtAmount, interestRate, term, paymentFrequency);
+                
+                const annualInterest = debtAmount * (interestRate / 100);
+                const annualTaxSavings = annualInterest * (taxRate / 100);
+                const effectiveInterest = annualInterest - annualTaxSavings;
+                const taxShieldValue = annualTaxSavings * term;
+
+                // Update display
+                document.getElementById('preTaxCost').textContent = interestRate.toFixed(2);
+                document.getElementById('afterTaxCost').textContent = afterTaxCost.toFixed(2);
+                document.getElementById('taxShieldValue').textContent = formatCurrency(taxShieldValue);
+                document.getElementById('annualInterest').textContent = formatCurrency(annualInterest);
+                document.getElementById('annualTaxSavings').textContent = formatCurrency(annualTaxSavings);
+                document.getElementById('effectiveInterest').textContent = formatCurrency(effectiveInterest);
+
+                // Update schedule table
+                let tableHtml = '';
+                schedule.forEach(period => {
+                    const taxShield = period.payment * (taxRate / 100);
+                    const afterTaxPayment = period.payment - taxShield;
+                    tableHtml += `
+                        <tr>
+                            <td>${period.period}</td>
+                            <td>$${formatCurrency(period.payment)}</td>
+                            <td>$${formatCurrency(taxShield)}</td>
+                            <td>$${formatCurrency(afterTaxPayment)}</td>
+                        </tr>
+                    `;
+                });
+                document.getElementById('scheduleTable').innerHTML = tableHtml;
+
+                // Update charts
+                updateCharts(interestRate, afterTaxCost);
+
+                results.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html> 

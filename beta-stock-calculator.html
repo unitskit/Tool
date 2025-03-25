@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beta Stock Calculator - Measure Stock Volatility - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate stock beta to measure volatility relative to the market. Analyze risk and potential returns for your investment portfolio.">
+    <meta name="keywords" content="beta calculator, stock volatility, market risk, systematic risk, investment risk, portfolio beta">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">Beta Stock Calculator</h1>
+                    <p class="tool-description">Calculate a stock's beta coefficient to measure its volatility relative to the overall market and assess investment risk.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="betaForm" class="needs-validation" novalidate>
+                        <!-- Stock Returns Input -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Stock Returns Data</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label class="form-label">Enter Stock Returns (% per period)</label>
+                                    <textarea class="form-control" id="stockReturns" rows="4" required placeholder="Enter one return per line (e.g., 2.5&#10;-1.8&#10;3.2)"></textarea>
+                                    <div class="form-text">Enter historical stock returns, one per line</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Market Returns Input -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Market Returns Data</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label class="form-label">Enter Market Returns (% per period)</label>
+                                    <textarea class="form-control" id="marketReturns" rows="4" required placeholder="Enter one return per line (e.g., 1.5&#10;-0.8&#10;2.2)"></textarea>
+                                    <div class="form-text">Enter market index returns for the same periods</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Additional Options -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Additional Options</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="riskFreeRate" class="form-label">Risk-Free Rate (%)</label>
+                                    <input type="number" class="form-control" id="riskFreeRate" step="0.01" value="2.5">
+                                    <div class="form-text">Current risk-free rate (e.g., Treasury yield)</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="timeFrame" class="form-label">Time Frame</label>
+                                    <select class="form-select" id="timeFrame">
+                                        <option value="daily">Daily Returns</option>
+                                        <option value="weekly">Weekly Returns</option>
+                                        <option value="monthly" selected>Monthly Returns</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate Beta</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>Beta Analysis</h3>
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5>Beta Metrics</h5>
+                                        <p>Stock Beta: <strong><span id="betaResult">0</span></strong></p>
+                                        <p>R-Squared: <strong><span id="rSquared">0</span></strong></p>
+                                        <p>Correlation: <strong><span id="correlation">0</span></strong></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5>Risk Analysis</h5>
+                                        <p>Stock Volatility: <strong><span id="stockVolatility">0</span>%</strong></p>
+                                        <p>Market Volatility: <strong><span id="marketVolatility">0</span>%</strong></p>
+                                        <p>Systematic Risk: <strong><span id="systematicRisk">0</span>%</strong></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Risk Interpretation -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Risk Interpretation</h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="riskInterpretation"></div>
+                            </div>
+                        </div>
+
+                        <!-- Scatter Plot -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Returns Scatter Plot</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="scatterPlot"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="capm-calculator.html">CAPM Calculator</a></li>
+                            <li class="mb-2"><a href="portfolio-beta-calculator.html">Portfolio Beta Calculator</a></li>
+                            <li class="mb-2"><a href="stock-calculator.html">Stock Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- How to Use Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter historical stock returns (one per line)</li>
+                            <li class="mb-2">Enter market returns for the same periods</li>
+                            <li class="mb-2">Set the risk-free rate (optional)</li>
+                            <li class="mb-2">Select the time frame of your data</li>
+                            <li>Click calculate to see the beta analysis</li>
+                        </ol>
+                        <div class="mt-3">
+                            <p class="mb-0"><strong>Note:</strong> Beta > 1 indicates higher volatility than the market</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('betaForm');
+            const results = document.getElementById('results');
+            let scatterChart = null;
+
+            function parseReturns(text) {
+                return text.split('\n')
+                    .map(line => line.trim())
+                    .filter(line => line !== '')
+                    .map(line => parseFloat(line));
+            }
+
+            function calculateBeta(stockReturns, marketReturns) {
+                const n = stockReturns.length;
+                let sumXY = 0;
+                let sumX = 0;
+                let sumY = 0;
+                let sumX2 = 0;
+                
+                for (let i = 0; i < n; i++) {
+                    sumXY += marketReturns[i] * stockReturns[i];
+                    sumX += marketReturns[i];
+                    sumY += stockReturns[i];
+                    sumX2 += marketReturns[i] * marketReturns[i];
+                }
+                
+                const beta = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+                return beta;
+            }
+
+            function calculateRSquared(stockReturns, marketReturns, beta) {
+                const meanStock = stockReturns.reduce((a, b) => a + b) / stockReturns.length;
+                const meanMarket = marketReturns.reduce((a, b) => a + b) / marketReturns.length;
+                
+                let SSR = 0;
+                let SST = 0;
+                
+                for (let i = 0; i < stockReturns.length; i++) {
+                    const predicted = beta * marketReturns[i];
+                    SSR += Math.pow(predicted - meanStock, 2);
+                    SST += Math.pow(stockReturns[i] - meanStock, 2);
+                }
+                
+                return SSR / SST;
+            }
+
+            function calculateCorrelation(stockReturns, marketReturns) {
+                const n = stockReturns.length;
+                const meanStock = stockReturns.reduce((a, b) => a + b) / n;
+                const meanMarket = marketReturns.reduce((a, b) => a + b) / n;
+                
+                let numerator = 0;
+                let denomStock = 0;
+                let denomMarket = 0;
+                
+                for (let i = 0; i < n; i++) {
+                    numerator += (stockReturns[i] - meanStock) * (marketReturns[i] - meanMarket);
+                    denomStock += Math.pow(stockReturns[i] - meanStock, 2);
+                    denomMarket += Math.pow(marketReturns[i] - meanMarket, 2);
+                }
+                
+                return numerator / Math.sqrt(denomStock * denomMarket);
+            }
+
+            function calculateVolatility(returns) {
+                const mean = returns.reduce((a, b) => a + b) / returns.length;
+                const variance = returns.reduce((sum, x) => sum + Math.pow(x - mean, 2), 0) / returns.length;
+                return Math.sqrt(variance);
+            }
+
+            function interpretBeta(beta) {
+                if (beta < 0) {
+                    return "This stock tends to move in the opposite direction of the market. It might be useful for portfolio diversification.";
+                } else if (beta < 0.5) {
+                    return "This stock has very low volatility compared to the market. It's generally considered defensive.";
+                } else if (beta < 1) {
+                    return "This stock is less volatile than the market. It may be suitable for risk-averse investors.";
+                } else if (beta === 1) {
+                    return "This stock moves in line with the market. It has average systematic risk.";
+                } else if (beta < 1.5) {
+                    return "This stock is more volatile than the market. It may offer higher potential returns with higher risk.";
+                } else {
+                    return "This stock is highly volatile compared to the market. It's considered aggressive and high-risk.";
+                }
+            }
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get input values
+                const stockReturns = parseReturns(document.getElementById('stockReturns').value);
+                const marketReturns = parseReturns(document.getElementById('marketReturns').value);
+                
+                if (stockReturns.length !== marketReturns.length) {
+                    alert('Number of stock returns must match number of market returns');
+                    return;
+                }
+
+                // Calculate metrics
+                const beta = calculateBeta(stockReturns, marketReturns);
+                const rSquared = calculateRSquared(stockReturns, marketReturns, beta);
+                const correlation = calculateCorrelation(stockReturns, marketReturns);
+                const stockVol = calculateVolatility(stockReturns);
+                const marketVol = calculateVolatility(marketReturns);
+                const systematicRisk = (beta * beta * marketVol * marketVol) / (stockVol * stockVol) * 100;
+
+                // Display results
+                document.getElementById('betaResult').textContent = beta.toFixed(2);
+                document.getElementById('rSquared').textContent = (rSquared * 100).toFixed(2) + '%';
+                document.getElementById('correlation').textContent = correlation.toFixed(2);
+                document.getElementById('stockVolatility').textContent = (stockVol * 100).toFixed(2);
+                document.getElementById('marketVolatility').textContent = (marketVol * 100).toFixed(2);
+                document.getElementById('systematicRisk').textContent = systematicRisk.toFixed(2);
+                document.getElementById('riskInterpretation').textContent = interpretBeta(beta);
+
+                // Create scatter plot
+                const ctx = document.getElementById('scatterPlot').getContext('2d');
+                
+                if (scatterChart) {
+                    scatterChart.destroy();
+                }
+
+                scatterChart = new Chart(ctx, {
+                    type: 'scatter',
+                    data: {
+                        datasets: [{
+                            label: 'Stock vs Market Returns',
+                            data: marketReturns.map((x, i) => ({x: x, y: stockReturns[i]})),
+                            backgroundColor: 'rgba(75, 192, 192, 0.5)'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Market Returns (%)'
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Stock Returns (%)'
+                                }
+                            }
+                        }
+                    }
+                });
+
+                results.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html> 

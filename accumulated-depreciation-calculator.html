@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accumulated Depreciation Calculator - Track Asset Value - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate accumulated depreciation and track asset value over time. Choose from straight-line, declining balance, or sum-of-years methods.">
+    <meta name="keywords" content="accumulated depreciation calculator, asset depreciation, straight-line depreciation, declining balance, sum of years digits">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">Accumulated Depreciation Calculator</h1>
+                    <p class="tool-description">Calculate the accumulated depreciation of assets using different depreciation methods. Track asset values and plan for replacements.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="depreciationForm" class="needs-validation" novalidate>
+                        <!-- Asset Details -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Asset Details</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="assetCost" class="form-label">Initial Asset Cost ($)</label>
+                                    <input type="number" class="form-control" id="assetCost" required min="0" step="100">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="salvageValue" class="form-label">Salvage Value ($)</label>
+                                    <input type="number" class="form-control" id="salvageValue" required min="0" step="100">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="usefulLife" class="form-label">Useful Life (Years)</label>
+                                    <input type="number" class="form-control" id="usefulLife" required min="1" step="1">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="currentYear" class="form-label">Current Year of Use</label>
+                                    <input type="number" class="form-control" id="currentYear" required min="1" step="1">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Depreciation Method -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Depreciation Method</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <select class="form-select" id="depreciationMethod" required>
+                                        <option value="straight-line">Straight-line Depreciation</option>
+                                        <option value="declining-balance">Declining Balance</option>
+                                        <option value="sum-of-years">Sum-of-Years-Digits</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3" id="rateContainer" style="display: none;">
+                                    <label for="declineRate" class="form-label">Declining Balance Rate (%)</label>
+                                    <input type="number" class="form-control" id="declineRate" min="0" max="100" step="1" value="200">
+                                    <div class="form-text">200% for double-declining balance</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate Depreciation</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>Depreciation Analysis</h3>
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5>Current Values</h5>
+                                        <p>Accumulated Depreciation: <strong>$<span id="accumulatedDepreciation">0</span></strong></p>
+                                        <p>Current Book Value: <strong>$<span id="currentBookValue">0</span></strong></p>
+                                        <p>Annual Depreciation: <strong>$<span id="annualDepreciation">0</span></strong></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5>Overall Metrics</h5>
+                                        <p>Total Depreciable Amount: <strong>$<span id="depreciableAmount">0</span></strong></p>
+                                        <p>Depreciation Rate: <strong><span id="depreciationRate">0</span>%</strong></p>
+                                        <p>Remaining Years: <strong><span id="remainingYears">0</span></strong></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Depreciation Schedule -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Depreciation Schedule</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Year</th>
+                                                <th>Annual Depreciation</th>
+                                                <th>Accumulated Depreciation</th>
+                                                <th>Book Value</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="scheduleTable">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="business-loan-calculator.html">Business Loan Calculator</a></li>
+                            <li class="mb-2"><a href="break-even-calculator.html">Break-even Calculator</a></li>
+                            <li class="mb-2"><a href="business-budget-calculator.html">Business Budget Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- How to Use Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter the initial cost of the asset</li>
+                            <li class="mb-2">Input the estimated salvage value</li>
+                            <li class="mb-2">Specify the useful life in years</li>
+                            <li class="mb-2">Select your preferred depreciation method</li>
+                            <li class="mb-2">Enter the current year of use</li>
+                            <li>Click calculate to see depreciation analysis</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('depreciationForm');
+            const results = document.getElementById('results');
+            const methodSelect = document.getElementById('depreciationMethod');
+            const rateContainer = document.getElementById('rateContainer');
+
+            // Show/hide declining balance rate input based on method selection
+            methodSelect.addEventListener('change', function() {
+                rateContainer.style.display = this.value === 'declining-balance' ? 'block' : 'none';
+            });
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get input values
+                const assetCost = parseFloat(document.getElementById('assetCost').value);
+                const salvageValue = parseFloat(document.getElementById('salvageValue').value);
+                const usefulLife = parseInt(document.getElementById('usefulLife').value);
+                const currentYear = parseInt(document.getElementById('currentYear').value);
+                const method = document.getElementById('depreciationMethod').value;
+                const declineRate = parseFloat(document.getElementById('declineRate').value) / 100;
+
+                // Calculate depreciable amount
+                const depreciableAmount = assetCost - salvageValue;
+
+                // Initialize variables for calculations
+                let accumulatedDepreciation = 0;
+                let currentBookValue = assetCost;
+                let annualDepreciation = 0;
+                let schedule = [];
+
+                // Calculate depreciation based on method
+                if (method === 'straight-line') {
+                    annualDepreciation = depreciableAmount / usefulLife;
+                    for (let year = 1; year <= usefulLife; year++) {
+                        accumulatedDepreciation = annualDepreciation * year;
+                        currentBookValue = assetCost - accumulatedDepreciation;
+                        
+                        schedule.push({
+                            year,
+                            annualDep: annualDepreciation,
+                            accumulatedDep: accumulatedDepreciation,
+                            bookValue: Math.max(currentBookValue, salvageValue)
+                        });
+
+                        if (year === currentYear) break;
+                    }
+                } else if (method === 'declining-balance') {
+                    const rate = declineRate / usefulLife;
+                    for (let year = 1; year <= usefulLife; year++) {
+                        annualDepreciation = currentBookValue * rate;
+                        accumulatedDepreciation += annualDepreciation;
+                        currentBookValue = assetCost - accumulatedDepreciation;
+                        
+                        schedule.push({
+                            year,
+                            annualDep: annualDepreciation,
+                            accumulatedDep: accumulatedDepreciation,
+                            bookValue: Math.max(currentBookValue, salvageValue)
+                        });
+
+                        if (year === currentYear) break;
+                    }
+                } else if (method === 'sum-of-years') {
+                    const sumOfYears = (usefulLife * (usefulLife + 1)) / 2;
+                    for (let year = 1; year <= usefulLife; year++) {
+                        annualDepreciation = (depreciableAmount * (usefulLife - year + 1)) / sumOfYears;
+                        accumulatedDepreciation += annualDepreciation;
+                        currentBookValue = assetCost - accumulatedDepreciation;
+                        
+                        schedule.push({
+                            year,
+                            annualDep: annualDepreciation,
+                            accumulatedDep: accumulatedDepreciation,
+                            bookValue: Math.max(currentBookValue, salvageValue)
+                        });
+
+                        if (year === currentYear) break;
+                    }
+                }
+
+                // Display results
+                document.getElementById('accumulatedDepreciation').textContent = accumulatedDepreciation.toFixed(2);
+                document.getElementById('currentBookValue').textContent = currentBookValue.toFixed(2);
+                document.getElementById('annualDepreciation').textContent = annualDepreciation.toFixed(2);
+                document.getElementById('depreciableAmount').textContent = depreciableAmount.toFixed(2);
+                document.getElementById('depreciationRate').textContent = ((annualDepreciation / depreciableAmount) * 100).toFixed(1);
+                document.getElementById('remainingYears').textContent = Math.max(0, usefulLife - currentYear);
+
+                // Generate schedule table
+                const scheduleTable = document.getElementById('scheduleTable');
+                scheduleTable.innerHTML = '';
+                
+                schedule.forEach(entry => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${entry.year}</td>
+                        <td>$${entry.annualDep.toFixed(2)}</td>
+                        <td>$${entry.accumulatedDep.toFixed(2)}</td>
+                        <td>$${entry.bookValue.toFixed(2)}</td>
+                    `;
+                    scheduleTable.appendChild(row);
+                });
+
+                results.style.display = 'block';
+            });
+
+            // Form validation
+            form.addEventListener('input', function(e) {
+                if (e.target.type === 'number') {
+                    const value = parseFloat(e.target.value);
+                    const min = parseFloat(e.target.min);
+                    const max = parseFloat(e.target.max);
+
+                    if (!isNaN(min) && value < min) {
+                        e.target.value = min;
+                    }
+                    if (!isNaN(max) && value > max) {
+                        e.target.value = max;
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

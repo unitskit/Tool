@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dividend Discount Model Calculator - Stock Valuation Tools - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate the intrinsic value of stocks using the Dividend Discount Model (DDM). Analyze dividend growth rates and required returns for stock valuation.">
+    <meta name="keywords" content="dividend discount model, DDM, stock valuation, intrinsic value, dividend growth, required return">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">Dividend Discount Model Calculator</h1>
+                    <p class="tool-description">Calculate the intrinsic value of dividend-paying stocks using the Dividend Discount Model (DDM). This model helps determine the theoretical value of a stock based on projected future dividend payments.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="ddmForm" class="needs-validation" novalidate>
+                        <!-- Current Dividend Information -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Current Dividend Information</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="currentDividend" class="form-label">Current Annual Dividend</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" id="currentDividend" step="0.01" value="2.00" required>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="currentPrice" class="form-label">Current Stock Price</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" id="currentPrice" step="0.01" value="50.00" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Growth and Return Rates -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Growth and Return Rates</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="growthRate" class="form-label">Expected Dividend Growth Rate (%)</label>
+                                    <input type="number" class="form-control" id="growthRate" step="0.1" value="5.0" required>
+                                    <div class="form-text">Expected annual growth rate of dividends</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="requiredReturn" class="form-label">Required Rate of Return (%)</label>
+                                    <input type="number" class="form-control" id="requiredReturn" step="0.1" value="10.0" required>
+                                    <div class="form-text">Minimum return rate required by investors</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Model Selection -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Model Selection</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <select class="form-select" id="modelType" required>
+                                        <option value="gordon" selected>Gordon Growth Model (Constant Growth)</option>
+                                        <option value="twostage">Two-Stage Growth Model</option>
+                                    </select>
+                                </div>
+                                
+                                <!-- Two-Stage Model Parameters (initially hidden) -->
+                                <div id="twoStageParams" style="display: none;">
+                                    <div class="mb-3">
+                                        <label for="initialGrowthRate" class="form-label">Initial Growth Rate (%)</label>
+                                        <input type="number" class="form-control" id="initialGrowthRate" step="0.1" value="15.0">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="initialPeriod" class="form-label">Initial Growth Period (Years)</label>
+                                        <input type="number" class="form-control" id="initialPeriod" step="1" value="5">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="terminalGrowthRate" class="form-label">Terminal Growth Rate (%)</label>
+                                        <input type="number" class="form-control" id="terminalGrowthRate" step="0.1" value="3.0">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate Value</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>Valuation Results</h3>
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5>Stock Value Analysis</h5>
+                                        <p>Intrinsic Value: <strong>$<span id="intrinsicValue">0</span></strong></p>
+                                        <p>Current Price: <strong>$<span id="currentPriceDisplay">0</span></strong></p>
+                                        <p>Value Difference: <strong>$<span id="valueDifference">0</span></strong></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5>Key Metrics</h5>
+                                        <p>Dividend Yield: <strong><span id="dividendYield">0</span>%</strong></p>
+                                        <p>Payout Ratio: <strong><span id="payoutRatio">0</span>%</strong></p>
+                                        <p>Margin of Safety: <strong><span id="marginOfSafety">0</span>%</strong></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Valuation Details -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Valuation Details</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Year</th>
+                                                <th>Projected Dividend</th>
+                                                <th>Present Value</th>
+                                                <th>Cumulative Value</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="valuationSchedule"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Visual Representation -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Value Components</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="valueChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="dividend-calculator.html">Dividend Calculator</a></li>
+                            <li class="mb-2"><a href="dividend-yield-calculator.html">Dividend Yield Calculator</a></li>
+                            <li class="mb-2"><a href="intrinsic-value-calculator.html">Intrinsic Value Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- How to Use Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter the current annual dividend and stock price</li>
+                            <li class="mb-2">Set expected growth rate and required return</li>
+                            <li class="mb-2">Choose between Gordon Growth or Two-Stage model</li>
+                            <li class="mb-2">For Two-Stage model, enter additional growth parameters</li>
+                            <li>Click calculate to see the stock's intrinsic value</li>
+                        </ol>
+                        <div class="mt-3">
+                            <p class="mb-0"><strong>Note:</strong> The DDM works best for stable, dividend-paying companies</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('ddmForm');
+            const results = document.getElementById('results');
+            const modelType = document.getElementById('modelType');
+            const twoStageParams = document.getElementById('twoStageParams');
+            let valueChart = null;
+
+            // Show/hide two-stage parameters based on model selection
+            modelType.addEventListener('change', function() {
+                twoStageParams.style.display = this.value === 'twostage' ? 'block' : 'none';
+            });
+
+            function formatCurrency(value) {
+                return new Intl.NumberFormat('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }).format(value);
+            }
+
+            function calculateGordonGrowth(dividend, growthRate, requiredReturn) {
+                const g = growthRate / 100;
+                const r = requiredReturn / 100;
+                
+                if (r <= g) {
+                    throw new Error('Required return must be greater than growth rate');
+                }
+                
+                return dividend * (1 + g) / (r - g);
+            }
+
+            function calculateTwoStage(dividend, initialGrowth, terminalGrowth, requiredReturn, initialPeriod) {
+                const g1 = initialGrowth / 100;
+                const g2 = terminalGrowth / 100;
+                const r = requiredReturn / 100;
+                let value = 0;
+                let yearlyData = [];
+                let currentDividend = dividend;
+                
+                // Stage 1: Initial growth period
+                for (let t = 1; t <= initialPeriod; t++) {
+                    currentDividend *= (1 + g1);
+                    const pv = currentDividend / Math.pow(1 + r, t);
+                    value += pv;
+                    yearlyData.push({
+                        year: t,
+                        dividend: currentDividend,
+                        presentValue: pv,
+                        cumulative: value
+                    });
+                }
+                
+                // Stage 2: Terminal value
+                const terminalDividend = currentDividend * (1 + g2);
+                const terminalValue = terminalDividend / (r - g2);
+                const presentTerminalValue = terminalValue / Math.pow(1 + r, initialPeriod);
+                value += presentTerminalValue;
+                
+                yearlyData.push({
+                    year: initialPeriod + 1,
+                    dividend: terminalDividend,
+                    presentValue: presentTerminalValue,
+                    cumulative: value,
+                    isTerminal: true
+                });
+                
+                return { value, yearlyData };
+            }
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                try {
+                    // Get input values
+                    const currentDividend = parseFloat(document.getElementById('currentDividend').value);
+                    const currentPrice = parseFloat(document.getElementById('currentPrice').value);
+                    const growthRate = parseFloat(document.getElementById('growthRate').value);
+                    const requiredReturn = parseFloat(document.getElementById('requiredReturn').value);
+                    const model = document.getElementById('modelType').value;
+                    
+                    let intrinsicValue, yearlyData;
+                    
+                    if (model === 'gordon') {
+                        intrinsicValue = calculateGordonGrowth(currentDividend, growthRate, requiredReturn);
+                        yearlyData = Array.from({length: 10}, (_, i) => {
+                            const year = i + 1;
+                            const dividend = currentDividend * Math.pow(1 + growthRate/100, year);
+                            const pv = dividend / Math.pow(1 + requiredReturn/100, year);
+                            return {
+                                year,
+                                dividend,
+                                presentValue: pv,
+                                cumulative: intrinsicValue * (1 - Math.pow(1 + growthRate/100, year) / Math.pow(1 + requiredReturn/100, year))
+                            };
+                        });
+                    } else {
+                        const initialGrowth = parseFloat(document.getElementById('initialGrowthRate').value);
+                        const terminalGrowth = parseFloat(document.getElementById('terminalGrowthRate').value);
+                        const initialPeriod = parseInt(document.getElementById('initialPeriod').value);
+                        
+                        const result = calculateTwoStage(currentDividend, initialGrowth, terminalGrowth, requiredReturn, initialPeriod);
+                        intrinsicValue = result.value;
+                        yearlyData = result.yearlyData;
+                    }
+                    
+                    // Calculate metrics
+                    const valueDifference = intrinsicValue - currentPrice;
+                    const dividendYield = (currentDividend / currentPrice) * 100;
+                    const marginOfSafety = ((intrinsicValue - currentPrice) / intrinsicValue) * 100;
+                    
+                    // Display results
+                    document.getElementById('intrinsicValue').textContent = formatCurrency(intrinsicValue);
+                    document.getElementById('currentPriceDisplay').textContent = formatCurrency(currentPrice);
+                    document.getElementById('valueDifference').textContent = formatCurrency(valueDifference);
+                    document.getElementById('dividendYield').textContent = dividendYield.toFixed(2);
+                    document.getElementById('marginOfSafety').textContent = marginOfSafety.toFixed(2);
+                    
+                    // Generate schedule
+                    const scheduleHtml = yearlyData.map(data => `
+                        <tr>
+                            <td>${data.year}</td>
+                            <td>$${formatCurrency(data.dividend)}</td>
+                            <td>$${formatCurrency(data.presentValue)}</td>
+                            <td>$${formatCurrency(data.cumulative)}</td>
+                        </tr>
+                    `).join('');
+                    document.getElementById('valuationSchedule').innerHTML = scheduleHtml;
+
+                    // Create/update chart
+                    const ctx = document.getElementById('valueChart').getContext('2d');
+                    
+                    if (valueChart) {
+                        valueChart.destroy();
+                    }
+
+                    valueChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: yearlyData.map(data => `Year ${data.year}`),
+                            datasets: [
+                                {
+                                    label: 'Present Value of Dividends',
+                                    data: yearlyData.map(data => data.presentValue),
+                                    backgroundColor: data => data.raw.isTerminal ? 'rgba(255, 99, 132, 0.5)' : 'rgba(75, 192, 192, 0.5)',
+                                    borderColor: data => data.raw.isTerminal ? 'rgba(255, 99, 132, 1)' : 'rgba(75, 192, 192, 1)',
+                                    borderWidth: 1
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    title: {
+                                        display: true,
+                                        text: 'Present Value ($)'
+                                    }
+                                }
+                            },
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: 'Present Value of Future Dividends'
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            return `Present Value: $${formatCurrency(context.raw)}`;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+                    results.style.display = 'block';
+                } catch (error) {
+                    alert(error.message);
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

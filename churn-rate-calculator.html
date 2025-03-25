@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Churn Rate Calculator - Business Analytics Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <main class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <h1 class="mb-4">Churn Rate Calculator</h1>
+                <div class="card">
+                    <div class="card-body">
+                        <p class="card-text mb-4">
+                            Calculate and analyze your customer churn rate to understand customer retention patterns and identify potential issues. This tool helps you track customer attrition and make data-driven decisions to improve retention.
+                        </p>
+                        
+                        <form id="churnRateForm">
+                            <!-- Customer Data -->
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Customer Data</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="periodStart" class="form-label">Period Start</label>
+                                                <input type="date" class="form-control" id="periodStart" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="periodEnd" class="form-label">Period End</label>
+                                                <input type="date" class="form-control" id="periodEnd" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="totalCustomers" class="form-label">Total Customers at Start</label>
+                                                <input type="number" class="form-control" id="totalCustomers" required min="0">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="lostCustomers" class="form-label">Lost Customers</label>
+                                                <input type="number" class="form-control" id="lostCustomers" required min="0">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="newCustomers" class="form-label">New Customers</label>
+                                                <input type="number" class="form-control" id="newCustomers" required min="0">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="revenuePerCustomer" class="form-label">Average Revenue per Customer</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text">$</span>
+                                                    <input type="number" class="form-control" id="revenuePerCustomer" required min="0" step="0.01">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Cost Data -->
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Cost Data</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="acquisitionCost" class="form-label">Customer Acquisition Cost</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text">$</span>
+                                                    <input type="number" class="form-control" id="acquisitionCost" required min="0" step="0.01">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="retentionCost" class="form-label">Customer Retention Cost</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text">$</span>
+                                                    <input type="number" class="form-control" id="retentionCost" required min="0" step="0.01">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-calculator"></i> Calculate Churn Rate
+                            </button>
+                        </form>
+
+                        <div id="result" class="mt-4" style="display: none;">
+                            <h3>Churn Rate Analysis</h3>
+                            <div class="card mb-4">
+                                <div class="card-body">
+                                    <canvas id="churnChart"></canvas>
+                                </div>
+                            </div>
+
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Key Metrics</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div id="metrics"></div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Financial Impact</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div id="financialImpact"></div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Recommendations</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div id="recommendations"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <h3>How to Use</h3>
+                            <ol>
+                                <li>Enter the period start and end dates</li>
+                                <li>Input the total number of customers at the start of the period</li>
+                                <li>Enter the number of customers lost during the period</li>
+                                <li>Add the number of new customers acquired</li>
+                                <li>Input average revenue per customer</li>
+                                <li>Add customer acquisition and retention costs</li>
+                                <li>Click Calculate to view the analysis</li>
+                            </ol>
+                        </div>
+
+                        <div class="mt-4">
+                            <h3>Understanding the Results</h3>
+                            <ul>
+                                <li><strong>Churn Rate:</strong> Percentage of customers who stopped using your service</li>
+                                <li><strong>Customer Lifetime Value:</strong> Expected revenue from a customer over their lifetime</li>
+                                <li><strong>Cost of Churn:</strong> Financial impact of losing customers</li>
+                                <li><strong>Net Revenue Impact:</strong> Total revenue lost due to churn</li>
+                                <li><strong>Customer Acquisition Ratio:</strong> Ratio of new customers to lost customers</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script src="../js/tools/churn-rate-calculator.js"></script>
+</body>
+</html> 

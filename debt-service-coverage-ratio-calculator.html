@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debt Service Coverage Ratio Calculator - Fixed Income Tools - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate Debt Service Coverage Ratio (DSCR) to assess a company's ability to service its debt obligations. Analyze debt repayment capacity and financial health.">
+    <meta name="keywords" content="DSCR, debt service coverage ratio, debt analysis, financial metrics, credit analysis, debt capacity">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">Debt Service Coverage Ratio Calculator</h1>
+                    <p class="tool-description">Calculate and analyze the Debt Service Coverage Ratio (DSCR) to assess a company's ability to service its debt obligations using its operating income.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="dscrForm" class="needs-validation" novalidate>
+                        <!-- Operating Income Section -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Operating Income Details</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="ebitda" class="form-label">EBITDA ($)</label>
+                                            <input type="number" class="form-control" id="ebitda" required>
+                                            <div class="form-text">Earnings Before Interest, Taxes, Depreciation & Amortization</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="operatingCashFlow" class="form-label">Operating Cash Flow ($)</label>
+                                            <input type="number" class="form-control" id="operatingCashFlow" required>
+                                            <div class="form-text">Net cash from operating activities</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Debt Service Section -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Debt Service Details</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="principalPayments" class="form-label">Principal Payments ($)</label>
+                                            <input type="number" class="form-control" id="principalPayments" required>
+                                            <div class="form-text">Annual principal repayment amount</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="interestPayments" class="form-label">Interest Payments ($)</label>
+                                            <input type="number" class="form-control" id="interestPayments" required>
+                                            <div class="form-text">Annual interest payment amount</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="leasePayments" class="form-label">Lease Payments ($)</label>
+                                    <input type="number" class="form-control" id="leasePayments" value="0">
+                                    <div class="form-text">Annual lease obligations (if applicable)</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Advanced Options -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Advanced Options</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="dscrMethod" class="form-label">DSCR Calculation Method</label>
+                                            <select class="form-select" id="dscrMethod">
+                                                <option value="ebitda">EBITDA Based</option>
+                                                <option value="cashFlow">Operating Cash Flow Based</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="period" class="form-label">Analysis Period</label>
+                                            <select class="form-select" id="period">
+                                                <option value="annual">Annual</option>
+                                                <option value="quarterly">Quarterly</option>
+                                                <option value="monthly">Monthly</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate DSCR</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>DSCR Analysis</h3>
+                        
+                        <!-- DSCR Results -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Coverage Ratios</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h2 class="display-4 text-center" id="dscrValue">0.00x</h2>
+                                        <p class="text-center" id="dscrInterpretation"></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="alert" id="dscrAlert" role="alert"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Detailed Analysis -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Component Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Component</th>
+                                                <th>Amount ($)</th>
+                                                <th>Percentage</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="componentTable"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Visualization -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Coverage Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="coverageChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Debt Capacity Analysis -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Debt Capacity Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Target DSCR</th>
+                                                <th>Additional Debt Capacity ($)</th>
+                                                <th>Total Supportable Debt ($)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="capacityTable"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="interest-coverage-ratio-calculator.html">Interest Coverage Ratio Calculator</a></li>
+                            <li class="mb-2"><a href="debt-to-equity-calculator.html">Debt to Equity Calculator</a></li>
+                            <li class="mb-2"><a href="loan-to-value-calculator.html">Loan to Value Calculator</a></li>
+                            <li class="mb-2"><a href="debt-ratio-calculator.html">Debt Ratio Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- How to Use Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter EBITDA or Operating Cash Flow</li>
+                            <li class="mb-2">Input principal and interest payments</li>
+                            <li class="mb-2">Add lease payments if applicable</li>
+                            <li class="mb-2">Select calculation method and period</li>
+                            <li>Click Calculate to analyze DSCR</li>
+                        </ol>
+                        <div class="mt-3">
+                            <p class="mb-2"><strong>Interpretation:</strong></p>
+                            <ul class="list-unstyled small">
+                                <li>DSCR > 1.25: Strong debt service capacity</li>
+                                <li>1.00 < DSCR < 1.25: Adequate coverage</li>
+                                <li>DSCR < 1.00: Insufficient coverage</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('dscrForm');
+            const results = document.getElementById('results');
+            let coverageChart = null;
+
+            function calculateDSCR(income, totalDebtService) {
+                return income / totalDebtService;
+            }
+
+            function interpretDSCR(dscr) {
+                if (dscr > 1.25) {
+                    return {
+                        interpretation: "Strong Coverage",
+                        message: "The company has strong debt service capacity with sufficient cushion.",
+                        alertClass: "alert-success"
+                    };
+                } else if (dscr > 1.00) {
+                    return {
+                        interpretation: "Adequate Coverage",
+                        message: "The company can meet its debt obligations but has limited cushion.",
+                        alertClass: "alert-warning"
+                    };
+                } else {
+                    return {
+                        interpretation: "Insufficient Coverage",
+                        message: "The company may have difficulty meeting its debt obligations.",
+                        alertClass: "alert-danger"
+                    };
+                }
+            }
+
+            function formatCurrency(value) {
+                return new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0
+                }).format(value);
+            }
+
+            function formatPercentage(value) {
+                return new Intl.NumberFormat('en-US', {
+                    style: 'percent',
+                    minimumFractionDigits: 1,
+                    maximumFractionDigits: 1
+                }).format(value);
+            }
+
+            function updateCoverageChart(income, debtService) {
+                const ctx = document.getElementById('coverageChart').getContext('2d');
+                
+                if (coverageChart) {
+                    coverageChart.destroy();
+                }
+
+                coverageChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Operating Income', 'Debt Service'],
+                        datasets: [{
+                            label: 'Amount ($)',
+                            data: [income, debtService],
+                            backgroundColor: [
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(255, 99, 132, 0.2)'
+                            ],
+                            borderColor: [
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(255, 99, 132, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Amount ($)'
+                                }
+                            }
+                        },
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Income vs. Debt Service'
+                            }
+                        }
+                    }
+                });
+            }
+
+            function calculateDebtCapacity(income, currentDebtService, targetDscr) {
+                const maxDebtService = income / targetDscr;
+                return maxDebtService - currentDebtService;
+            }
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get input values
+                const ebitda = parseFloat(document.getElementById('ebitda').value);
+                const operatingCashFlow = parseFloat(document.getElementById('operatingCashFlow').value);
+                const principalPayments = parseFloat(document.getElementById('principalPayments').value);
+                const interestPayments = parseFloat(document.getElementById('interestPayments').value);
+                const leasePayments = parseFloat(document.getElementById('leasePayments').value) || 0;
+                const dscrMethod = document.getElementById('dscrMethod').value;
+
+                // Calculate total debt service
+                const totalDebtService = principalPayments + interestPayments + leasePayments;
+
+                // Calculate DSCR based on selected method
+                const operatingIncome = dscrMethod === 'ebitda' ? ebitda : operatingCashFlow;
+                const dscr = calculateDSCR(operatingIncome, totalDebtService);
+                const interpretation = interpretDSCR(dscr);
+
+                // Update display
+                document.getElementById('dscrValue').textContent = dscr.toFixed(2) + 'x';
+                document.getElementById('dscrInterpretation').textContent = interpretation.interpretation;
+                
+                const alert = document.getElementById('dscrAlert');
+                alert.className = `alert ${interpretation.alertClass}`;
+                alert.textContent = interpretation.message;
+
+                // Update component table
+                const components = [
+                    { name: 'Operating Income', amount: operatingIncome },
+                    { name: 'Principal Payments', amount: principalPayments },
+                    { name: 'Interest Payments', amount: interestPayments },
+                    { name: 'Lease Payments', amount: leasePayments }
+                ];
+
+                let tableHtml = components.map(component => `
+                    <tr>
+                        <td>${component.name}</td>
+                        <td>${formatCurrency(component.amount)}</td>
+                        <td>${formatPercentage(component.amount / operatingIncome)}</td>
+                    </tr>
+                `).join('');
+                document.getElementById('componentTable').innerHTML = tableHtml;
+
+                // Update debt capacity table
+                const targetDscrs = [1.25, 1.5, 2.0];
+                tableHtml = targetDscrs.map(targetDscr => {
+                    const additionalCapacity = calculateDebtCapacity(operatingIncome, totalDebtService, targetDscr);
+                    const totalSupportable = totalDebtService + additionalCapacity;
+                    return `
+                        <tr>
+                            <td>${targetDscr.toFixed(2)}x</td>
+                            <td>${formatCurrency(additionalCapacity)}</td>
+                            <td>${formatCurrency(totalSupportable)}</td>
+                        </tr>
+                    `;
+                }).join('');
+                document.getElementById('capacityTable').innerHTML = tableHtml;
+
+                // Update chart
+                updateCoverageChart(operatingIncome, totalDebtService);
+
+                results.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html> 

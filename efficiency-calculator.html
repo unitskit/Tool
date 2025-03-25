@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Efficiency Calculator - Measure Resource Utilization - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate resource utilization, capacity usage, and overall efficiency. Optimize operations and reduce waste with our efficiency calculator.">
+    <meta name="keywords" content="efficiency calculator, resource utilization, capacity planning, operational efficiency, waste reduction">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">Efficiency Calculator</h1>
+                    <p class="tool-description">Analyze resource utilization, capacity usage, and overall efficiency to optimize operations and reduce waste.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="efficiencyForm" class="needs-validation" novalidate>
+                        <!-- Resource Utilization -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Resource Utilization</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="actualOutput" class="form-label">Actual Output</label>
+                                    <input type="number" class="form-control" id="actualOutput" required min="0" step="1">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="maxCapacity" class="form-label">Maximum Capacity</label>
+                                    <input type="number" class="form-control" id="maxCapacity" required min="0" step="1">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="operatingHours" class="form-label">Operating Hours</label>
+                                    <input type="number" class="form-control" id="operatingHours" required min="0" step="0.5">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Resource Consumption -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Resource Consumption</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="actualConsumption" class="form-label">Actual Resource Consumption</label>
+                                    <input type="number" class="form-control" id="actualConsumption" required min="0" step="0.1">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="standardConsumption" class="form-label">Standard Resource Consumption</label>
+                                    <input type="number" class="form-control" id="standardConsumption" required min="0" step="0.1">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="wastage" class="form-label">Resource Wastage (%)</label>
+                                    <input type="number" class="form-control" id="wastage" value="0" min="0" max="100" step="0.1">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Time Efficiency -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Time Efficiency</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="plannedDowntime" class="form-label">Planned Downtime (Hours)</label>
+                                    <input type="number" class="form-control" id="plannedDowntime" value="0" min="0" step="0.5">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="unplannedDowntime" class="form-label">Unplanned Downtime (Hours)</label>
+                                    <input type="number" class="form-control" id="unplannedDowntime" value="0" min="0" step="0.5">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="setupTime" class="form-label">Setup/Changeover Time (Hours)</label>
+                                    <input type="number" class="form-control" id="setupTime" value="0" min="0" step="0.5">
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate Efficiency</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>Efficiency Analysis</h3>
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5>Capacity Metrics</h5>
+                                        <p>Capacity Utilization: <strong><span id="capacityUtilization">0</span>%</strong></p>
+                                        <p>Production Rate: <strong><span id="productionRate">0</span> units/hour</strong></p>
+                                        <p>Theoretical Max Rate: <strong><span id="maxRate">0</span> units/hour</strong></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5>Resource Metrics</h5>
+                                        <p>Resource Efficiency: <strong><span id="resourceEfficiency">0</span>%</strong></p>
+                                        <p>Waste Ratio: <strong><span id="wasteRatio">0</span>%</strong></p>
+                                        <p>Resource Savings Potential: <strong><span id="savingsPotential">0</span>%</strong></p>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5>Time Metrics</h5>
+                                        <p>Equipment Availability: <strong><span id="availability">0</span>%</strong></p>
+                                        <p>Operating Efficiency: <strong><span id="operatingEfficiency">0</span>%</strong></p>
+                                        <p>Setup Time Ratio: <strong><span id="setupRatio">0</span>%</strong></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5>Overall Metrics</h5>
+                                        <p>Overall Equipment Effectiveness: <strong><span id="oee">0</span>%</strong></p>
+                                        <p>Total Efficiency Score: <strong><span id="totalEfficiency">0</span>%</strong></p>
+                                        <p>Performance Index: <strong><span id="performanceIndex">0</span></strong></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Improvement Opportunities -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Improvement Opportunities</h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="improvements">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="productivity-calculator.html">Productivity Calculator</a></li>
+                            <li class="mb-2"><a href="labor-cost-calculator.html">Labor Cost Calculator</a></li>
+                            <li class="mb-2"><a href="break-even-calculator.html">Break-even Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- How to Use Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter actual output and maximum capacity</li>
+                            <li class="mb-2">Input resource consumption values</li>
+                            <li class="mb-2">Specify operating hours and downtime</li>
+                            <li class="mb-2">Add setup time if applicable</li>
+                            <li class="mb-2">Include wastage percentage</li>
+                            <li>Click calculate to see efficiency analysis</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('efficiencyForm');
+            const results = document.getElementById('results');
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get input values
+                const actualOutput = parseFloat(document.getElementById('actualOutput').value);
+                const maxCapacity = parseFloat(document.getElementById('maxCapacity').value);
+                const operatingHours = parseFloat(document.getElementById('operatingHours').value);
+                const actualConsumption = parseFloat(document.getElementById('actualConsumption').value);
+                const standardConsumption = parseFloat(document.getElementById('standardConsumption').value);
+                const wastage = parseFloat(document.getElementById('wastage').value) / 100;
+                const plannedDowntime = parseFloat(document.getElementById('plannedDowntime').value);
+                const unplannedDowntime = parseFloat(document.getElementById('unplannedDowntime').value);
+                const setupTime = parseFloat(document.getElementById('setupTime').value);
+
+                // Calculate capacity metrics
+                const capacityUtilization = (actualOutput / maxCapacity) * 100;
+                const productionRate = actualOutput / operatingHours;
+                const maxRate = maxCapacity / operatingHours;
+
+                // Calculate resource metrics
+                const resourceEfficiency = (standardConsumption / actualConsumption) * 100;
+                const wasteRatio = wastage * 100;
+                const savingsPotential = 100 - resourceEfficiency;
+
+                // Calculate time metrics
+                const totalTime = operatingHours;
+                const availableTime = totalTime - plannedDowntime;
+                const runningTime = availableTime - unplannedDowntime - setupTime;
+                const availability = (runningTime / availableTime) * 100;
+                const operatingEfficiency = (runningTime / totalTime) * 100;
+                const setupRatio = (setupTime / totalTime) * 100;
+
+                // Calculate overall metrics
+                const performance = (actualOutput / maxCapacity) * 100;
+                const quality = 100 - (wastage * 100);
+                const oee = (availability * performance * quality) / 10000; // Overall Equipment Effectiveness
+                const totalEfficiency = (capacityUtilization + resourceEfficiency + operatingEfficiency) / 3;
+                const performanceIndex = oee / 100;
+
+                // Display results
+                document.getElementById('capacityUtilization').textContent = capacityUtilization.toFixed(1);
+                document.getElementById('productionRate').textContent = productionRate.toFixed(2);
+                document.getElementById('maxRate').textContent = maxRate.toFixed(2);
+                document.getElementById('resourceEfficiency').textContent = resourceEfficiency.toFixed(1);
+                document.getElementById('wasteRatio').textContent = wasteRatio.toFixed(1);
+                document.getElementById('savingsPotential').textContent = savingsPotential.toFixed(1);
+                document.getElementById('availability').textContent = availability.toFixed(1);
+                document.getElementById('operatingEfficiency').textContent = operatingEfficiency.toFixed(1);
+                document.getElementById('setupRatio').textContent = setupRatio.toFixed(1);
+                document.getElementById('oee').textContent = oee.toFixed(1);
+                document.getElementById('totalEfficiency').textContent = totalEfficiency.toFixed(1);
+                document.getElementById('performanceIndex').textContent = performanceIndex.toFixed(2);
+
+                // Generate improvement recommendations
+                const improvements = document.getElementById('improvements');
+                let improvementText = '<ul class="mb-0">';
+
+                if (capacityUtilization < 85) {
+                    improvementText += '<li>Consider optimizing production scheduling to improve capacity utilization.</li>';
+                }
+                if (resourceEfficiency < 90) {
+                    improvementText += '<li>Implement resource monitoring and control measures to reduce waste.</li>';
+                }
+                if (availability < 85) {
+                    improvementText += '<li>Review maintenance procedures to reduce unplanned downtime.</li>';
+                }
+                if (setupRatio > 15) {
+                    improvementText += '<li>Implement quick changeover techniques to reduce setup time.</li>';
+                }
+                if (oee < 85) {
+                    improvementText += '<li>Focus on improving overall equipment effectiveness through targeted improvements.</li>';
+                }
+
+                improvementText += '</ul>';
+                improvements.innerHTML = improvementText;
+
+                results.style.display = 'block';
+            });
+
+            // Form validation
+            form.addEventListener('input', function(e) {
+                if (e.target.type === 'number') {
+                    const value = parseFloat(e.target.value);
+                    const min = parseFloat(e.target.min);
+                    const max = parseFloat(e.target.max);
+
+                    if (!isNaN(min) && value < min) {
+                        e.target.value = min;
+                    }
+                    if (!isNaN(max) && value > max) {
+                        e.target.value = max;
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

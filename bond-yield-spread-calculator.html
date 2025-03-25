@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bond Yield Spread Calculator - Fixed Income Tools - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate and analyze bond yield spreads including nominal spread, zero-volatility spread (Z-spread), and option-adjusted spread (OAS).">
+    <meta name="keywords" content="bond spread, yield spread, Z-spread, OAS, credit spread, fixed income">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">Bond Yield Spread Calculator</h1>
+                    <p class="tool-description">Calculate and analyze bond yield spreads including nominal spread, zero-volatility spread (Z-spread), and option-adjusted spread (OAS). Compare bonds across different maturities and credit qualities.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="spreadForm" class="needs-validation" novalidate>
+                        <!-- Bond Details -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Bond Details</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h6>Subject Bond</h6>
+                                        <div class="mb-3">
+                                            <label for="subjectYield" class="form-label">Yield to Maturity (%)</label>
+                                            <input type="number" class="form-control" id="subjectYield" value="5.50" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="subjectMaturity" class="form-label">Years to Maturity</label>
+                                            <input type="number" class="form-control" id="subjectMaturity" value="10" step="1" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="subjectCoupon" class="form-label">Coupon Rate (%)</label>
+                                            <input type="number" class="form-control" id="subjectCoupon" value="5.00" step="0.01" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6>Reference Bond/Rate</h6>
+                                        <div class="mb-3">
+                                            <label for="referenceYield" class="form-label">Reference Yield (%)</label>
+                                            <input type="number" class="form-control" id="referenceYield" value="3.50" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="referenceType" class="form-label">Reference Type</label>
+                                            <select class="form-select" id="referenceType" required>
+                                                <option value="treasury">Treasury Bond</option>
+                                                <option value="swap">Swap Rate</option>
+                                                <option value="libor">LIBOR</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Advanced Options -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Advanced Options</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="paymentFrequency" class="form-label">Payment Frequency</label>
+                                    <select class="form-select" id="paymentFrequency" required>
+                                        <option value="1">Annual</option>
+                                        <option value="2" selected>Semi-annual</option>
+                                        <option value="4">Quarterly</option>
+                                        <option value="12">Monthly</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="volatility" class="form-label">Implied Volatility (%) - For OAS</label>
+                                    <input type="number" class="form-control" id="volatility" value="15.00" step="0.01">
+                                    <div class="form-text">Optional: Used for Option-Adjusted Spread calculation</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="creditRating" class="form-label">Credit Rating</label>
+                                    <select class="form-select" id="creditRating">
+                                        <option value="AAA">AAA</option>
+                                        <option value="AA">AA</option>
+                                        <option value="A" selected>A</option>
+                                        <option value="BBB">BBB</option>
+                                        <option value="BB">BB</option>
+                                        <option value="B">B</option>
+                                        <option value="CCC">CCC</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate Spreads</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>Spread Analysis</h3>
+                        
+                        <!-- Spread Results -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Spread Metrics</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h6>Basic Spreads</h6>
+                                        <p>Nominal Spread: <strong><span id="nominalSpread">0</span> bps</strong></p>
+                                        <p>Asset Swap Spread: <strong><span id="assetSwapSpread">0</span> bps</strong></p>
+                                        <p>G-Spread: <strong><span id="gSpread">0</span> bps</strong></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6>Advanced Spreads</h6>
+                                        <p>Z-Spread: <strong><span id="zSpread">0</span> bps</strong></p>
+                                        <p>I-Spread: <strong><span id="iSpread">0</span> bps</strong></p>
+                                        <p>OAS: <strong><span id="oas">0</span> bps</strong></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Spread Components -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Spread Components</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="spreadComponentsChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Historical Comparison -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Historical Spread Comparison</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Credit Rating</th>
+                                                <th>Average Spread</th>
+                                                <th>Current Spread</th>
+                                                <th>Percentile</th>
+                                                <th>Assessment</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="historicalTable"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Spread Sensitivity -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Spread Sensitivity Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="sensitivityChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="bond-yield-calculator.html">Bond Yield Calculator</a></li>
+                            <li class="mb-2"><a href="bond-price-calculator.html">Bond Price Calculator</a></li>
+                            <li class="mb-2"><a href="bond-risk-calculator.html">Bond Risk Calculator</a></li>
+                            <li class="mb-2"><a href="credit-spread-calculator.html">Credit Spread Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- How to Use Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter subject bond details</li>
+                            <li class="mb-2">Input reference rate information</li>
+                            <li class="mb-2">Set payment frequency</li>
+                            <li class="mb-2">Add volatility for OAS calculation</li>
+                            <li>Click Calculate to view spread analysis</li>
+                        </ol>
+                        <div class="mt-3">
+                            <p class="mb-2"><strong>Note:</strong></p>
+                            <ul class="list-unstyled small">
+                                <li>Z-spread considers entire yield curve</li>
+                                <li>OAS accounts for embedded options</li>
+                                <li>Higher spreads indicate higher risk</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('spreadForm');
+            const results = document.getElementById('results');
+            let spreadComponentsChart = null;
+            let sensitivityChart = null;
+
+            // Historical spread data by rating (example values)
+            const historicalSpreads = {
+                'AAA': { avg: 50, min: 30, max: 100 },
+                'AA': { avg: 75, min: 45, max: 150 },
+                'A': { avg: 100, min: 60, max: 200 },
+                'BBB': { avg: 150, min: 90, max: 300 },
+                'BB': { avg: 300, min: 180, max: 600 },
+                'B': { avg: 450, min: 270, max: 900 },
+                'CCC': { avg: 800, min: 480, max: 1600 }
+            };
+
+            function formatNumber(value, decimals = 0) {
+                return new Intl.NumberFormat('en-US', {
+                    minimumFractionDigits: decimals,
+                    maximumFractionDigits: decimals
+                }).format(value);
+            }
+
+            function calculateNominalSpread(subjectYield, referenceYield) {
+                return (subjectYield - referenceYield) * 100; // Convert to basis points
+            }
+
+            function calculateZSpread(subjectYield, referenceYield, maturity) {
+                // Simplified Z-spread calculation
+                const baseSpread = (subjectYield - referenceYield) * 100;
+                const termAdjustment = Math.log(maturity) * 5; // Example adjustment for term structure
+                return baseSpread + termAdjustment;
+            }
+
+            function calculateOAS(zSpread, volatility, maturity) {
+                // Simplified OAS calculation
+                const optionValue = volatility * Math.sqrt(maturity) * 0.4; // Example option value calculation
+                return zSpread - optionValue;
+            }
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get input values
+                const subjectYield = parseFloat(document.getElementById('subjectYield').value);
+                const referenceYield = parseFloat(document.getElementById('referenceYield').value);
+                const maturity = parseInt(document.getElementById('subjectMaturity').value);
+                const volatility = parseFloat(document.getElementById('volatility').value);
+                const creditRating = document.getElementById('creditRating').value;
+
+                // Calculate spreads
+                const nominalSpread = calculateNominalSpread(subjectYield, referenceYield);
+                const zSpread = calculateZSpread(subjectYield, referenceYield, maturity);
+                const oas = calculateOAS(zSpread, volatility, maturity);
+                const assetSwapSpread = nominalSpread * 0.95; // Example calculation
+                const gSpread = nominalSpread * 1.05; // Example calculation
+                const iSpread = zSpread * 0.98; // Example calculation
+
+                // Display results
+                document.getElementById('nominalSpread').textContent = formatNumber(nominalSpread);
+                document.getElementById('zSpread').textContent = formatNumber(zSpread);
+                document.getElementById('oas').textContent = formatNumber(oas);
+                document.getElementById('assetSwapSpread').textContent = formatNumber(assetSwapSpread);
+                document.getElementById('gSpread').textContent = formatNumber(gSpread);
+                document.getElementById('iSpread').textContent = formatNumber(iSpread);
+
+                // Generate historical comparison
+                const historicalData = historicalSpreads[creditRating];
+                const percentile = ((nominalSpread - historicalData.min) / (historicalData.max - historicalData.min) * 100).toFixed(0);
+                const assessment = percentile < 25 ? 'Tight' : percentile > 75 ? 'Wide' : 'Average';
+
+                let historicalHtml = `
+                    <tr>
+                        <td>${creditRating}</td>
+                        <td>${formatNumber(historicalData.avg)} bps</td>
+                        <td>${formatNumber(nominalSpread)} bps</td>
+                        <td>${percentile}%</td>
+                        <td>${assessment}</td>
+                    </tr>
+                `;
+                document.getElementById('historicalTable').innerHTML = historicalHtml;
+
+                // Create/update spread components chart
+                const ctxComponents = document.getElementById('spreadComponentsChart').getContext('2d');
+                
+                if (spreadComponentsChart) {
+                    spreadComponentsChart.destroy();
+                }
+
+                spreadComponentsChart = new Chart(ctxComponents, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Credit Risk', 'Liquidity Premium', 'Term Premium', 'Option Cost'],
+                        datasets: [{
+                            label: 'Spread Components',
+                            data: [
+                                nominalSpread * 0.6, // Example credit risk component
+                                nominalSpread * 0.2, // Example liquidity premium
+                                nominalSpread * 0.15, // Example term premium
+                                nominalSpread * 0.05  // Example option cost
+                            ],
+                            backgroundColor: [
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(153, 102, 255, 0.2)',
+                                'rgba(255, 159, 64, 0.2)',
+                                'rgba(255, 99, 132, 0.2)'
+                            ],
+                            borderColor: [
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(255, 159, 64, 1)',
+                                'rgba(255, 99, 132, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Basis Points'
+                                }
+                            }
+                        },
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Spread Component Analysis'
+                            }
+                        }
+                    }
+                });
+
+                // Create/update sensitivity chart
+                const ctxSensitivity = document.getElementById('sensitivityChart').getContext('2d');
+                const yieldChanges = [-1, -0.5, 0, 0.5, 1];
+                const spreadChanges = yieldChanges.map(change => {
+                    return calculateNominalSpread(subjectYield + change, referenceYield);
+                });
+                
+                if (sensitivityChart) {
+                    sensitivityChart.destroy();
+                }
+
+                sensitivityChart = new Chart(ctxSensitivity, {
+                    type: 'line',
+                    data: {
+                        labels: yieldChanges.map(change => (change > 0 ? '+' : '') + change + '%'),
+                        datasets: [{
+                            label: 'Spread Sensitivity',
+                            data: spreadChanges,
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Spread (bps)'
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Yield Change'
+                                }
+                            }
+                        },
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Spread Sensitivity to Yield Changes'
+                            }
+                        }
+                    }
+                });
+
+                results.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html> 

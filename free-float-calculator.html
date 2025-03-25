@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Float Calculator - Financial Analysis Tools - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate a company's free float shares and percentage. Analyze share ownership structure and market liquidity metrics.">
+    <meta name="keywords" content="free float, float shares, market liquidity, share ownership, stock market, public float">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">Free Float Calculator</h1>
+                    <p class="tool-description">Calculate the number and percentage of shares freely available for trading in the public market. Analyze ownership structure and market liquidity.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="freeFloatForm" class="needs-validation" novalidate>
+                        <!-- Total Shares Section -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Total Shares Outstanding</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="totalShares" class="form-label">Total Number of Shares</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="totalShares" step="1000000" value="100000000" required>
+                                        <span class="input-group-text">shares</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Restricted Shares Section -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Restricted Shares</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="promoterHolding" class="form-label">Promoter/Insider Holding</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="promoterHolding" step="1000000" value="40000000">
+                                        <span class="input-group-text">shares</span>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="governmentHolding" class="form-label">Government Holding</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="governmentHolding" step="1000000" value="0">
+                                        <span class="input-group-text">shares</span>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="strategicHolding" class="form-label">Strategic Holdings</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="strategicHolding" step="1000000" value="10000000">
+                                        <span class="input-group-text">shares</span>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="lockedShares" class="form-label">Locked-in Shares</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" id="lockedShares" step="1000000" value="5000000">
+                                        <span class="input-group-text">shares</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate Free Float</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>Free Float Analysis</h3>
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5>Free Float Metrics</h5>
+                                        <p>Free Float Shares: <strong><span id="freeFloatShares">0</span></strong></p>
+                                        <p>Free Float Percentage: <strong><span id="freeFloatPercentage">0.00</span>%</strong></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5>Restricted Shares</h5>
+                                        <p>Total Restricted Shares: <strong><span id="totalRestricted">0</span></strong></p>
+                                        <p>Restricted Percentage: <strong><span id="restrictedPercentage">0.00</span>%</strong></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Ownership Structure -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Ownership Structure</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Category</th>
+                                                <th>Shares</th>
+                                                <th>Percentage</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="ownershipAnalysis"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Visual Representation -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Share Distribution</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="shareDistributionChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="market-cap-calculator.html">Market Cap Calculator</a></li>
+                            <li class="mb-2"><a href="stock-calculator.html">Stock Calculator</a></li>
+                            <li class="mb-2"><a href="stock-average-calculator.html">Stock Average Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- How to Use Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter the total number of shares outstanding</li>
+                            <li class="mb-2">Input promoter/insider holdings</li>
+                            <li class="mb-2">Add government holdings (if any)</li>
+                            <li class="mb-2">Enter strategic holdings</li>
+                            <li>Input locked-in shares</li>
+                        </ol>
+                        <div class="mt-3">
+                            <p class="mb-0"><strong>Note:</strong> Higher free float generally indicates better market liquidity</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('freeFloatForm');
+            const results = document.getElementById('results');
+            let shareDistributionChart = null;
+
+            function formatNumber(value) {
+                return new Intl.NumberFormat('en-US').format(value);
+            }
+
+            function formatPercentage(value) {
+                return new Intl.NumberFormat('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }).format(value);
+            }
+
+            function calculateFreeFloat(totalShares, restrictedShares) {
+                const totalRestricted = Object.values(restrictedShares).reduce((a, b) => a + b, 0);
+                const freeFloat = Math.max(0, totalShares - totalRestricted);
+                const freeFloatPercentage = (freeFloat / totalShares) * 100;
+                const restrictedPercentage = (totalRestricted / totalShares) * 100;
+
+                const components = [
+                    {
+                        name: 'Free Float',
+                        shares: freeFloat,
+                        percentage: freeFloatPercentage
+                    },
+                    {
+                        name: 'Promoter/Insider',
+                        shares: restrictedShares.promoter,
+                        percentage: (restrictedShares.promoter / totalShares) * 100
+                    },
+                    {
+                        name: 'Government',
+                        shares: restrictedShares.government,
+                        percentage: (restrictedShares.government / totalShares) * 100
+                    },
+                    {
+                        name: 'Strategic',
+                        shares: restrictedShares.strategic,
+                        percentage: (restrictedShares.strategic / totalShares) * 100
+                    },
+                    {
+                        name: 'Locked-in',
+                        shares: restrictedShares.locked,
+                        percentage: (restrictedShares.locked / totalShares) * 100
+                    }
+                ];
+
+                return {
+                    freeFloat,
+                    freeFloatPercentage,
+                    totalRestricted,
+                    restrictedPercentage,
+                    components
+                };
+            }
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get input values
+                const totalShares = parseFloat(document.getElementById('totalShares').value);
+                const restrictedShares = {
+                    promoter: parseFloat(document.getElementById('promoterHolding').value || '0'),
+                    government: parseFloat(document.getElementById('governmentHolding').value || '0'),
+                    strategic: parseFloat(document.getElementById('strategicHolding').value || '0'),
+                    locked: parseFloat(document.getElementById('lockedShares').value || '0')
+                };
+                
+                // Calculate results
+                const results = calculateFreeFloat(totalShares, restrictedShares);
+                
+                // Display results
+                document.getElementById('freeFloatShares').textContent = formatNumber(results.freeFloat);
+                document.getElementById('freeFloatPercentage').textContent = formatPercentage(results.freeFloatPercentage);
+                document.getElementById('totalRestricted').textContent = formatNumber(results.totalRestricted);
+                document.getElementById('restrictedPercentage').textContent = formatPercentage(results.restrictedPercentage);
+                
+                // Generate ownership analysis
+                const analysisHtml = results.components.map(component => `
+                    <tr>
+                        <td>${component.name}</td>
+                        <td>${formatNumber(component.shares)}</td>
+                        <td>${formatPercentage(component.percentage)}%</td>
+                    </tr>
+                `).join('');
+                document.getElementById('ownershipAnalysis').innerHTML = analysisHtml;
+
+                // Create/update chart
+                const ctx = document.getElementById('shareDistributionChart').getContext('2d');
+                
+                if (shareDistributionChart) {
+                    shareDistributionChart.destroy();
+                }
+
+                shareDistributionChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: results.components.map(c => c.name),
+                        datasets: [{
+                            data: results.components.map(c => c.percentage),
+                            backgroundColor: [
+                                'rgba(75, 192, 192, 0.5)',
+                                'rgba(255, 99, 132, 0.5)',
+                                'rgba(255, 205, 86, 0.5)',
+                                'rgba(54, 162, 235, 0.5)',
+                                'rgba(153, 102, 255, 0.5)'
+                            ],
+                            borderColor: [
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(255, 205, 86, 1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(153, 102, 255, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Share Distribution'
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return `${context.label}: ${formatPercentage(context.raw)}%`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+
+                document.getElementById('results').style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html> 

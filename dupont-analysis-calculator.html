@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DuPont Analysis Calculator - Financial Analysis Tools - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Perform DuPont analysis to break down return on equity (ROE) into its component ratios. Analyze profitability, asset efficiency, and financial leverage.">
+    <meta name="keywords" content="DuPont analysis, ROE, profit margin, asset turnover, financial leverage, financial analysis">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">DuPont Analysis Calculator</h1>
+                    <p class="tool-description">Break down Return on Equity (ROE) into its component ratios using the DuPont analysis framework. Analyze how profitability, asset efficiency, and financial leverage contribute to overall return on equity.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="dupontForm" class="needs-validation" novalidate>
+                        <!-- Income Statement Items -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Income Statement Items</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="netIncome" class="form-label">Net Income</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" id="netIncome" step="1000000" value="100000000" required>
+                                    </div>
+                                    <div class="form-text">Enter in millions (e.g., 100 for $100 million)</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="sales" class="form-label">Total Sales (Revenue)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" id="sales" step="1000000" value="1000000000" required>
+                                    </div>
+                                    <div class="form-text">Enter in millions (e.g., 1000 for $1 billion)</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Balance Sheet Items -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Balance Sheet Items</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="totalAssets" class="form-label">Total Assets</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" id="totalAssets" step="1000000" value="2000000000" required>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="shareholdersEquity" class="form-label">Shareholders' Equity</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" id="shareholdersEquity" step="1000000" value="800000000" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Additional Metrics (Optional) -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Additional Metrics (Optional)</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="operatingIncome" class="form-label">Operating Income (EBIT)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" id="operatingIncome" step="1000000" placeholder="Enter operating income">
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="totalLiabilities" class="form-label">Total Liabilities</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" id="totalLiabilities" step="1000000" placeholder="Enter total liabilities">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Perform DuPont Analysis</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>DuPont Analysis Results</h3>
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5>Key Ratios</h5>
+                                        <p>Return on Equity (ROE): <strong><span id="roe">0</span>%</strong></p>
+                                        <p>Net Profit Margin: <strong><span id="profitMargin">0</span>%</strong></p>
+                                        <p>Asset Turnover: <strong><span id="assetTurnover">0</span>x</strong></p>
+                                        <p>Financial Leverage: <strong><span id="financialLeverage">0</span>x</strong></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5>Additional Metrics</h5>
+                                        <p>Operating Margin: <strong><span id="operatingMargin">0</span>%</strong></p>
+                                        <p>Debt to Equity: <strong><span id="debtToEquity">0</span>x</strong></p>
+                                        <p>Return on Assets: <strong><span id="roa">0</span>%</strong></p>
+                                        <p>Equity Multiplier: <strong><span id="equityMultiplier">0</span>x</strong></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Component Analysis -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Component Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Component</th>
+                                                <th>Value</th>
+                                                <th>Contribution to ROE</th>
+                                                <th>Impact Level</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="componentAnalysis"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Visual Representation -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">ROE Breakdown</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="dupontChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="return-on-equity-calculator.html">Return on Equity Calculator</a></li>
+                            <li class="mb-2"><a href="financial-ratios-calculator.html">Financial Ratios Calculator</a></li>
+                            <li class="mb-2"><a href="profit-margin-calculator.html">Profit Margin Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- How to Use Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter net income and total sales</li>
+                            <li class="mb-2">Input total assets and shareholders' equity</li>
+                            <li class="mb-2">Add optional metrics for detailed analysis</li>
+                            <li class="mb-2">Click calculate to perform DuPont analysis</li>
+                            <li>Review the breakdown of ROE components</li>
+                        </ol>
+                        <div class="mt-3">
+                            <p class="mb-0"><strong>Note:</strong> Higher ratios generally indicate better performance, but should be compared to industry standards</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('dupontForm');
+            const results = document.getElementById('results');
+            let dupontChart = null;
+
+            function formatNumber(value) {
+                return new Intl.NumberFormat('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }).format(value);
+            }
+
+            function assessImpact(value, metric) {
+                switch(metric) {
+                    case 'profitMargin':
+                        if (value > 20) return 'High';
+                        if (value > 10) return 'Moderate';
+                        return 'Low';
+                    case 'assetTurnover':
+                        if (value > 2) return 'High';
+                        if (value > 1) return 'Moderate';
+                        return 'Low';
+                    case 'financialLeverage':
+                        if (value > 3) return 'High';
+                        if (value > 2) return 'Moderate';
+                        return 'Low';
+                    default:
+                        return 'Moderate';
+                }
+            }
+
+            function calculateDuPont(netIncome, sales, totalAssets, equity, operatingIncome, totalLiabilities) {
+                const profitMargin = (netIncome / sales) * 100;
+                const assetTurnover = sales / totalAssets;
+                const financialLeverage = totalAssets / equity;
+                const roe = profitMargin * assetTurnover * financialLeverage / 100;
+                
+                const operatingMargin = operatingIncome ? (operatingIncome / sales) * 100 : null;
+                const debtToEquity = totalLiabilities ? totalLiabilities / equity : null;
+                const roa = (netIncome / totalAssets) * 100;
+                const equityMultiplier = totalAssets / equity;
+                
+                return {
+                    roe,
+                    profitMargin,
+                    assetTurnover,
+                    financialLeverage,
+                    operatingMargin,
+                    debtToEquity,
+                    roa,
+                    equityMultiplier,
+                    components: [
+                        {
+                            name: 'Net Profit Margin',
+                            value: profitMargin,
+                            contribution: profitMargin,
+                            impact: assessImpact(profitMargin, 'profitMargin')
+                        },
+                        {
+                            name: 'Asset Turnover',
+                            value: assetTurnover,
+                            contribution: assetTurnover * 100,
+                            impact: assessImpact(assetTurnover, 'assetTurnover')
+                        },
+                        {
+                            name: 'Financial Leverage',
+                            value: financialLeverage,
+                            contribution: financialLeverage * 100,
+                            impact: assessImpact(financialLeverage, 'financialLeverage')
+                        }
+                    ]
+                };
+            }
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get input values
+                const netIncome = parseFloat(document.getElementById('netIncome').value);
+                const sales = parseFloat(document.getElementById('sales').value);
+                const totalAssets = parseFloat(document.getElementById('totalAssets').value);
+                const equity = parseFloat(document.getElementById('shareholdersEquity').value);
+                const operatingIncome = parseFloat(document.getElementById('operatingIncome').value || '0');
+                const totalLiabilities = parseFloat(document.getElementById('totalLiabilities').value || '0');
+                
+                // Calculate metrics
+                const metrics = calculateDuPont(netIncome, sales, totalAssets, equity, operatingIncome, totalLiabilities);
+                
+                // Display results
+                document.getElementById('roe').textContent = formatNumber(metrics.roe);
+                document.getElementById('profitMargin').textContent = formatNumber(metrics.profitMargin);
+                document.getElementById('assetTurnover').textContent = formatNumber(metrics.assetTurnover);
+                document.getElementById('financialLeverage').textContent = formatNumber(metrics.financialLeverage);
+                document.getElementById('operatingMargin').textContent = metrics.operatingMargin ? formatNumber(metrics.operatingMargin) : 'N/A';
+                document.getElementById('debtToEquity').textContent = metrics.debtToEquity ? formatNumber(metrics.debtToEquity) : 'N/A';
+                document.getElementById('roa').textContent = formatNumber(metrics.roa);
+                document.getElementById('equityMultiplier').textContent = formatNumber(metrics.equityMultiplier);
+                
+                // Generate component analysis
+                const analysisHtml = metrics.components.map(component => `
+                    <tr>
+                        <td>${component.name}</td>
+                        <td>${formatNumber(component.value)}${component.name === 'Net Profit Margin' ? '%' : 'x'}</td>
+                        <td>${formatNumber(component.contribution)}%</td>
+                        <td>${component.impact}</td>
+                    </tr>
+                `).join('');
+                document.getElementById('componentAnalysis').innerHTML = analysisHtml;
+
+                // Create/update chart
+                const ctx = document.getElementById('dupontChart').getContext('2d');
+                
+                if (dupontChart) {
+                    dupontChart.destroy();
+                }
+
+                dupontChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: metrics.components.map(c => c.name),
+                        datasets: [{
+                            label: 'Contribution to ROE',
+                            data: metrics.components.map(c => c.contribution),
+                            backgroundColor: [
+                                'rgba(75, 192, 192, 0.5)',
+                                'rgba(255, 99, 132, 0.5)',
+                                'rgba(255, 206, 86, 0.5)'
+                            ],
+                            borderColor: [
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(255, 206, 86, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Contribution (%)'
+                                }
+                            }
+                        },
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Component Contribution to ROE'
+                            }
+                        }
+                    }
+                });
+
+                results.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html> 

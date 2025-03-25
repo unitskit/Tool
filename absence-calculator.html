@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Absence Percentage Calculator - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate employee absence rates and their impact on productivity with our free absence percentage calculator.">
+    <meta name="keywords" content="absence calculator, employee absence rate, attendance calculator, HR tools">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">Absence Percentage Calculator</h1>
+                    <p class="tool-description">Calculate employee absence rates and analyze attendance patterns to improve workforce management.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="absenceForm" class="needs-validation" novalidate>
+                        <div class="mb-4">
+                            <label for="totalWorkDays" class="form-label">Total Work Days</label>
+                            <input type="number" class="form-control" id="totalWorkDays" required min="1">
+                            <div class="invalid-feedback">Please enter valid number of work days.</div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="daysAbsent" class="form-label">Days Absent</label>
+                            <input type="number" class="form-control" id="daysAbsent" required min="0">
+                            <div class="invalid-feedback">Please enter valid number of absent days.</div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="employeeCount" class="form-label">Number of Employees (Optional)</label>
+                            <input type="number" class="form-control" id="employeeCount" min="1">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate Absence Rate</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>Results</h3>
+                        <div class="card">
+                            <div class="card-body">
+                                <p class="mb-2">Absence Rate: <strong><span id="absenceRate">0</span>%</strong></p>
+                                <p class="mb-2">Attendance Rate: <strong><span id="attendanceRate">0</span>%</strong></p>
+                                <p class="mb-0" id="workforceImpact" style="display: none;">
+                                    Total Work Days Lost: <strong><span id="totalDaysLost">0</span></strong>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="labor-cost-calculator.html">Labor Cost Calculator</a></li>
+                            <li class="mb-2"><a href="productivity-calculator.html">Productivity Calculator</a></li>
+                            <li class="mb-2"><a href="fte-calculator.html">Full-time Equivalent Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- How to Use Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter the total number of work days in the period</li>
+                            <li class="mb-2">Input the number of days absent</li>
+                            <li class="mb-2">Optionally, add the number of employees for workforce impact</li>
+                            <li>Click calculate to see the absence and attendance rates</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('absenceForm');
+            const results = document.getElementById('results');
+            const workforceImpact = document.getElementById('workforceImpact');
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get input values
+                const totalWorkDays = parseInt(document.getElementById('totalWorkDays').value);
+                const daysAbsent = parseInt(document.getElementById('daysAbsent').value);
+                const employeeCount = parseInt(document.getElementById('employeeCount').value) || 0;
+
+                // Calculate rates
+                const absenceRate = (daysAbsent / totalWorkDays) * 100;
+                const attendanceRate = 100 - absenceRate;
+                const totalDaysLost = employeeCount ? (daysAbsent * employeeCount) : 0;
+
+                // Display results
+                document.getElementById('absenceRate').textContent = absenceRate.toFixed(2);
+                document.getElementById('attendanceRate').textContent = attendanceRate.toFixed(2);
+                
+                if (employeeCount > 0) {
+                    document.getElementById('totalDaysLost').textContent = totalDaysLost.toLocaleString();
+                    workforceImpact.style.display = 'block';
+                } else {
+                    workforceImpact.style.display = 'none';
+                }
+
+                results.style.display = 'block';
+            });
+
+            // Form validation
+            form.addEventListener('input', function(e) {
+                if (e.target.type === 'number') {
+                    if (e.target.value < 0) {
+                        e.target.value = 0;
+                    }
+                    if (e.target.id === 'totalWorkDays' && e.target.value < 1) {
+                        e.target.value = 1;
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

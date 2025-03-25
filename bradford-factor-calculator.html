@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bradford Factor Calculator - HR Analytics Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <main class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <h1 class="mb-4">Bradford Factor Calculator</h1>
+                <div class="card">
+                    <div class="card-body">
+                        <p class="card-text mb-4">
+                            Calculate the Bradford Factor to measure employee absenteeism patterns. This metric helps identify potential issues with frequent short-term absences.
+                        </p>
+                        
+                        <form id="bradfordFactorForm">
+                            <div class="mb-3">
+                                <label for="numberOfInstances" class="form-label">Number of Absence Instances</label>
+                                <input type="number" class="form-control" id="numberOfInstances" required min="0" step="1">
+                                <div class="form-text">Enter the total number of separate absence periods</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="totalDaysAbsent" class="form-label">Total Days Absent</label>
+                                <input type="number" class="form-control" id="totalDaysAbsent" required min="0" step="1">
+                                <div class="form-text">Enter the total number of days absent</div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-calculator"></i> Calculate
+                            </button>
+                        </form>
+
+                        <div id="result" class="mt-4" style="display: none;">
+                            <h3>Results</h3>
+                            <div class="alert alert-info">
+                                <p class="mb-0">Bradford Factor Score: <strong id="bradfordFactor">0</strong></p>
+                            </div>
+                            <div class="alert" id="bradfordFactorAnalysis">
+                                <p class="mb-0" id="analysisText"></p>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <h3>How to Use</h3>
+                            <ol>
+                                <li>Enter the number of separate absence periods (instances)</li>
+                                <li>Enter the total number of days absent</li>
+                                <li>Click Calculate to see your Bradford Factor score and analysis</li>
+                            </ol>
+                        </div>
+
+                        <div class="mt-4">
+                            <h3>Formula</h3>
+                            <p>Bradford Factor = (Number of Instances)² × Total Days Absent</p>
+                        </div>
+
+                        <div class="mt-4">
+                            <h3>Bradford Factor Thresholds</h3>
+                            <ul>
+                                <li>Under 50: Acceptable</li>
+                                <li>50-100: Concerning</li>
+                                <li>100-200: Serious</li>
+                                <li>Over 200: Critical</li>
+                            </ul>
+                        </div>
+
+                        <div class="mt-4">
+                            <h3>About the Bradford Factor</h3>
+                            <p>The Bradford Factor is a human resources metric used to measure employee absenteeism. It places more weight on frequent short-term absences than on long-term absences, as these are often more disruptive to business operations.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script src="../js/tools/bradford-factor-calculator.js"></script>
+</body>
+</html> 

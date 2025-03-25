@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Average Fixed Cost Calculator - Business Planning Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <main class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <h1 class="mb-4">Average Fixed Cost Calculator</h1>
+                <div class="card">
+                    <div class="card-body">
+                        <p class="card-text mb-4">
+                            Calculate the average fixed cost per unit of production. Fixed costs are expenses that remain constant regardless of production volume.
+                        </p>
+                        
+                        <form id="averageFixedCostForm">
+                            <div class="mb-3">
+                                <label for="totalFixedCost" class="form-label">Total Fixed Cost ($)</label>
+                                <input type="number" class="form-control" id="totalFixedCost" required min="0" step="0.01">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="productionUnits" class="form-label">Number of Units Produced</label>
+                                <input type="number" class="form-control" id="productionUnits" required min="1" step="1">
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-calculator"></i> Calculate
+                            </button>
+                        </form>
+
+                        <div id="result" class="mt-4" style="display: none;">
+                            <h3>Results</h3>
+                            <div class="alert alert-success">
+                                <p class="mb-0">Average Fixed Cost per Unit: <strong id="averageFixedCost">$0.00</strong></p>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <h3>How to Use</h3>
+                            <ol>
+                                <li>Enter your total fixed costs (e.g., rent, salaries, insurance)</li>
+                                <li>Enter the number of units produced</li>
+                                <li>Click Calculate to see your average fixed cost per unit</li>
+                            </ol>
+                        </div>
+
+                        <div class="mt-4">
+                            <h3>Formula</h3>
+                            <p>Average Fixed Cost = Total Fixed Cost ÷ Number of Units Produced</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script src="../js/tools/average-fixed-cost-calculator.js"></script>
+</body>
+</html> 

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compound Interest Calculator - Calculate Investment Growth - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate how your investments grow over time with our compound interest calculator. Plan your savings and investment strategy.">
+    <meta name="keywords" content="compound interest calculator, investment growth, savings calculator, interest rate, investment planning">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">Compound Interest Calculator</h1>
+                    <p class="tool-description">Calculate how your investments grow over time with compound interest. See the power of reinvesting your earnings.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="compoundInterestForm" class="needs-validation" novalidate>
+                        <!-- Initial Investment -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Initial Investment</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="principal" class="form-label">Principal Amount ($)</label>
+                                    <input type="number" class="form-control" id="principal" required min="0" step="0.01">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Interest Details -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Interest Details</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="rate" class="form-label">Annual Interest Rate (%)</label>
+                                    <input type="number" class="form-control" id="rate" required min="0" max="100" step="0.01">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="compoundingFrequency" class="form-label">Compounding Frequency</label>
+                                    <select class="form-select" id="compoundingFrequency" required>
+                                        <option value="1">Annually</option>
+                                        <option value="2">Semi-annually</option>
+                                        <option value="4">Quarterly</option>
+                                        <option value="12">Monthly</option>
+                                        <option value="24">Semi-monthly</option>
+                                        <option value="26">Bi-weekly</option>
+                                        <option value="52">Weekly</option>
+                                        <option value="365">Daily</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Time Period -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Time Period</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="years" class="form-label">Investment Period (Years)</label>
+                                    <input type="number" class="form-control" id="years" required min="1" step="1">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="additionalContribution" class="form-label">Regular Contribution ($)</label>
+                                    <input type="number" class="form-control" id="additionalContribution" min="0" step="0.01" value="0">
+                                    <div class="form-text">Additional amount added each compounding period</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate Growth</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>Investment Growth Analysis</h3>
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5>Principal Investment</h5>
+                                        <p>Initial Amount: <strong>$<span id="initialAmount">0</span></strong></p>
+                                        <p>Total Contributions: <strong>$<span id="totalContributions">0</span></strong></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5>Growth Summary</h5>
+                                        <p>Interest Earned: <strong>$<span id="interestEarned">0</span></strong></p>
+                                        <p>Final Balance: <strong>$<span id="finalBalance">0</span></strong></p>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="text-center">
+                                    <p class="mb-0">Total Return: <strong><span id="totalReturn">0</span>%</strong></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="apy-calculator.html">APY Calculator</a></li>
+                            <li class="mb-2"><a href="investment-calculator.html">Investment Calculator</a></li>
+                            <li class="mb-2"><a href="mortgage-calculator.html">Mortgage Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- How to Use Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter your initial investment amount</li>
+                            <li class="mb-2">Input the annual interest rate</li>
+                            <li class="mb-2">Select compounding frequency</li>
+                            <li class="mb-2">Set investment period in years</li>
+                            <li class="mb-2">Add regular contributions (optional)</li>
+                            <li>Click calculate to see your investment growth</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('compoundInterestForm');
+            const results = document.getElementById('results');
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get input values
+                const principal = parseFloat(document.getElementById('principal').value);
+                const rate = parseFloat(document.getElementById('rate').value) / 100;
+                const compoundingFrequency = parseInt(document.getElementById('compoundingFrequency').value);
+                const years = parseInt(document.getElementById('years').value);
+                const additionalContribution = parseFloat(document.getElementById('additionalContribution').value) || 0;
+
+                // Calculate compound interest with regular contributions
+                const n = compoundingFrequency; // number of times interest is compounded per year
+                const t = years; // time in years
+                const r = rate; // decimal interest rate
+
+                // Calculate amount from principal
+                const principalAmount = principal * Math.pow(1 + r/n, n*t);
+                
+                // Calculate amount from regular contributions
+                let contributionAmount = 0;
+                if (additionalContribution > 0) {
+                    contributionAmount = additionalContribution * ((Math.pow(1 + r/n, n*t) - 1) / (r/n));
+                }
+
+                // Calculate final amounts
+                const finalBalance = principalAmount + contributionAmount;
+                const totalContributions = principal + (additionalContribution * n * t);
+                const interestEarned = finalBalance - totalContributions;
+                const totalReturn = ((finalBalance - totalContributions) / totalContributions) * 100;
+
+                // Display results
+                document.getElementById('initialAmount').textContent = principal.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                document.getElementById('totalContributions').textContent = totalContributions.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                document.getElementById('interestEarned').textContent = interestEarned.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                document.getElementById('finalBalance').textContent = finalBalance.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                document.getElementById('totalReturn').textContent = totalReturn.toFixed(2);
+
+                results.style.display = 'block';
+            });
+
+            // Form validation
+            form.addEventListener('input', function(e) {
+                if (e.target.type === 'number') {
+                    const value = parseFloat(e.target.value);
+                    const min = parseFloat(e.target.min);
+                    const max = parseFloat(e.target.max);
+
+                    if (!isNaN(min) && value < min) {
+                        e.target.value = min;
+                    }
+                    if (!isNaN(max) && value > max) {
+                        e.target.value = max;
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

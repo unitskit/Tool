@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bitcoin ETF Calculator - Investment Returns - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate potential returns and costs for Bitcoin ETF investments. Compare different ETF options and analyze performance metrics.">
+    <meta name="keywords" content="bitcoin ETF calculator, cryptocurrency ETF, bitcoin investment, ETF fees, crypto returns">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">Bitcoin ETF Calculator</h1>
+                    <p class="tool-description">Calculate potential returns, costs, and performance metrics for Bitcoin ETF investments.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="btcEtfForm" class="needs-validation" novalidate>
+                        <!-- Investment Details -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Investment Details</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="investmentAmount" class="form-label">Investment Amount ($)</label>
+                                    <input type="number" class="form-control" id="investmentAmount" required min="0" step="0.01">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="btcPrice" class="form-label">Current Bitcoin Price ($)</label>
+                                    <input type="number" class="form-control" id="btcPrice" required min="0" step="0.01">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="etfExpenseRatio" class="form-label">ETF Expense Ratio (%)</label>
+                                    <input type="number" class="form-control" id="etfExpenseRatio" required min="0" max="5" step="0.01" value="0.5">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="holdingPeriod" class="form-label">Holding Period (Years)</label>
+                                    <input type="number" class="form-control" id="holdingPeriod" required min="1" step="1" value="1">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="expectedReturn" class="form-label">Expected Annual Return (%)</label>
+                                    <input type="number" class="form-control" id="expectedReturn" required step="0.1">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Trading Details -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Trading Details</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="tradingFee" class="form-label">Trading Fee ($)</label>
+                                    <input type="number" class="form-control" id="tradingFee" min="0" step="0.01" value="0">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="spreadPercentage" class="form-label">Bid-Ask Spread (%)</label>
+                                    <input type="number" class="form-control" id="spreadPercentage" min="0" step="0.01" value="0.1">
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate Returns</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>Investment Analysis</h3>
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5>Investment Summary</h5>
+                                        <p>Bitcoin Exposure: <strong><span id="btcExposure">0</span> BTC</strong></p>
+                                        <p>Initial Investment: <strong>$<span id="initialInvestment">0</span></strong></p>
+                                        <p>Expected Final Value: <strong>$<span id="finalValue">0</span></strong></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5>Cost Analysis</h5>
+                                        <p>Annual Expense Fee: <strong>$<span id="annualExpense">0</span></strong></p>
+                                        <p>Total Trading Costs: <strong>$<span id="tradingCosts">0</span></strong></p>
+                                        <p>Total Costs: <strong>$<span id="totalCosts">0</span></strong></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Performance Metrics -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Performance Metrics</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p>Net Return: <strong><span id="netReturn">0</span>%</strong></p>
+                                        <p>Return After Costs: <strong><span id="returnAfterCosts">0</span>%</strong></p>
+                                        <p>Cost Impact: <strong><span id="costImpact">0</span>%</strong></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p>Net Profit: <strong>$<span id="netProfit">0</span></strong></p>
+                                        <p>Profit After Costs: <strong>$<span id="profitAfterCosts">0</span></strong></p>
+                                        <p>Total Cost Amount: <strong>$<span id="costAmount">0</span></strong></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Performance Chart -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Value Projection</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="projectionChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="investment-calculator.html">Investment Calculator</a></li>
+                            <li class="mb-2"><a href="expense-ratio-calculator.html">Expense Ratio Calculator</a></li>
+                            <li class="mb-2"><a href="cryptocurrency-calculator.html">Cryptocurrency Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- How to Use Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter your investment amount</li>
+                            <li class="mb-2">Input the current Bitcoin price</li>
+                            <li class="mb-2">Specify the ETF expense ratio</li>
+                            <li class="mb-2">Set your expected holding period</li>
+                            <li class="mb-2">Add trading fees and spread costs</li>
+                            <li>Click calculate to see projected returns</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('btcEtfForm');
+            const results = document.getElementById('results');
+            let projectionChart = null;
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get input values
+                const investmentAmount = parseFloat(document.getElementById('investmentAmount').value);
+                const btcPrice = parseFloat(document.getElementById('btcPrice').value);
+                const expenseRatio = parseFloat(document.getElementById('etfExpenseRatio').value) / 100;
+                const holdingPeriod = parseInt(document.getElementById('holdingPeriod').value);
+                const expectedReturn = parseFloat(document.getElementById('expectedReturn').value) / 100;
+                const tradingFee = parseFloat(document.getElementById('tradingFee').value) || 0;
+                const spreadPercentage = parseFloat(document.getElementById('spreadPercentage').value) / 100;
+
+                // Calculate Bitcoin exposure
+                const btcExposure = investmentAmount / btcPrice;
+
+                // Calculate trading costs
+                const spreadCost = investmentAmount * spreadPercentage;
+                const totalTradingCosts = (tradingFee * 2) + spreadCost; // Entry and exit fees
+
+                // Calculate annual expense
+                const annualExpense = investmentAmount * expenseRatio;
+
+                // Calculate total costs over holding period
+                const totalExpenseCosts = annualExpense * holdingPeriod;
+                const totalCosts = totalTradingCosts + totalExpenseCosts;
+
+                // Calculate returns
+                const grossFinalValue = investmentAmount * Math.pow(1 + expectedReturn, holdingPeriod);
+                const finalValue = grossFinalValue - totalCosts;
+                
+                // Calculate performance metrics
+                const netReturn = ((grossFinalValue - investmentAmount) / investmentAmount) * 100;
+                const returnAfterCosts = ((finalValue - investmentAmount) / investmentAmount) * 100;
+                const costImpact = netReturn - returnAfterCosts;
+                
+                const netProfit = grossFinalValue - investmentAmount;
+                const profitAfterCosts = finalValue - investmentAmount;
+                const costAmount = totalCosts;
+
+                // Display results
+                document.getElementById('btcExposure').textContent = btcExposure.toFixed(8);
+                document.getElementById('initialInvestment').textContent = investmentAmount.toFixed(2);
+                document.getElementById('finalValue').textContent = finalValue.toFixed(2);
+                document.getElementById('annualExpense').textContent = annualExpense.toFixed(2);
+                document.getElementById('tradingCosts').textContent = totalTradingCosts.toFixed(2);
+                document.getElementById('totalCosts').textContent = totalCosts.toFixed(2);
+                document.getElementById('netReturn').textContent = netReturn.toFixed(2);
+                document.getElementById('returnAfterCosts').textContent = returnAfterCosts.toFixed(2);
+                document.getElementById('costImpact').textContent = costImpact.toFixed(2);
+                document.getElementById('netProfit').textContent = netProfit.toFixed(2);
+                document.getElementById('profitAfterCosts').textContent = profitAfterCosts.toFixed(2);
+                document.getElementById('costAmount').textContent = costAmount.toFixed(2);
+
+                // Generate projection data
+                const labels = [];
+                const grossValues = [];
+                const netValues = [];
+                
+                for (let year = 0; year <= holdingPeriod; year++) {
+                    labels.push(`Year ${year}`);
+                    const grossValue = investmentAmount * Math.pow(1 + expectedReturn, year);
+                    const costs = (annualExpense * year) + totalTradingCosts;
+                    const netValue = grossValue - costs;
+                    grossValues.push(grossValue);
+                    netValues.push(netValue);
+                }
+
+                // Create projection chart
+                const ctx = document.getElementById('projectionChart').getContext('2d');
+                
+                // Destroy existing chart if it exists
+                if (projectionChart) {
+                    projectionChart.destroy();
+                }
+
+                // Create new chart
+                projectionChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Gross Value',
+                                data: grossValues,
+                                borderColor: 'rgb(75, 192, 192)',
+                                tension: 0.1
+                            },
+                            {
+                                label: 'Net Value (After Costs)',
+                                data: netValues,
+                                borderColor: 'rgb(255, 99, 132)',
+                                tension: 0.1
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: false,
+                                title: {
+                                    display: true,
+                                    text: 'Value ($)'
+                                }
+                            }
+                        }
+                    }
+                });
+
+                results.style.display = 'block';
+            });
+
+            // Form validation
+            form.addEventListener('input', function(e) {
+                if (e.target.type === 'number') {
+                    const value = parseFloat(e.target.value);
+                    const min = parseFloat(e.target.min);
+                    const max = parseFloat(e.target.max);
+                    
+                    if (!isNaN(min) && value < min) {
+                        e.target.value = min;
+                    }
+                    if (!isNaN(max) && value > max) {
+                        e.target.value = max;
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

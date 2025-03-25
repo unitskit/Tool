@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PEG Ratio Calculator - Stock Valuation - Investment Tools - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate PEG Ratio to evaluate stocks considering both P/E ratio and earnings growth. Analyze stock valuation and investment potential.">
+    <meta name="keywords" content="PEG ratio, stock valuation, P/E ratio, earnings growth, investment analysis">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">PEG Ratio Calculator</h1>
+                    <p class="tool-description">Calculate and analyze the PEG (Price/Earnings to Growth) Ratio to evaluate stocks considering both P/E ratio and earnings growth rate.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="pegForm" class="needs-validation" novalidate>
+                        <!-- Stock Price & Earnings -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Stock Price & Earnings</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="stockPrice" class="form-label">Current Stock Price ($)</label>
+                                            <input type="number" class="form-control" id="stockPrice" value="50.00" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="earningsPerShare" class="form-label">Earnings Per Share ($)</label>
+                                            <input type="number" class="form-control" id="earningsPerShare" value="2.50" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="peRatio" class="form-label">P/E Ratio</label>
+                                            <input type="number" class="form-control" id="peRatio" value="20.00" step="0.01" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="growthRate" class="form-label">Expected Growth Rate (%)</label>
+                                            <input type="number" class="form-control" id="growthRate" value="15.00" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="riskFreeRate" class="form-label">Risk-Free Rate (%)</label>
+                                            <input type="number" class="form-control" id="riskFreeRate" value="3.00" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="marketReturn" class="form-label">Expected Market Return (%)</label>
+                                            <input type="number" class="form-control" id="marketReturn" value="10.00" step="0.01" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Historical Growth -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Historical Growth Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="historicalGrowth" class="form-label">Historical Growth Rate (%)</label>
+                                            <input type="number" class="form-control" id="historicalGrowth" value="12.00" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="growthPeriod" class="form-label">Growth Period (years)</label>
+                                            <input type="number" class="form-control" id="growthPeriod" value="5" step="1" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="industryGrowth" class="form-label">Industry Growth Rate (%)</label>
+                                            <input type="number" class="form-control" id="industryGrowth" value="10.00" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="growthConsistency" class="form-label">Growth Consistency (%)</label>
+                                            <input type="number" class="form-control" id="growthConsistency" value="85.00" step="0.01" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate PEG Ratio</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>PEG Ratio Analysis</h3>
+                        
+                        <!-- Ratio Metrics -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Ratio Metrics</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">PEG Ratio</label>
+                                            <p id="pegRatio" class="h4">0.00</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Valuation Assessment</label>
+                                            <p id="valuationAssessment" class="h4">-</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Growth-Adjusted P/E</label>
+                                            <p id="growthAdjustedPE" class="h4">0.00</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Expected Return</label>
+                                            <p id="expectedReturn" class="h4">0.00%</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Risk Premium</label>
+                                            <p id="riskPremium" class="h4">0.00%</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Growth Quality Score</label>
+                                            <p id="growthQualityScore" class="h4">0.00</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Growth Analysis Chart -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Growth Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="growthChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Valuation Comparison Chart -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Valuation Comparison</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="valuationChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="pe-ratio-calculator.html">P/E Ratio Calculator</a></li>
+                            <li class="mb-2"><a href="stock-valuation-calculator.html">Stock Valuation Calculator</a></li>
+                            <li class="mb-2"><a href="growth-rate-calculator.html">Growth Rate Calculator</a></li>
+                            <li class="mb-2"><a href="investment-return-calculator.html">Investment Return Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Formula Reference -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Formula Reference</h5>
+                    </div>
+                    <div class="card-body">
+                        <h6>PEG Ratio</h6>
+                        <p class="small mb-3">PEG = P/E Ratio / Expected Growth Rate</p>
+                        
+                        <h6>Growth-Adjusted P/E</h6>
+                        <p class="small mb-3">Growth P/E = P/E Ratio × (1 + Growth Rate)</p>
+                        
+                        <h6>Expected Return</h6>
+                        <p class="small mb-3">Return = Growth Rate + (1 / P/E Ratio)</p>
+                        
+                        <h6>Risk Premium</h6>
+                        <p class="small mb-3">Premium = Expected Return - Risk-Free Rate</p>
+                    </div>
+                </div>
+
+                <!-- PEG Ratio Interpretation -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">PEG Ratio Interpretation</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="small mb-0">
+                            <li>PEG < 1: Potentially undervalued</li>
+                            <li>PEG = 1: Fairly valued</li>
+                            <li>PEG > 1: Potentially overvalued</li>
+                            <li>Lower PEG indicates better value</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Usage Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter stock price and earnings data</li>
+                            <li class="mb-2">Input growth rate information</li>
+                            <li class="mb-2">Add market assumptions</li>
+                            <li class="mb-2">Click "Calculate" to analyze</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('pegForm');
+            const results = document.getElementById('results');
+            let growthChart = null;
+            let valuationChart = null;
+
+            function calculatePEGRatio(peRatio, growthRate) {
+                return peRatio / growthRate;
+            }
+
+            function calculateGrowthAdjustedPE(peRatio, growthRate) {
+                return peRatio * (1 + growthRate / 100);
+            }
+
+            function calculateExpectedReturn(growthRate, peRatio) {
+                return growthRate + (1 / peRatio) * 100;
+            }
+
+            function calculateRiskPremium(expectedReturn, riskFreeRate) {
+                return expectedReturn - riskFreeRate;
+            }
+
+            function calculateGrowthQualityScore(historicalGrowth, expectedGrowth, industryGrowth, consistency) {
+                const growthScore = (expectedGrowth / industryGrowth) * 40;
+                const consistencyScore = (consistency / 100) * 30;
+                const historicalScore = (historicalGrowth / industryGrowth) * 30;
+                return growthScore + consistencyScore + historicalScore;
+            }
+
+            function getValuationAssessment(pegRatio) {
+                if (pegRatio < 1) return 'Potentially Undervalued';
+                if (pegRatio === 1) return 'Fairly Valued';
+                return 'Potentially Overvalued';
+            }
+
+            function updateGrowthChart(data) {
+                const ctx = document.getElementById('growthChart').getContext('2d');
+                
+                if (growthChart) growthChart.destroy();
+
+                growthChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Expected Growth', 'Historical Growth', 'Industry Growth'],
+                        datasets: [{
+                            label: 'Growth Rate (%)',
+                            data: [
+                                data.expectedGrowth,
+                                data.historicalGrowth,
+                                data.industryGrowth
+                            ],
+                            backgroundColor: [
+                                'rgba(54, 162, 235, 0.5)',
+                                'rgba(75, 192, 192, 0.5)',
+                                'rgba(255, 206, 86, 0.5)'
+                            ],
+                            borderColor: [
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(255, 206, 86, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+
+            function updateValuationChart(data) {
+                const ctx = document.getElementById('valuationChart').getContext('2d');
+                
+                if (valuationChart) valuationChart.destroy();
+
+                valuationChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['P/E Ratio', 'Growth-Adjusted P/E', 'Industry Average P/E'],
+                        datasets: [{
+                            label: 'Valuation Metrics',
+                            data: [
+                                data.peRatio,
+                                data.growthAdjustedPE,
+                                data.industryPE
+                            ],
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.5)',
+                                'rgba(54, 162, 235, 0.5)',
+                                'rgba(75, 192, 192, 0.5)'
+                            ],
+                            borderColor: [
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(75, 192, 192, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get input values
+                const stockPrice = parseFloat(document.getElementById('stockPrice').value);
+                const earningsPerShare = parseFloat(document.getElementById('earningsPerShare').value);
+                const peRatio = parseFloat(document.getElementById('peRatio').value);
+                const growthRate = parseFloat(document.getElementById('growthRate').value);
+                const riskFreeRate = parseFloat(document.getElementById('riskFreeRate').value);
+                const marketReturn = parseFloat(document.getElementById('marketReturn').value);
+                const historicalGrowth = parseFloat(document.getElementById('historicalGrowth').value);
+                const industryGrowth = parseFloat(document.getElementById('industryGrowth').value);
+                const growthConsistency = parseFloat(document.getElementById('growthConsistency').value);
+
+                // Calculate metrics
+                const pegRatio = calculatePEGRatio(peRatio, growthRate);
+                const growthAdjustedPE = calculateGrowthAdjustedPE(peRatio, growthRate);
+                const expectedReturn = calculateExpectedReturn(growthRate, peRatio);
+                const riskPremium = calculateRiskPremium(expectedReturn, riskFreeRate);
+                const growthQualityScore = calculateGrowthQualityScore(historicalGrowth, growthRate, industryGrowth, growthConsistency);
+                const valuationAssessment = getValuationAssessment(pegRatio);
+
+                // Update results
+                document.getElementById('pegRatio').textContent = pegRatio.toFixed(2);
+                document.getElementById('valuationAssessment').textContent = valuationAssessment;
+                document.getElementById('growthAdjustedPE').textContent = growthAdjustedPE.toFixed(2);
+                document.getElementById('expectedReturn').textContent = expectedReturn.toFixed(2) + '%';
+                document.getElementById('riskPremium').textContent = riskPremium.toFixed(2) + '%';
+                document.getElementById('growthQualityScore').textContent = growthQualityScore.toFixed(2);
+
+                // Update charts
+                updateGrowthChart({
+                    expectedGrowth: growthRate,
+                    historicalGrowth: historicalGrowth,
+                    industryGrowth: industryGrowth
+                });
+
+                updateValuationChart({
+                    peRatio: peRatio,
+                    growthAdjustedPE: growthAdjustedPE,
+                    industryPE: peRatio * 1.1 // Assuming industry average is 10% higher
+                });
+                
+                // Show results
+                results.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html> 

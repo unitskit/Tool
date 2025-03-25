@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bond Premium Calculator - Fixed Income Tools - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate bond premium, amortization schedule, and tax implications. Analyze premium bonds and their yield characteristics.">
+    <meta name="keywords" content="bond premium, amortization, tax implications, fixed income, yield analysis, premium bonds">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">Bond Premium Calculator</h1>
+                    <p class="tool-description">Calculate bond premium, amortization schedule, and tax implications. Analyze premium bonds and their yield characteristics.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="premiumForm" class="needs-validation" novalidate>
+                        <!-- Bond Details -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Bond Details</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="parValue" class="form-label">Par Value ($)</label>
+                                            <input type="number" class="form-control" id="parValue" value="1000" step="100" required>
+                                            <div class="form-text">Face value of the bond at maturity</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="marketPrice" class="form-label">Market Price ($)</label>
+                                            <input type="number" class="form-control" id="marketPrice" value="1100" step="0.01" required>
+                                            <div class="form-text">Current market price of the bond</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="couponRate" class="form-label">Coupon Rate (%)</label>
+                                            <input type="number" class="form-control" id="couponRate" value="6" step="0.1" required>
+                                            <div class="form-text">Annual coupon rate</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="yearsToMaturity" class="form-label">Years to Maturity</label>
+                                            <input type="number" class="form-control" id="yearsToMaturity" value="5" step="0.5" required>
+                                            <div class="form-text">Time until bond matures</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="paymentsPerYear" class="form-label">Payments Per Year</label>
+                                            <select class="form-select" id="paymentsPerYear" required>
+                                                <option value="1">Annual</option>
+                                                <option value="2" selected>Semi-annual</option>
+                                                <option value="4">Quarterly</option>
+                                                <option value="12">Monthly</option>
+                                            </select>
+                                            <div class="form-text">Frequency of coupon payments</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="taxRate" class="form-label">Tax Rate (%)</label>
+                                            <input type="number" class="form-control" id="taxRate" value="25" step="0.1" required>
+                                            <div class="form-text">Applicable tax rate for interest income</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate Premium Analysis</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>Premium Analysis</h3>
+                        
+                        <!-- Premium Summary -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Premium Summary</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Bond Premium</label>
+                                            <p id="bondPremium" class="h4">$0.00</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Premium Percentage</label>
+                                            <p id="premiumPercentage" class="h4">0.00%</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Annual Premium Amortization</label>
+                                            <p id="annualAmortization" class="h4">$0.00</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Effective Yield</label>
+                                            <p id="effectiveYield" class="h4">0.00%</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">After-Tax Yield</label>
+                                            <p id="afterTaxYield" class="h4">0.00%</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Tax-Adjusted Cost Basis</label>
+                                            <p id="taxAdjustedBasis" class="h4">$0.00</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Premium Amortization Chart -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Premium Amortization</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="amortizationChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Amortization Schedule -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Amortization Schedule</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Period</th>
+                                                <th>Beginning Book Value</th>
+                                                <th>Coupon Payment</th>
+                                                <th>Premium Amortization</th>
+                                                <th>Tax Deduction</th>
+                                                <th>Ending Book Value</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="amortizationTable">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="bond-price-calculator.html">Bond Price Calculator</a></li>
+                            <li class="mb-2"><a href="bond-yield-calculator.html">Bond Yield Calculator</a></li>
+                            <li class="mb-2"><a href="bond-duration-calculator.html">Bond Duration Calculator</a></li>
+                            <li class="mb-2"><a href="bond-accrued-interest-calculator.html">Bond Accrued Interest Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- How to Use Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter bond par value and market price</li>
+                            <li class="mb-2">Specify coupon rate and maturity</li>
+                            <li class="mb-2">Select payment frequency</li>
+                            <li class="mb-2">Input applicable tax rate</li>
+                            <li>Click Calculate for premium analysis</li>
+                        </ol>
+                        <div class="mt-3">
+                            <p class="mb-2"><strong>Key Terms:</strong></p>
+                            <ul class="list-unstyled small">
+                                <li>• Premium: Amount above par value</li>
+                                <li>• Amortization: Premium write-down</li>
+                                <li>• Tax Basis: Adjusted cost basis</li>
+                                <li>• Effective Yield: True return rate</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('premiumForm');
+            const results = document.getElementById('results');
+            let amortizationChart = null;
+
+            function calculateEffectiveYield(parValue, marketPrice, couponRate, yearsToMaturity, paymentsPerYear) {
+                const couponPayment = (parValue * couponRate / 100) / paymentsPerYear;
+                const totalPayments = yearsToMaturity * paymentsPerYear;
+                const guess = (couponRate + ((parValue - marketPrice) / (yearsToMaturity * marketPrice)) * 100) / paymentsPerYear;
+                
+                function presentValue(rate) {
+                    let pv = 0;
+                    for (let i = 1; i <= totalPayments; i++) {
+                        pv += couponPayment / Math.pow(1 + rate, i);
+                    }
+                    pv += parValue / Math.pow(1 + rate, totalPayments);
+                    return pv;
+                }
+                
+                let rate = guess / 100;
+                let tolerance = 0.0000001;
+                let maxIterations = 100;
+                let iteration = 0;
+                
+                while (iteration < maxIterations) {
+                    let pv = presentValue(rate);
+                    let diff = pv - marketPrice;
+                    
+                    if (Math.abs(diff) < tolerance) {
+                        return rate * paymentsPerYear * 100;
+                    }
+                    
+                    let derivative = 0;
+                    for (let i = 1; i <= totalPayments; i++) {
+                        derivative -= i * couponPayment / Math.pow(1 + rate, i + 1);
+                    }
+                    derivative -= totalPayments * parValue / Math.pow(1 + rate, totalPayments + 1);
+                    
+                    rate -= diff / derivative;
+                    iteration++;
+                }
+                
+                return rate * paymentsPerYear * 100;
+            }
+
+            function updateAmortizationChart(marketPrice, parValue, yearsToMaturity, paymentsPerYear) {
+                const ctx = document.getElementById('amortizationChart').getContext('2d');
+                const periods = [];
+                const bookValues = [];
+                const amortization = (marketPrice - parValue) / (yearsToMaturity * paymentsPerYear);
+                
+                for (let i = 0; i <= yearsToMaturity * paymentsPerYear; i++) {
+                    periods.push(i);
+                    bookValues.push(marketPrice - (amortization * i));
+                }
+                
+                if (amortizationChart) {
+                    amortizationChart.destroy();
+                }
+                
+                amortizationChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: periods,
+                        datasets: [{
+                            label: 'Book Value',
+                            data: bookValues,
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Payment Period'
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Book Value ($)'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            function updateAmortizationTable(marketPrice, parValue, couponRate, yearsToMaturity, paymentsPerYear, taxRate) {
+                const tbody = document.getElementById('amortizationTable');
+                const totalPayments = yearsToMaturity * paymentsPerYear;
+                const amortization = (marketPrice - parValue) / totalPayments;
+                const couponPayment = (parValue * couponRate / 100) / paymentsPerYear;
+                
+                let html = '';
+                let bookValue = marketPrice;
+                
+                for (let i = 1; i <= totalPayments; i++) {
+                    const taxDeduction = amortization * (taxRate / 100);
+                    const endingBookValue = bookValue - amortization;
+                    
+                    html += `
+                        <tr>
+                            <td>${i}</td>
+                            <td>${formatCurrency(bookValue)}</td>
+                            <td>${formatCurrency(couponPayment)}</td>
+                            <td>${formatCurrency(amortization)}</td>
+                            <td>${formatCurrency(taxDeduction)}</td>
+                            <td>${formatCurrency(endingBookValue)}</td>
+                        </tr>
+                    `;
+                    
+                    bookValue = endingBookValue;
+                }
+                
+                tbody.innerHTML = html;
+            }
+
+            function formatCurrency(value) {
+                return new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }).format(value);
+            }
+
+            function formatPercent(value) {
+                return new Intl.NumberFormat('en-US', {
+                    style: 'percent',
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }).format(value / 100);
+            }
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const parValue = parseFloat(document.getElementById('parValue').value);
+                const marketPrice = parseFloat(document.getElementById('marketPrice').value);
+                const couponRate = parseFloat(document.getElementById('couponRate').value);
+                const yearsToMaturity = parseFloat(document.getElementById('yearsToMaturity').value);
+                const paymentsPerYear = parseInt(document.getElementById('paymentsPerYear').value);
+                const taxRate = parseFloat(document.getElementById('taxRate').value);
+
+                // Calculate metrics
+                const bondPremium = marketPrice - parValue;
+                const premiumPercentage = (bondPremium / parValue) * 100;
+                const annualAmortization = bondPremium / yearsToMaturity;
+                const effectiveYield = calculateEffectiveYield(parValue, marketPrice, couponRate, yearsToMaturity, paymentsPerYear);
+                const afterTaxYield = effectiveYield * (1 - taxRate / 100);
+                const taxAdjustedBasis = marketPrice - (bondPremium * (taxRate / 100));
+
+                // Update display
+                document.getElementById('bondPremium').textContent = formatCurrency(bondPremium);
+                document.getElementById('premiumPercentage').textContent = formatPercent(premiumPercentage);
+                document.getElementById('annualAmortization').textContent = formatCurrency(annualAmortization);
+                document.getElementById('effectiveYield').textContent = formatPercent(effectiveYield);
+                document.getElementById('afterTaxYield').textContent = formatPercent(afterTaxYield);
+                document.getElementById('taxAdjustedBasis').textContent = formatCurrency(taxAdjustedBasis);
+
+                // Update chart and table
+                updateAmortizationChart(marketPrice, parValue, yearsToMaturity, paymentsPerYear);
+                updateAmortizationTable(marketPrice, parValue, couponRate, yearsToMaturity, paymentsPerYear, taxRate);
+                
+                results.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html> 

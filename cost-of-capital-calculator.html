@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cost of Capital Calculator - WACC Analysis - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate the weighted average cost of capital (WACC) and analyze capital structure components. Determine the optimal mix of debt and equity financing.">
+    <meta name="keywords" content="cost of capital calculator, WACC, weighted average cost of capital, cost of equity, cost of debt, capital structure">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">Cost of Capital Calculator</h1>
+                    <p class="tool-description">Calculate the weighted average cost of capital (WACC) and analyze your company's capital structure. Determine the optimal mix of debt and equity financing based on market conditions and risk factors.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="costOfCapitalForm" class="needs-validation" novalidate>
+                        <!-- Equity Components -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Equity Components</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="equityValue" class="form-label">Market Value of Equity</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" id="equityValue" step="1000" value="1000000" required>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="costOfEquity" class="form-label">Cost of Equity (%)</label>
+                                    <input type="number" class="form-control" id="costOfEquity" step="0.1" value="12.0" required>
+                                    <div class="form-text">Required return on equity (e.g., from CAPM)</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Debt Components -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Debt Components</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="debtValue" class="form-label">Market Value of Debt</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" id="debtValue" step="1000" value="500000" required>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="costOfDebt" class="form-label">Cost of Debt (%)</label>
+                                    <input type="number" class="form-control" id="costOfDebt" step="0.1" value="6.0" required>
+                                    <div class="form-text">Interest rate on debt before tax</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="taxRate" class="form-label">Corporate Tax Rate (%)</label>
+                                    <input type="number" class="form-control" id="taxRate" step="0.1" value="21.0" required>
+                                    <div class="form-text">Effective corporate tax rate</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate Cost of Capital</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>Cost of Capital Analysis</h3>
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5>Capital Structure</h5>
+                                        <p>Equity Weight: <strong><span id="equityWeight">0</span>%</strong></p>
+                                        <p>Debt Weight: <strong><span id="debtWeight">0</span>%</strong></p>
+                                        <p>Total Capital: <strong>$<span id="totalCapital">0</span></strong></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5>Cost Components</h5>
+                                        <p>WACC: <strong><span id="wacc">0</span>%</strong></p>
+                                        <p>After-Tax Cost of Debt: <strong><span id="afterTaxCostOfDebt">0</span>%</strong></p>
+                                        <p>Weighted Cost of Equity: <strong><span id="weightedEquityCost">0</span>%</strong></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Capital Structure Analysis -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Capital Structure Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="capitalStructureAnalysis"></div>
+                            </div>
+                        </div>
+
+                        <!-- Visual Representation -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Cost of Capital Components</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="waccChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="capm-calculator.html">CAPM Calculator</a></li>
+                            <li class="mb-2"><a href="cost-of-equity-calculator.html">Cost of Equity Calculator</a></li>
+                            <li class="mb-2"><a href="debt-ratio-calculator.html">Debt Ratio Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- How to Use Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter the market value of equity</li>
+                            <li class="mb-2">Input the cost of equity percentage</li>
+                            <li class="mb-2">Provide debt value and cost</li>
+                            <li class="mb-2">Set the corporate tax rate</li>
+                            <li>Click calculate to see the WACC analysis</li>
+                        </ol>
+                        <div class="mt-3">
+                            <p class="mb-0"><strong>Note:</strong> WACC represents the minimum return a company should earn on existing assets</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('costOfCapitalForm');
+            const results = document.getElementById('results');
+            let waccChart = null;
+
+            function formatCurrency(value) {
+                return new Intl.NumberFormat('en-US', {
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0
+                }).format(value);
+            }
+
+            function calculateWACC(equityValue, costOfEquity, debtValue, costOfDebt, taxRate) {
+                const totalCapital = equityValue + debtValue;
+                const equityWeight = equityValue / totalCapital;
+                const debtWeight = debtValue / totalCapital;
+                const afterTaxCostOfDebt = costOfDebt * (1 - taxRate/100);
+                
+                const weightedEquityCost = equityWeight * costOfEquity;
+                const weightedDebtCost = debtWeight * afterTaxCostOfDebt;
+                const wacc = weightedEquityCost + weightedDebtCost;
+                
+                return {
+                    totalCapital,
+                    equityWeight: equityWeight * 100,
+                    debtWeight: debtWeight * 100,
+                    afterTaxCostOfDebt,
+                    weightedEquityCost,
+                    wacc
+                };
+            }
+
+            function analyzeCapitalStructure(equityWeight, debtWeight, wacc) {
+                let analysis = [];
+                
+                // Analyze capital structure
+                if (debtWeight > 70) {
+                    analysis.push("The high debt level (>70%) might indicate increased financial risk.");
+                } else if (debtWeight < 30) {
+                    analysis.push("The low debt level (<30%) might suggest underutilization of leverage benefits.");
+                } else {
+                    analysis.push("The capital structure appears balanced between debt and equity.");
+                }
+                
+                // Analyze WACC
+                if (wacc > 15) {
+                    analysis.push("The high WACC suggests investors require a significant return, possibly due to perceived risk.");
+                } else if (wacc < 8) {
+                    analysis.push("The low WACC indicates relatively low required returns, which could be advantageous for new investments.");
+                }
+                
+                return analysis.join(" ");
+            }
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get input values
+                const equityValue = parseFloat(document.getElementById('equityValue').value);
+                const costOfEquity = parseFloat(document.getElementById('costOfEquity').value);
+                const debtValue = parseFloat(document.getElementById('debtValue').value);
+                const costOfDebt = parseFloat(document.getElementById('costOfDebt').value);
+                const taxRate = parseFloat(document.getElementById('taxRate').value);
+                
+                // Calculate WACC
+                const results = calculateWACC(equityValue, costOfEquity, debtValue, costOfDebt, taxRate);
+                
+                // Display results
+                document.getElementById('equityWeight').textContent = results.equityWeight.toFixed(2);
+                document.getElementById('debtWeight').textContent = results.debtWeight.toFixed(2);
+                document.getElementById('totalCapital').textContent = formatCurrency(results.totalCapital);
+                document.getElementById('wacc').textContent = results.wacc.toFixed(2);
+                document.getElementById('afterTaxCostOfDebt').textContent = results.afterTaxCostOfDebt.toFixed(2);
+                document.getElementById('weightedEquityCost').textContent = results.weightedEquityCost.toFixed(2);
+                
+                // Display analysis
+                document.getElementById('capitalStructureAnalysis').textContent = analyzeCapitalStructure(
+                    results.equityWeight,
+                    results.debtWeight,
+                    results.wacc
+                );
+
+                // Create/update chart
+                const ctx = document.getElementById('waccChart').getContext('2d');
+                
+                if (waccChart) {
+                    waccChart.destroy();
+                }
+
+                waccChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Cost Components'],
+                        datasets: [
+                            {
+                                label: 'Weighted Cost of Equity',
+                                data: [results.weightedEquityCost],
+                                backgroundColor: 'rgba(75, 192, 192, 0.5)'
+                            },
+                            {
+                                label: 'Weighted After-Tax Cost of Debt',
+                                data: [results.debtWeight * results.afterTaxCostOfDebt / 100],
+                                backgroundColor: 'rgba(255, 99, 132, 0.5)'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Percentage (%)'
+                                }
+                            }
+                        },
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'WACC Components'
+                            }
+                        }
+                    }
+                });
+
+                document.getElementById('results').style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html> 

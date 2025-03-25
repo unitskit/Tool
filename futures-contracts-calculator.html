@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Futures Contracts Calculator - Investment Tools - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate futures contract prices, margins, and analyze potential profits/losses. Features comprehensive analysis including basis, carry costs, and position management.">
+    <meta name="keywords" content="futures contracts, futures trading, margin requirements, basis, carry costs, position management, futures pricing">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">Futures Contracts Calculator</h1>
+                    <p class="tool-description">Calculate futures contract prices, margins, and analyze potential profits/losses. Features comprehensive analysis including basis, carry costs, and position management.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="futuresForm" class="needs-validation" novalidate>
+                        <!-- Contract Parameters -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Contract Parameters</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="contractType" class="form-label">Contract Type</label>
+                                            <select class="form-select" id="contractType" required>
+                                                <option value="commodity">Commodity</option>
+                                                <option value="financial">Financial</option>
+                                                <option value="currency">Currency</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="spotPrice" class="form-label">Spot Price</label>
+                                            <input type="number" class="form-control" id="spotPrice" value="100.00" step="0.01" required>
+                                            <div class="form-text">Current spot price of the underlying asset</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="contractSize" class="form-label">Contract Size</label>
+                                            <input type="number" class="form-control" id="contractSize" value="100" step="1" required>
+                                            <div class="form-text">Number of units per contract</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="numberOfContracts" class="form-label">Number of Contracts</label>
+                                            <input type="number" class="form-control" id="numberOfContracts" value="1" step="1" required>
+                                            <div class="form-text">Number of contracts to trade</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pricing Parameters -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Pricing Parameters</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="riskFreeRate" class="form-label">Risk-Free Rate (%)</label>
+                                            <input type="number" class="form-control" id="riskFreeRate" value="5.00" step="0.01" required>
+                                            <div class="form-text">Annual risk-free interest rate</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="timeToExpiry" class="form-label">Time to Expiry (Days)</label>
+                                            <input type="number" class="form-control" id="timeToExpiry" value="90" step="1" required>
+                                            <div class="form-text">Days until contract expiration</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="storageCost" class="form-label">Storage Cost (%)</label>
+                                            <input type="number" class="form-control" id="storageCost" value="2.00" step="0.01" required>
+                                            <div class="form-text">Annual storage cost as percentage of spot price</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="convenienceYield" class="form-label">Convenience Yield (%)</label>
+                                            <input type="number" class="form-control" id="convenienceYield" value="1.00" step="0.01" required>
+                                            <div class="form-text">Annual convenience yield as percentage of spot price</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Position Parameters -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Position Parameters</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="positionType" class="form-label">Position Type</label>
+                                            <select class="form-select" id="positionType" required>
+                                                <option value="long">Long</option>
+                                                <option value="short">Short</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="entryPrice" class="form-label">Entry Price</label>
+                                            <input type="number" class="form-control" id="entryPrice" value="100.00" step="0.01" required>
+                                            <div class="form-text">Price at which position was entered</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="initialMargin" class="form-label">Initial Margin (%)</label>
+                                            <input type="number" class="form-control" id="initialMargin" value="10.00" step="0.01" required>
+                                            <div class="form-text">Initial margin requirement as percentage</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="maintenanceMargin" class="form-label">Maintenance Margin (%)</label>
+                                            <input type="number" class="form-control" id="maintenanceMargin" value="7.00" step="0.01" required>
+                                            <div class="form-text">Maintenance margin requirement as percentage</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate Futures Analysis</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>Futures Analysis Results</h3>
+                        
+                        <!-- Price Metrics -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Price Metrics</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Theoretical Futures Price</label>
+                                            <p id="futuresPrice" class="h4">0.00</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Basis</label>
+                                            <p id="basis" class="h4">0.00</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Carry Cost</label>
+                                            <p id="carryCost" class="h4">0.00</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Net Carry</label>
+                                            <p id="netCarry" class="h4">0.00</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Position Analysis -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Position Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Contract Value</label>
+                                            <p id="contractValue" class="h4">0.00</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Required Margin</label>
+                                            <p id="requiredMargin" class="h4">0.00</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Unrealized P/L</label>
+                                            <p id="unrealizedPL" class="h4">0.00</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Margin Level (%)</label>
+                                            <p id="marginLevel" class="h4">0.00%</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Analysis Chart -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Price Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="priceChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Analysis Table -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Detailed Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Metric</th>
+                                                <th>Value</th>
+                                                <th>Status</th>
+                                                <th>Recommendation</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="analysisTable">
+                                            <!-- Analysis rows will be populated by JavaScript -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="forward-rate-calculator.html">Forward Rate Calculator</a></li>
+                            <li class="mb-2"><a href="margin-call-calculator.html">Margin Call Calculator</a></li>
+                            <li class="mb-2"><a href="options-spread-calculator.html">Options Spread Calculator</a></li>
+                            <li class="mb-2"><a href="put-call-parity-calculator.html">Put-Call Parity Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Formula Reference -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Futures Price Formula</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="mb-2">Futures Price:</p>
+                        <p class="text-monospace">F = S × (1 + r × t) + C - Y</p>
+                        <p class="mb-2">Where:</p>
+                        <ul class="list-unstyled small">
+                            <li>F = Futures Price</li>
+                            <li>S = Spot Price</li>
+                            <li>r = Risk-Free Rate</li>
+                            <li>t = Time to Expiry (in years)</li>
+                            <li>C = Storage Cost</li>
+                            <li>Y = Convenience Yield</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- How to Use Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Select contract type and enter parameters</li>
+                            <li class="mb-2">Input pricing parameters including rates and costs</li>
+                            <li class="mb-2">Specify position details and margin requirements</li>
+                            <li class="mb-2">Review futures analysis and recommendations</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('futuresForm');
+            const results = document.getElementById('results');
+            let priceChart = null;
+
+            function calculateFuturesPrice(inputs) {
+                const spotPrice = inputs.spotPrice;
+                const riskFreeRate = inputs.riskFreeRate / 100;
+                const storageCost = inputs.storageCost / 100;
+                const convenienceYield = inputs.convenienceYield / 100;
+                const timeToExpiry = inputs.timeToExpiry / 365;
+
+                // Calculate theoretical futures price
+                const futuresPrice = spotPrice * (1 + riskFreeRate * timeToExpiry) + 
+                                   spotPrice * storageCost * timeToExpiry - 
+                                   spotPrice * convenienceYield * timeToExpiry;
+
+                // Calculate basis
+                const basis = spotPrice - futuresPrice;
+
+                // Calculate carry costs
+                const carryCost = spotPrice * (riskFreeRate + storageCost) * timeToExpiry;
+                const netCarry = carryCost - (spotPrice * convenienceYield * timeToExpiry);
+
+                return {
+                    futuresPrice,
+                    basis,
+                    carryCost,
+                    netCarry
+                };
+            }
+
+            function calculatePositionMetrics(inputs, priceMetrics) {
+                const contractSize = inputs.contractSize;
+                const numberOfContracts = inputs.numberOfContracts;
+                const entryPrice = inputs.entryPrice;
+                const futuresPrice = priceMetrics.futuresPrice;
+                const initialMargin = inputs.initialMargin / 100;
+                const maintenanceMargin = inputs.maintenanceMargin / 100;
+
+                // Calculate position metrics
+                const contractValue = futuresPrice * contractSize * numberOfContracts;
+                const requiredMargin = contractValue * initialMargin;
+                const unrealizedPL = (futuresPrice - entryPrice) * contractSize * numberOfContracts * 
+                                   (inputs.positionType === 'long' ? 1 : -1);
+                const marginLevel = (requiredMargin + unrealizedPL) / requiredMargin * 100;
+
+                return {
+                    contractValue,
+                    requiredMargin,
+                    unrealizedPL,
+                    marginLevel
+                };
+            }
+
+            function updateChart(inputs, priceMetrics) {
+                const ctx = document.getElementById('priceChart').getContext('2d');
+                
+                if (priceChart) priceChart.destroy();
+
+                // Generate price scenarios
+                const pricePoints = Array.from({length: 21}, (_, i) => inputs.spotPrice * (0.9 + i * 0.01));
+                const futuresPrices = pricePoints.map(spot => {
+                    const tempInputs = {...inputs, spotPrice: spot};
+                    return calculateFuturesPrice(tempInputs).futuresPrice;
+                });
+
+                priceChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: pricePoints.map(price => price.toFixed(2)),
+                        datasets: [{
+                            label: 'Futures Price',
+                            data: futuresPrices,
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Spot Price'
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Futures Price'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            function updateAnalysisTable(inputs, priceMetrics, positionMetrics) {
+                const table = document.getElementById('analysisTable');
+                table.innerHTML = '';
+
+                // Create analysis rows
+                const rows = [
+                    {
+                        metric: 'Futures Price',
+                        value: priceMetrics.futuresPrice.toFixed(2),
+                        status: priceMetrics.basis > 0 ? 'Contango' : 'Backwardation',
+                        recommendation: priceMetrics.basis > 0 ? 'Consider short position' : 'Consider long position'
+                    },
+                    {
+                        metric: 'Basis',
+                        value: priceMetrics.basis.toFixed(2),
+                        status: Math.abs(priceMetrics.basis) > 1 ? 'Significant' : 'Normal',
+                        recommendation: Math.abs(priceMetrics.basis) > 1 ? 
+                                     'Consider basis trading opportunity' : 
+                                     'Standard basis level'
+                    },
+                    {
+                        metric: 'Margin Level',
+                        value: positionMetrics.marginLevel.toFixed(2) + '%',
+                        status: positionMetrics.marginLevel > 150 ? 'Strong' : 
+                                positionMetrics.marginLevel > 100 ? 'Adequate' : 'Warning',
+                        recommendation: positionMetrics.marginLevel > 150 ? 'Position well-funded' : 
+                                     positionMetrics.marginLevel > 100 ? 'Monitor margin level' : 
+                                     'Consider adding margin'
+                    }
+                ];
+
+                // Add rows to table
+                rows.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${row.metric}</td>
+                        <td>${row.value}</td>
+                        <td>${row.status}</td>
+                        <td>${row.recommendation}</td>
+                    `;
+                    table.appendChild(tr);
+                });
+            }
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const inputs = {
+                    contractType: document.getElementById('contractType').value,
+                    spotPrice: parseFloat(document.getElementById('spotPrice').value),
+                    contractSize: parseInt(document.getElementById('contractSize').value),
+                    numberOfContracts: parseInt(document.getElementById('numberOfContracts').value),
+                    riskFreeRate: parseFloat(document.getElementById('riskFreeRate').value),
+                    timeToExpiry: parseInt(document.getElementById('timeToExpiry').value),
+                    storageCost: parseFloat(document.getElementById('storageCost').value),
+                    convenienceYield: parseFloat(document.getElementById('convenienceYield').value),
+                    positionType: document.getElementById('positionType').value,
+                    entryPrice: parseFloat(document.getElementById('entryPrice').value),
+                    initialMargin: parseFloat(document.getElementById('initialMargin').value),
+                    maintenanceMargin: parseFloat(document.getElementById('maintenanceMargin').value)
+                };
+                
+                const priceMetrics = calculateFuturesPrice(inputs);
+                const positionMetrics = calculatePositionMetrics(inputs, priceMetrics);
+                
+                // Update display
+                document.getElementById('futuresPrice').textContent = priceMetrics.futuresPrice.toFixed(2);
+                document.getElementById('basis').textContent = priceMetrics.basis.toFixed(2);
+                document.getElementById('carryCost').textContent = priceMetrics.carryCost.toFixed(2);
+                document.getElementById('netCarry').textContent = priceMetrics.netCarry.toFixed(2);
+                document.getElementById('contractValue').textContent = positionMetrics.contractValue.toFixed(2);
+                document.getElementById('requiredMargin').textContent = positionMetrics.requiredMargin.toFixed(2);
+                document.getElementById('unrealizedPL').textContent = positionMetrics.unrealizedPL.toFixed(2);
+                document.getElementById('marginLevel').textContent = positionMetrics.marginLevel.toFixed(2) + '%';
+                
+                // Update chart and analysis table
+                updateChart(inputs, priceMetrics);
+                updateAnalysisTable(inputs, priceMetrics, positionMetrics);
+                
+                results.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html> 

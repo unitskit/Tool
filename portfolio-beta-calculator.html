@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Beta Calculator - Investment Risk Analysis - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate portfolio beta to measure systematic risk. Analyze portfolio sensitivity to market movements and optimize risk-adjusted returns.">
+    <meta name="keywords" content="portfolio beta, systematic risk, market risk, investment analysis, portfolio management">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">Portfolio Beta Calculator</h1>
+                    <p class="tool-description">Calculate and analyze your portfolio's beta to measure systematic risk and sensitivity to market movements.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="betaForm" class="needs-validation" novalidate>
+                        <!-- Portfolio Holdings -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Portfolio Holdings</h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="holdingsContainer">
+                                    <!-- Default holding row -->
+                                    <div class="holding-row mb-3">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Asset Name</label>
+                                                    <input type="text" class="form-control holding-name" value="Stock A" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Beta</label>
+                                                    <input type="number" class="form-control holding-beta" value="1.2" step="0.01" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Weight (%)</label>
+                                                    <input type="number" class="form-control holding-weight" value="40" step="0.01" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="mb-3">
+                                                    <label class="form-label">&nbsp;</label>
+                                                    <button type="button" class="btn btn-danger d-block remove-holding">Remove</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-secondary" id="addHolding">Add Asset</button>
+                            </div>
+                        </div>
+
+                        <!-- Market Parameters -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Market Parameters</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="marketBeta" class="form-label">Market Beta</label>
+                                            <input type="number" class="form-control" id="marketBeta" value="1.00" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="riskFreeRate" class="form-label">Risk-Free Rate (%)</label>
+                                            <input type="number" class="form-control" id="riskFreeRate" value="3.00" step="0.01" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="marketReturn" class="form-label">Expected Market Return (%)</label>
+                                            <input type="number" class="form-control" id="marketReturn" value="10.00" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="marketVolatility" class="form-label">Market Volatility (%)</label>
+                                            <input type="number" class="form-control" id="marketVolatility" value="15.00" step="0.01" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate Portfolio Beta</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>Portfolio Beta Analysis</h3>
+                        
+                        <!-- Beta Metrics -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Beta Metrics</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Portfolio Beta</label>
+                                            <p id="portfolioBeta" class="h4">0.00</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Risk Assessment</label>
+                                            <p id="riskAssessment" class="h4">-</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Expected Return</label>
+                                            <p id="expectedReturn" class="h4">0.00%</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Risk Premium</label>
+                                            <p id="riskPremium" class="h4">0.00%</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Portfolio Volatility</label>
+                                            <p id="portfolioVolatility" class="h4">0.00%</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Sharpe Ratio</label>
+                                            <p id="sharpeRatio" class="h4">0.00</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Asset Allocation Chart -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Asset Allocation</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="allocationChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Risk Contribution Chart -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Risk Contribution</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="riskChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="portfolio-optimization-calculator.html">Portfolio Optimization Calculator</a></li>
+                            <li class="mb-2"><a href="risk-adjusted-return-calculator.html">Risk-Adjusted Return Calculator</a></li>
+                            <li class="mb-2"><a href="correlation-calculator.html">Correlation Calculator</a></li>
+                            <li class="mb-2"><a href="diversification-calculator.html">Diversification Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Formula Reference -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Formula Reference</h5>
+                    </div>
+                    <div class="card-body">
+                        <h6>Portfolio Beta</h6>
+                        <p class="small mb-3">βp = Σ(wi × βi)</p>
+                        
+                        <h6>Expected Return</h6>
+                        <p class="small mb-3">E(Rp) = Rf + βp × (Rm - Rf)</p>
+                        
+                        <h6>Risk Premium</h6>
+                        <p class="small mb-3">RP = βp × (Rm - Rf)</p>
+                        
+                        <h6>Portfolio Volatility</h6>
+                        <p class="small mb-3">σp = βp × σm</p>
+                    </div>
+                </div>
+
+                <!-- Beta Interpretation -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Beta Interpretation</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="small mb-0">
+                            <li>β > 1: More volatile than market</li>
+                            <li>β = 1: Market volatility</li>
+                            <li>β < 1: Less volatile than market</li>
+                            <li>β < 0: Inverse market movement</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Usage Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Add portfolio assets</li>
+                            <li class="mb-2">Enter beta and weight for each asset</li>
+                            <li class="mb-2">Input market parameters</li>
+                            <li class="mb-2">Click "Calculate" to analyze</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('betaForm');
+            const results = document.getElementById('results');
+            const holdingsContainer = document.getElementById('holdingsContainer');
+            const addHoldingButton = document.getElementById('addHolding');
+            let allocationChart = null;
+            let riskChart = null;
+
+            // Add new holding row
+            addHoldingButton.addEventListener('click', function() {
+                const newRow = document.createElement('div');
+                newRow.className = 'holding-row mb-3';
+                newRow.innerHTML = `
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label class="form-label">Asset Name</label>
+                                <input type="text" class="form-control holding-name" required>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label class="form-label">Beta</label>
+                                <input type="number" class="form-control holding-beta" step="0.01" required>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label class="form-label">Weight (%)</label>
+                                <input type="number" class="form-control holding-weight" step="0.01" required>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="mb-3">
+                                <label class="form-label">&nbsp;</label>
+                                <button type="button" class="btn btn-danger d-block remove-holding">Remove</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                holdingsContainer.appendChild(newRow);
+            });
+
+            // Remove holding row
+            holdingsContainer.addEventListener('click', function(e) {
+                if (e.target.classList.contains('remove-holding')) {
+                    e.target.closest('.holding-row').remove();
+                }
+            });
+
+            function calculatePortfolioBeta(holdings) {
+                return holdings.reduce((sum, holding) => sum + (holding.beta * holding.weight / 100), 0);
+            }
+
+            function calculateExpectedReturn(portfolioBeta, riskFreeRate, marketReturn) {
+                return riskFreeRate + (portfolioBeta * (marketReturn - riskFreeRate));
+            }
+
+            function calculateRiskPremium(portfolioBeta, marketReturn, riskFreeRate) {
+                return portfolioBeta * (marketReturn - riskFreeRate);
+            }
+
+            function calculatePortfolioVolatility(portfolioBeta, marketVolatility) {
+                return portfolioBeta * marketVolatility;
+            }
+
+            function calculateSharpeRatio(expectedReturn, riskFreeRate, portfolioVolatility) {
+                return (expectedReturn - riskFreeRate) / portfolioVolatility;
+            }
+
+            function getRiskAssessment(beta) {
+                if (beta > 1.5) return 'High Risk';
+                if (beta > 1) return 'Moderate-High Risk';
+                if (beta === 1) return 'Market Risk';
+                if (beta > 0.5) return 'Moderate-Low Risk';
+                return 'Low Risk';
+            }
+
+            function updateAllocationChart(holdings) {
+                const ctx = document.getElementById('allocationChart').getContext('2d');
+                
+                if (allocationChart) allocationChart.destroy();
+
+                allocationChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: holdings.map(h => h.name),
+                        datasets: [{
+                            data: holdings.map(h => h.weight),
+                            backgroundColor: [
+                                'rgba(54, 162, 235, 0.5)',
+                                'rgba(75, 192, 192, 0.5)',
+                                'rgba(255, 206, 86, 0.5)',
+                                'rgba(255, 99, 132, 0.5)',
+                                'rgba(153, 102, 255, 0.5)'
+                            ],
+                            borderColor: [
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(153, 102, 255, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+            }
+
+            function updateRiskChart(holdings) {
+                const ctx = document.getElementById('riskChart').getContext('2d');
+                
+                if (riskChart) riskChart.destroy();
+
+                riskChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: holdings.map(h => h.name),
+                        datasets: [{
+                            label: 'Risk Contribution (%)',
+                            data: holdings.map(h => (h.beta * h.weight / 100) * 100),
+                            backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get holdings data
+                const holdings = Array.from(holdingsContainer.querySelectorAll('.holding-row')).map(row => ({
+                    name: row.querySelector('.holding-name').value,
+                    beta: parseFloat(row.querySelector('.holding-beta').value),
+                    weight: parseFloat(row.querySelector('.holding-weight').value)
+                }));
+
+                // Get market parameters
+                const marketBeta = parseFloat(document.getElementById('marketBeta').value);
+                const riskFreeRate = parseFloat(document.getElementById('riskFreeRate').value);
+                const marketReturn = parseFloat(document.getElementById('marketReturn').value);
+                const marketVolatility = parseFloat(document.getElementById('marketVolatility').value);
+
+                // Calculate metrics
+                const portfolioBeta = calculatePortfolioBeta(holdings);
+                const expectedReturn = calculateExpectedReturn(portfolioBeta, riskFreeRate, marketReturn);
+                const riskPremium = calculateRiskPremium(portfolioBeta, marketReturn, riskFreeRate);
+                const portfolioVolatility = calculatePortfolioVolatility(portfolioBeta, marketVolatility);
+                const sharpeRatio = calculateSharpeRatio(expectedReturn, riskFreeRate, portfolioVolatility);
+                const riskAssessment = getRiskAssessment(portfolioBeta);
+
+                // Update results
+                document.getElementById('portfolioBeta').textContent = portfolioBeta.toFixed(2);
+                document.getElementById('riskAssessment').textContent = riskAssessment;
+                document.getElementById('expectedReturn').textContent = expectedReturn.toFixed(2) + '%';
+                document.getElementById('riskPremium').textContent = riskPremium.toFixed(2) + '%';
+                document.getElementById('portfolioVolatility').textContent = portfolioVolatility.toFixed(2) + '%';
+                document.getElementById('sharpeRatio').textContent = sharpeRatio.toFixed(2);
+
+                // Update charts
+                updateAllocationChart(holdings);
+                updateRiskChart(holdings);
+                
+                // Show results
+                results.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html> 

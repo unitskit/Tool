@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operating Cash Flow Ratio Calculator - Financial Analysis Tools - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate Operating Cash Flow Ratio to assess a company's ability to pay current liabilities using operating cash flow. Analyze liquidity and financial health.">
+    <meta name="keywords" content="operating cash flow ratio, cash flow analysis, liquidity ratio, financial health, business metrics">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">Operating Cash Flow Ratio Calculator</h1>
+                    <p class="tool-description">Calculate and analyze the Operating Cash Flow Ratio to evaluate a company's ability to pay current liabilities using operating cash flow.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="ocfForm" class="needs-validation" novalidate>
+                        <!-- Operating Cash Flow -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Operating Cash Flow</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="netIncome" class="form-label">Net Income ($)</label>
+                                            <input type="number" class="form-control" id="netIncome" value="500000" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="depreciation" class="form-label">Depreciation ($)</label>
+                                            <input type="number" class="form-control" id="depreciation" value="100000" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="amortization" class="form-label">Amortization ($)</label>
+                                            <input type="number" class="form-control" id="amortization" value="50000" step="0.01" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="deferredTaxes" class="form-label">Deferred Taxes ($)</label>
+                                            <input type="number" class="form-control" id="deferredTaxes" value="20000" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="stockBasedCompensation" class="form-label">Stock-based Compensation ($)</label>
+                                            <input type="number" class="form-control" id="stockBasedCompensation" value="30000" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="operatingCashFlow" class="form-label">Operating Cash Flow ($)</label>
+                                            <input type="number" class="form-control" id="operatingCashFlow" value="700000" step="0.01" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Current Liabilities -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Current Liabilities</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="accountsPayable" class="form-label">Accounts Payable ($)</label>
+                                            <input type="number" class="form-control" id="accountsPayable" value="200000" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="shortTermDebt" class="form-label">Short-term Debt ($)</label>
+                                            <input type="number" class="form-control" id="shortTermDebt" value="150000" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="accruedExpenses" class="form-label">Accrued Expenses ($)</label>
+                                            <input type="number" class="form-control" id="accruedExpenses" value="100000" step="0.01" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="deferredRevenue" class="form-label">Deferred Revenue ($)</label>
+                                            <input type="number" class="form-control" id="deferredRevenue" value="50000" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="otherCurrentLiabilities" class="form-label">Other Current Liabilities ($)</label>
+                                            <input type="number" class="form-control" id="otherCurrentLiabilities" value="75000" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="totalCurrentLiabilities" class="form-label">Total Current Liabilities ($)</label>
+                                            <input type="number" class="form-control" id="totalCurrentLiabilities" value="575000" step="0.01" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate Ratio</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>Operating Cash Flow Analysis</h3>
+                        
+                        <!-- Ratio Metrics -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Ratio Metrics</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Operating Cash Flow Ratio</label>
+                                            <p id="ocfRatio" class="h4">0.00</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Liquidity Assessment</label>
+                                            <p id="liquidityAssessment" class="h4">-</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Cash Coverage Period (months)</label>
+                                            <p id="cashCoveragePeriod" class="h4">0.00</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Operating Cash Flow</label>
+                                            <p id="totalOCF" class="h4">$0.00</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Total Current Liabilities</label>
+                                            <p id="totalLiabilities" class="h4">$0.00</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Monthly Operating Cash Flow</label>
+                                            <p id="monthlyOCF" class="h4">$0.00</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Cash Flow Components Chart -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Operating Cash Flow Components</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="ocfChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Liability Distribution Chart -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Current Liability Distribution</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="liabilityChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="cash-flow-calculator.html">Cash Flow Calculator</a></li>
+                            <li class="mb-2"><a href="current-ratio-calculator.html">Current Ratio Calculator</a></li>
+                            <li class="mb-2"><a href="liquidity-ratio-calculator.html">Liquidity Ratio Calculator</a></li>
+                            <li class="mb-2"><a href="working-capital-calculator.html">Working Capital Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Formula Reference -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Formula Reference</h5>
+                    </div>
+                    <div class="card-body">
+                        <h6>Operating Cash Flow Ratio</h6>
+                        <p class="small mb-3">OCF Ratio = Operating Cash Flow / Current Liabilities</p>
+                        
+                        <h6>Cash Coverage Period</h6>
+                        <p class="small mb-3">Coverage Period = (Operating Cash Flow / 12) / Current Liabilities</p>
+                        
+                        <h6>Operating Cash Flow</h6>
+                        <p class="small mb-3">OCF = Net Income + Depreciation + Amortization + Deferred Taxes + Stock-based Compensation</p>
+                    </div>
+                </div>
+
+                <!-- Ratio Interpretation -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Ratio Interpretation</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="small mb-0">
+                            <li>Ratio > 1: Strong liquidity position</li>
+                            <li>Ratio = 1: Adequate liquidity</li>
+                            <li>Ratio < 1: Potential liquidity concerns</li>
+                            <li>Higher ratio indicates better financial health</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Usage Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter operating cash flow components</li>
+                            <li class="mb-2">Input current liabilities details</li>
+                            <li class="mb-2">Click "Calculate" to analyze</li>
+                            <li class="mb-2">Review ratio and assessment</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('ocfForm');
+            const results = document.getElementById('results');
+            let ocfChart = null;
+            let liabilityChart = null;
+
+            function calculateOCF(netIncome, depreciation, amortization, deferredTaxes, stockBasedCompensation) {
+                return netIncome + depreciation + amortization + deferredTaxes + stockBasedCompensation;
+            }
+
+            function calculateOCFRatio(operatingCashFlow, currentLiabilities) {
+                return operatingCashFlow / currentLiabilities;
+            }
+
+            function calculateCashCoveragePeriod(operatingCashFlow, currentLiabilities) {
+                return (operatingCashFlow / 12) / currentLiabilities;
+            }
+
+            function getLiquidityAssessment(ratio) {
+                if (ratio > 1) return 'Strong';
+                if (ratio === 1) return 'Adequate';
+                return 'Weak';
+            }
+
+            function updateOCFChart(ocfComponents) {
+                const ctx = document.getElementById('ocfChart').getContext('2d');
+                
+                if (ocfChart) ocfChart.destroy();
+
+                ocfChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: ['Net Income', 'Depreciation', 'Amortization', 'Deferred Taxes', 'Stock-based Compensation'],
+                        datasets: [{
+                            data: [
+                                ocfComponents.netIncome,
+                                ocfComponents.depreciation,
+                                ocfComponents.amortization,
+                                ocfComponents.deferredTaxes,
+                                ocfComponents.stockBasedCompensation
+                            ],
+                            backgroundColor: [
+                                'rgba(54, 162, 235, 0.5)',
+                                'rgba(75, 192, 192, 0.5)',
+                                'rgba(255, 206, 86, 0.5)',
+                                'rgba(255, 99, 132, 0.5)',
+                                'rgba(153, 102, 255, 0.5)'
+                            ],
+                            borderColor: [
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(153, 102, 255, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+            }
+
+            function updateLiabilityChart(liabilities) {
+                const ctx = document.getElementById('liabilityChart').getContext('2d');
+                
+                if (liabilityChart) liabilityChart.destroy();
+
+                liabilityChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: ['Accounts Payable', 'Short-term Debt', 'Accrued Expenses', 'Deferred Revenue', 'Other Current Liabilities'],
+                        datasets: [{
+                            data: [
+                                liabilities.accountsPayable,
+                                liabilities.shortTermDebt,
+                                liabilities.accruedExpenses,
+                                liabilities.deferredRevenue,
+                                liabilities.otherCurrentLiabilities
+                            ],
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.5)',
+                                'rgba(54, 162, 235, 0.5)',
+                                'rgba(255, 206, 86, 0.5)',
+                                'rgba(75, 192, 192, 0.5)',
+                                'rgba(153, 102, 255, 0.5)'
+                            ],
+                            borderColor: [
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+            }
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get input values
+                const ocfComponents = {
+                    netIncome: parseFloat(document.getElementById('netIncome').value),
+                    depreciation: parseFloat(document.getElementById('depreciation').value),
+                    amortization: parseFloat(document.getElementById('amortization').value),
+                    deferredTaxes: parseFloat(document.getElementById('deferredTaxes').value),
+                    stockBasedCompensation: parseFloat(document.getElementById('stockBasedCompensation').value),
+                    total: parseFloat(document.getElementById('operatingCashFlow').value)
+                };
+
+                const liabilities = {
+                    accountsPayable: parseFloat(document.getElementById('accountsPayable').value),
+                    shortTermDebt: parseFloat(document.getElementById('shortTermDebt').value),
+                    accruedExpenses: parseFloat(document.getElementById('accruedExpenses').value),
+                    deferredRevenue: parseFloat(document.getElementById('deferredRevenue').value),
+                    otherCurrentLiabilities: parseFloat(document.getElementById('otherCurrentLiabilities').value),
+                    total: parseFloat(document.getElementById('totalCurrentLiabilities').value)
+                };
+
+                // Calculate metrics
+                const ocf = calculateOCF(
+                    ocfComponents.netIncome,
+                    ocfComponents.depreciation,
+                    ocfComponents.amortization,
+                    ocfComponents.deferredTaxes,
+                    ocfComponents.stockBasedCompensation
+                );
+                const ocfRatio = calculateOCFRatio(ocf, liabilities.total);
+                const cashCoveragePeriod = calculateCashCoveragePeriod(ocf, liabilities.total);
+                const liquidityAssessment = getLiquidityAssessment(ocfRatio);
+                const monthlyOCF = ocf / 12;
+
+                // Update results
+                document.getElementById('ocfRatio').textContent = ocfRatio.toFixed(2);
+                document.getElementById('liquidityAssessment').textContent = liquidityAssessment;
+                document.getElementById('cashCoveragePeriod').textContent = cashCoveragePeriod.toFixed(2);
+                document.getElementById('totalOCF').textContent = '$' + ocf.toFixed(2);
+                document.getElementById('totalLiabilities').textContent = '$' + liabilities.total.toFixed(2);
+                document.getElementById('monthlyOCF').textContent = '$' + monthlyOCF.toFixed(2);
+
+                // Update charts
+                updateOCFChart(ocfComponents);
+                updateLiabilityChart(liabilities);
+                
+                // Show results
+                results.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html> 

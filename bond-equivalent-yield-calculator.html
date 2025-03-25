@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bond Equivalent Yield Calculator - Fixed Income Tools - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Convert bond yields between different compounding frequencies and calculate bond equivalent yields (BEY). Compare bonds with different payment schedules on a standardized basis.">
+    <meta name="keywords" content="bond equivalent yield, BEY, yield conversion, compounding frequency, fixed income, yield comparison">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">Bond Equivalent Yield Calculator</h1>
+                    <p class="tool-description">Convert bond yields between different compounding frequencies and calculate bond equivalent yields (BEY). Compare bonds with different payment schedules on a standardized basis.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="beyForm" class="needs-validation" novalidate>
+                        <!-- Yield Input Section -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Yield Details</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="inputYield" class="form-label">Input Yield (%)</label>
+                                            <input type="number" class="form-control" id="inputYield" value="5" step="0.01" required>
+                                            <div class="form-text">Enter the yield to convert</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="daysToMaturity" class="form-label">Days to Maturity</label>
+                                            <input type="number" class="form-control" id="daysToMaturity" value="180" required>
+                                            <div class="form-text">Number of days until maturity</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="fromFrequency" class="form-label">From Frequency</label>
+                                            <select class="form-select" id="fromFrequency" required>
+                                                <option value="1">Annual</option>
+                                                <option value="2" selected>Semi-annual</option>
+                                                <option value="4">Quarterly</option>
+                                                <option value="12">Monthly</option>
+                                                <option value="365">Daily</option>
+                                                <option value="0">Simple Interest</option>
+                                            </select>
+                                            <div class="form-text">Current compounding frequency</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="toFrequency" class="form-label">To Frequency</label>
+                                            <select class="form-select" id="toFrequency" required>
+                                                <option value="1">Annual</option>
+                                                <option value="2" selected>Semi-annual</option>
+                                                <option value="4">Quarterly</option>
+                                                <option value="12">Monthly</option>
+                                                <option value="365">Daily</option>
+                                                <option value="0">Simple Interest</option>
+                                            </select>
+                                            <div class="form-text">Target compounding frequency</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate Equivalent Yield</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>Yield Analysis</h3>
+                        
+                        <!-- Yield Results -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Equivalent Yields</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Bond Equivalent Yield (BEY)</label>
+                                            <p id="beyResult" class="h4">0.00%</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Effective Annual Yield (EAY)</label>
+                                            <p id="eayResult" class="h4">0.00%</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Money Market Yield (MMY)</label>
+                                            <p id="mmyResult" class="h4">0.00%</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Converted Yield</label>
+                                            <p id="convertedYield" class="h4">0.00%</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Yield Comparison -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Yield Comparison</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="yieldChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Equivalent Payment Analysis -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Payment Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Frequency</th>
+                                                <th>Payments per Year</th>
+                                                <th>Payment Amount</th>
+                                                <th>Annual Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="paymentTable"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="bond-yield-calculator.html">Bond Yield Calculator</a></li>
+                            <li class="mb-2"><a href="bond-price-calculator.html">Bond Price Calculator</a></li>
+                            <li class="mb-2"><a href="bond-duration-calculator.html">Bond Duration Calculator</a></li>
+                            <li class="mb-2"><a href="bond-convexity-calculator.html">Bond Convexity Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- How to Use Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter the yield to convert</li>
+                            <li class="mb-2">Specify days to maturity</li>
+                            <li class="mb-2">Select current and target frequencies</li>
+                            <li>Click Calculate to see equivalent yields</li>
+                        </ol>
+                        <div class="mt-3">
+                            <p class="mb-2"><strong>Understanding Results:</strong></p>
+                            <ul class="list-unstyled small">
+                                <li>• BEY assumes semi-annual compounding</li>
+                                <li>• EAY shows true annual return</li>
+                                <li>• MMY used for money market securities</li>
+                                <li>• Compare yields across different frequencies</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('beyForm');
+            const results = document.getElementById('results');
+            let yieldChart = null;
+
+            function calculateBEY(yield, fromFreq, days) {
+                if (fromFreq === 0) { // Simple Interest
+                    return (yield * 365) / days;
+                }
+                const effectiveYield = calculateEAY(yield, fromFreq);
+                return 2 * ((Math.pow(1 + effectiveYield, 0.5) - 1));
+            }
+
+            function calculateEAY(yield, freq) {
+                if (freq === 0) { // Simple Interest
+                    return yield;
+                }
+                return Math.pow(1 + yield / (100 * freq), freq) - 1;
+            }
+
+            function calculateMMY(bey, days) {
+                return (bey * 360) / 365;
+            }
+
+            function convertYield(yield, fromFreq, toFreq) {
+                if (fromFreq === toFreq) return yield;
+                const eay = calculateEAY(yield, fromFreq);
+                if (toFreq === 0) return eay * 100; // Simple Interest
+                return ((Math.pow(1 + eay, 1/toFreq) - 1) * toFreq * 100);
+            }
+
+            function formatPercentage(value) {
+                return new Intl.NumberFormat('en-US', {
+                    style: 'percent',
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }).format(value);
+            }
+
+            function formatCurrency(value) {
+                return new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }).format(value);
+            }
+
+            function getFrequencyName(freq) {
+                const names = {
+                    0: 'Simple Interest',
+                    1: 'Annual',
+                    2: 'Semi-annual',
+                    4: 'Quarterly',
+                    12: 'Monthly',
+                    365: 'Daily'
+                };
+                return names[freq] || freq.toString();
+            }
+
+            function updateYieldChart(yields) {
+                const ctx = document.getElementById('yieldChart').getContext('2d');
+                
+                if (yieldChart) {
+                    yieldChart.destroy();
+                }
+
+                yieldChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Input Yield', 'BEY', 'EAY', 'MMY', 'Converted Yield'],
+                        datasets: [{
+                            label: 'Yield (%)',
+                            data: [
+                                yields.input,
+                                yields.bey,
+                                yields.eay * 100,
+                                yields.mmy,
+                                yields.converted
+                            ],
+                            backgroundColor: [
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(255, 206, 86, 0.2)',
+                                'rgba(153, 102, 255, 0.2)',
+                                'rgba(255, 99, 132, 0.2)'
+                            ],
+                            borderColor: [
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(255, 99, 132, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Yield (%)'
+                                }
+                            }
+                        },
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Yield Comparison'
+                            }
+                        }
+                    }
+                });
+            }
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get input values
+                const inputYield = parseFloat(document.getElementById('inputYield').value);
+                const days = parseInt(document.getElementById('daysToMaturity').value);
+                const fromFreq = parseInt(document.getElementById('fromFrequency').value);
+                const toFreq = parseInt(document.getElementById('toFrequency').value);
+
+                // Calculate yields
+                const bey = calculateBEY(inputYield, fromFreq, days);
+                const eay = calculateEAY(inputYield, fromFreq);
+                const mmy = calculateMMY(bey, days);
+                const converted = convertYield(inputYield, fromFreq, toFreq);
+
+                // Update displays
+                document.getElementById('beyResult').textContent = formatPercentage(bey/100);
+                document.getElementById('eayResult').textContent = formatPercentage(eay);
+                document.getElementById('mmyResult').textContent = formatPercentage(mmy/100);
+                document.getElementById('convertedYield').textContent = formatPercentage(converted/100);
+
+                // Update payment analysis table
+                const principal = 1000; // Example principal amount
+                const frequencies = [1, 2, 4, 12];
+                document.getElementById('paymentTable').innerHTML = frequencies.map(freq => {
+                    const convertedRate = convertYield(inputYield, fromFreq, freq);
+                    const paymentAmount = (principal * convertedRate/100) / freq;
+                    return `
+                        <tr>
+                            <td>${getFrequencyName(freq)}</td>
+                            <td>${freq}</td>
+                            <td>${formatCurrency(paymentAmount)}</td>
+                            <td>${formatCurrency(paymentAmount * freq)}</td>
+                        </tr>
+                    `;
+                }).join('');
+
+                // Update chart
+                updateYieldChart({
+                    input: inputYield,
+                    bey: bey,
+                    eay: eay,
+                    mmy: mmy,
+                    converted: converted
+                });
+
+                results.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html> 

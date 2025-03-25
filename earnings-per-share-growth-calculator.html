@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Earnings Per Share Growth Calculator - Business Tools - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate and analyze earnings per share (EPS) growth rates to evaluate company performance and project future earnings trends.">
+    <meta name="keywords" content="EPS growth, earnings per share, growth rate, company performance, financial analysis, earnings trend">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">Earnings Per Share Growth Calculator</h1>
+                    <p class="tool-description">Calculate and analyze earnings per share (EPS) growth rates to evaluate company performance and project future earnings trends. Compare historical growth rates and assess future growth potential.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="epsGrowthForm" class="needs-validation" novalidate>
+                        <!-- Historical EPS Data -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Historical EPS Data</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="currentEPS" class="form-label">Current EPS ($)</label>
+                                    <input type="number" class="form-control" id="currentEPS" value="2.50" step="0.01" required>
+                                    <div class="form-text">Most recent earnings per share</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="previousEPS" class="form-label">Previous Period EPS ($)</label>
+                                    <input type="number" class="form-control" id="previousEPS" value="2.00" step="0.01" required>
+                                    <div class="form-text">EPS from the previous period</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="periods" class="form-label">Number of Periods</label>
+                                    <input type="number" class="form-control" id="periods" value="4" min="1" required>
+                                    <div class="form-text">Number of periods between measurements (e.g., 4 for quarterly)</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Growth Projection -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Growth Projection</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="projectionYears" class="form-label">Projection Years</label>
+                                    <input type="number" class="form-control" id="projectionYears" value="5" min="1" required>
+                                    <div class="form-text">Number of years to project future growth</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="growthRate" class="form-label">Expected Growth Rate (%)</label>
+                                    <input type="number" class="form-control" id="growthRate" value="10" step="0.1" required>
+                                    <div class="form-text">Expected annual growth rate</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="industryGrowth" class="form-label">Industry Average Growth (%)</label>
+                                    <input type="number" class="form-control" id="industryGrowth" value="8" step="0.1" required>
+                                    <div class="form-text">Industry average growth rate for comparison</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Additional Metrics -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Additional Metrics</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="sharesOutstanding" class="form-label">Shares Outstanding</label>
+                                    <input type="number" class="form-control" id="sharesOutstanding" value="100000000" step="1000000" required>
+                                    <div class="form-text">Current number of shares outstanding</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="stockPrice" class="form-label">Current Stock Price ($)</label>
+                                    <input type="number" class="form-control" id="stockPrice" value="50.00" step="0.01" required>
+                                    <div class="form-text">Current market price per share</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate Growth</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>EPS Growth Analysis Results</h3>
+                        
+                        <!-- Key Metrics -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Key Metrics</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Historical Growth Rate</label>
+                                            <p id="historicalGrowth" class="h4">0.00%</p>
+                                            <small class="text-muted" id="growthStatus"></small>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">P/E Ratio</label>
+                                            <p id="peRatio" class="h4">0.00</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Market Cap</label>
+                                            <p id="marketCap" class="h4">$0</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Industry Comparison</label>
+                                            <p id="industryComparison" class="h4">0.00x</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Growth Projection Chart -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Growth Projection</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="growthChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Analysis Table -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Growth Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Metric</th>
+                                                <th>Value</th>
+                                                <th>Status</th>
+                                                <th>Recommendation</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="analysisTable">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="earnings-per-share-calculator.html">Earnings Per Share Calculator</a></li>
+                            <li class="mb-2"><a href="cagr-calculator.html">CAGR Calculator</a></li>
+                            <li class="mb-2"><a href="dividend-growth-calculator.html">Dividend Growth Calculator</a></li>
+                            <li class="mb-2"><a href="stock-valuation-calculator.html">Stock Valuation Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- How to Use Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter historical EPS data</li>
+                            <li class="mb-2">Input growth projection parameters</li>
+                            <li class="mb-2">Add additional metrics</li>
+                            <li class="mb-2">Click Calculate to see analysis</li>
+                            <li>Review growth metrics and projections</li>
+                        </ol>
+                        <div class="mt-3">
+                            <p class="mb-2"><strong>Interpretation Guide:</strong></p>
+                            <ul class="list-unstyled small">
+                                <li>• Growth Rate > Industry: Strong performance</li>
+                                <li>• Growth Rate ≈ Industry: Average performance</li>
+                                <li>• Growth Rate < Industry: Below average</li>
+                                <li>• Consider P/E ratio context</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('epsGrowthForm');
+            const results = document.getElementById('results');
+            let growthChart = null;
+
+            function calculateGrowthRate(current, previous, periods) {
+                return ((Math.pow(current / previous, 1 / periods) - 1) * 100);
+            }
+
+            function calculatePE(price, eps) {
+                return price / eps;
+            }
+
+            function calculateMarketCap(price, shares) {
+                return price * shares;
+            }
+
+            function getGrowthStatus(growthRate, industryGrowth) {
+                if (growthRate > industryGrowth * 1.2) return 'Strong growth performance';
+                if (growthRate > industryGrowth) return 'Above industry average';
+                if (growthRate > industryGrowth * 0.8) return 'In line with industry';
+                return 'Below industry average';
+            }
+
+            function updateAnalysisTable(metrics) {
+                const tbody = document.getElementById('analysisTable');
+                const rows = [
+                    {
+                        metric: 'Growth Rate',
+                        value: metrics.growthRate.toFixed(2) + '%',
+                        status: metrics.growthRate > metrics.industryGrowth ? 'Good' : 
+                               metrics.growthRate > metrics.industryGrowth * 0.8 ? 'Adequate' : 'Poor',
+                        recommendation: metrics.growthRate < metrics.industryGrowth ? 
+                            'Focus on improving growth' : 'Maintain growth momentum'
+                    },
+                    {
+                        metric: 'Industry Comparison',
+                        value: (metrics.growthRate / metrics.industryGrowth).toFixed(2) + 'x',
+                        status: metrics.growthRate >= metrics.industryGrowth ? 'Above Average' : 'Below Average',
+                        recommendation: metrics.growthRate < metrics.industryGrowth ? 
+                            'Work towards industry average' : 'Maintain competitive position'
+                    },
+                    {
+                        metric: 'P/E Ratio',
+                        value: metrics.peRatio.toFixed(2),
+                        status: metrics.peRatio < 15 ? 'Low' : metrics.peRatio < 25 ? 'Moderate' : 'High',
+                        recommendation: metrics.peRatio > 25 ? 
+                            'Consider valuation risk' : 'Valuation appears reasonable'
+                    }
+                ];
+
+                tbody.innerHTML = rows.map(row => `
+                    <tr>
+                        <td>${row.metric}</td>
+                        <td>${row.value}</td>
+                        <td><span class="badge bg-${row.status === 'Good' || row.status === 'Above Average' || row.status === 'Low' ? 
+                            'success' : row.status === 'Adequate' || row.status === 'Moderate' ? 'warning' : 'danger'}">${row.status}</span></td>
+                        <td>${row.recommendation}</td>
+                    </tr>
+                `).join('');
+            }
+
+            function updateGrowthChart(metrics) {
+                const ctx = document.getElementById('growthChart').getContext('2d');
+                
+                if (growthChart) {
+                    growthChart.destroy();
+                }
+
+                const years = Array.from({length: metrics.projectionYears + 1}, (_, i) => i);
+                const projectedEPS = years.map(year => 
+                    metrics.currentEPS * Math.pow(1 + metrics.growthRate / 100, year)
+                );
+                const industryEPS = years.map(year => 
+                    metrics.currentEPS * Math.pow(1 + metrics.industryGrowth / 100, year)
+                );
+                
+                growthChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: years.map(year => `Year ${year}`),
+                        datasets: [{
+                            label: 'Projected EPS',
+                            data: projectedEPS,
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                            fill: true
+                        }, {
+                            label: 'Industry Average',
+                            data: industryEPS,
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'EPS ($)'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            function formatCurrency(value) {
+                return new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0
+                }).format(value);
+            }
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const inputs = {
+                    currentEPS: parseFloat(document.getElementById('currentEPS').value),
+                    previousEPS: parseFloat(document.getElementById('previousEPS').value),
+                    periods: parseInt(document.getElementById('periods').value),
+                    projectionYears: parseInt(document.getElementById('projectionYears').value),
+                    growthRate: parseFloat(document.getElementById('growthRate').value),
+                    industryGrowth: parseFloat(document.getElementById('industryGrowth').value),
+                    sharesOutstanding: parseFloat(document.getElementById('sharesOutstanding').value),
+                    stockPrice: parseFloat(document.getElementById('stockPrice').value)
+                };
+                
+                const metrics = {
+                    growthRate: calculateGrowthRate(inputs.currentEPS, inputs.previousEPS, inputs.periods),
+                    peRatio: calculatePE(inputs.stockPrice, inputs.currentEPS),
+                    marketCap: calculateMarketCap(inputs.stockPrice, inputs.sharesOutstanding),
+                    currentEPS: inputs.currentEPS,
+                    growthRate: inputs.growthRate,
+                    industryGrowth: inputs.industryGrowth,
+                    projectionYears: inputs.projectionYears
+                };
+                
+                // Update display
+                document.getElementById('historicalGrowth').textContent = metrics.growthRate.toFixed(2) + '%';
+                document.getElementById('growthStatus').textContent = getGrowthStatus(metrics.growthRate, metrics.industryGrowth);
+                document.getElementById('peRatio').textContent = metrics.peRatio.toFixed(2);
+                document.getElementById('marketCap').textContent = formatCurrency(metrics.marketCap);
+                document.getElementById('industryComparison').textContent = (metrics.growthRate / metrics.industryGrowth).toFixed(2) + 'x';
+                
+                // Update chart and analysis table
+                updateGrowthChart(metrics);
+                updateAnalysisTable(metrics);
+                
+                results.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html> 

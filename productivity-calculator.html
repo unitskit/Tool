@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productivity Calculator - Measure Work Efficiency - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate and analyze productivity rates, efficiency metrics, and output levels. Measure work performance and identify areas for improvement.">
+    <meta name="keywords" content="productivity calculator, efficiency metrics, work performance, output measurement, productivity analysis">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">Productivity Calculator</h1>
+                    <p class="tool-description">Measure and analyze productivity rates, efficiency metrics, and output levels. Track performance and identify improvement opportunities.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="productivityForm" class="needs-validation" novalidate>
+                        <!-- Output Metrics -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Output Metrics</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="totalOutput" class="form-label">Total Output (Units)</label>
+                                    <input type="number" class="form-control" id="totalOutput" required min="0" step="1">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="targetOutput" class="form-label">Target Output (Units)</label>
+                                    <input type="number" class="form-control" id="targetOutput" required min="0" step="1">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="qualityRate" class="form-label">Quality Rate (%)</label>
+                                    <input type="number" class="form-control" id="qualityRate" required min="0" max="100" step="0.1" value="100">
+                                    <div class="form-text">Percentage of output meeting quality standards</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Time and Resources -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Time and Resources</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="workHours" class="form-label">Work Hours</label>
+                                    <input type="number" class="form-control" id="workHours" required min="0" step="0.5">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="laborHours" class="form-label">Total Labor Hours</label>
+                                    <input type="number" class="form-control" id="laborHours" required min="0" step="0.5">
+                                    <div class="form-text">Combined hours of all workers involved</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="downtime" class="form-label">Downtime (Hours)</label>
+                                    <input type="number" class="form-control" id="downtime" value="0" min="0" step="0.5">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Cost Factors -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Cost Factors (Optional)</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="laborCost" class="form-label">Labor Cost per Hour ($)</label>
+                                    <input type="number" class="form-control" id="laborCost" value="0" min="0" step="0.01">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="materialCost" class="form-label">Material Cost per Unit ($)</label>
+                                    <input type="number" class="form-control" id="materialCost" value="0" min="0" step="0.01">
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate Productivity</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>Productivity Analysis</h3>
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5>Output Metrics</h5>
+                                        <p>Output Rate: <strong><span id="outputRate">0</span> units/hour</strong></p>
+                                        <p>Quality Output: <strong><span id="qualityOutput">0</span> units</strong></p>
+                                        <p>Achievement Rate: <strong><span id="achievementRate">0</span>%</strong></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5>Efficiency Metrics</h5>
+                                        <p>Labor Productivity: <strong><span id="laborProductivity">0</span> units/labor hour</strong></p>
+                                        <p>Equipment Utilization: <strong><span id="utilization">0</span>%</strong></p>
+                                        <p>Cost per Unit: <strong>$<span id="unitCost">0</span></strong></p>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="text-center">
+                                    <p class="mb-0">Overall Productivity Score: <strong><span id="productivityScore">0</span>%</strong></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recommendations -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Analysis & Recommendations</h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="recommendations">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="efficiency-calculator.html">Efficiency Calculator</a></li>
+                            <li class="mb-2"><a href="labor-cost-calculator.html">Labor Cost Calculator</a></li>
+                            <li class="mb-2"><a href="overtime-calculator.html">Overtime Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- How to Use Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter total and target output units</li>
+                            <li class="mb-2">Input quality rate percentage</li>
+                            <li class="mb-2">Specify work hours and labor hours</li>
+                            <li class="mb-2">Add downtime if applicable</li>
+                            <li class="mb-2">Include cost factors if needed</li>
+                            <li>Click calculate to see productivity analysis</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('productivityForm');
+            const results = document.getElementById('results');
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get input values
+                const totalOutput = parseFloat(document.getElementById('totalOutput').value);
+                const targetOutput = parseFloat(document.getElementById('targetOutput').value);
+                const qualityRate = parseFloat(document.getElementById('qualityRate').value) / 100;
+                const workHours = parseFloat(document.getElementById('workHours').value);
+                const laborHours = parseFloat(document.getElementById('laborHours').value);
+                const downtime = parseFloat(document.getElementById('downtime').value);
+                const laborCost = parseFloat(document.getElementById('laborCost').value) || 0;
+                const materialCost = parseFloat(document.getElementById('materialCost').value) || 0;
+
+                // Calculate metrics
+                const qualityOutput = totalOutput * qualityRate;
+                const outputRate = totalOutput / workHours;
+                const achievementRate = (totalOutput / targetOutput) * 100;
+                const laborProductivity = totalOutput / laborHours;
+                const utilization = ((workHours - downtime) / workHours) * 100;
+                
+                // Calculate costs
+                const totalLaborCost = laborCost * laborHours;
+                const totalMaterialCost = materialCost * totalOutput;
+                const unitCost = (totalLaborCost + totalMaterialCost) / totalOutput;
+
+                // Calculate overall productivity score
+                const qualityScore = qualityRate * 100;
+                const utilizationScore = utilization;
+                const achievementScore = Math.min(achievementRate, 100);
+                const productivityScore = (qualityScore + utilizationScore + achievementScore) / 3;
+
+                // Display results
+                document.getElementById('outputRate').textContent = outputRate.toFixed(2);
+                document.getElementById('qualityOutput').textContent = qualityOutput.toFixed(0);
+                document.getElementById('achievementRate').textContent = achievementRate.toFixed(1);
+                document.getElementById('laborProductivity').textContent = laborProductivity.toFixed(2);
+                document.getElementById('utilization').textContent = utilization.toFixed(1);
+                document.getElementById('unitCost').textContent = unitCost.toFixed(2);
+                document.getElementById('productivityScore').textContent = productivityScore.toFixed(1);
+
+                // Generate recommendations
+                const recommendations = document.getElementById('recommendations');
+                let recommendationText = '<ul class="mb-0">';
+
+                if (achievementRate < 90) {
+                    recommendationText += '<li>Consider analyzing bottlenecks and optimizing processes to improve output rate.</li>';
+                }
+                if (qualityRate < 0.95) {
+                    recommendationText += '<li>Implement quality control measures to improve product quality.</li>';
+                }
+                if (utilization < 85) {
+                    recommendationText += '<li>Review downtime causes and implement preventive maintenance to improve utilization.</li>';
+                }
+                if (laborProductivity < outputRate) {
+                    recommendationText += '<li>Evaluate labor allocation and consider training or process improvements.</li>';
+                }
+
+                recommendationText += '</ul>';
+                recommendations.innerHTML = recommendationText;
+
+                results.style.display = 'block';
+            });
+
+            // Form validation
+            form.addEventListener('input', function(e) {
+                if (e.target.type === 'number') {
+                    const value = parseFloat(e.target.value);
+                    const min = parseFloat(e.target.min);
+                    const max = parseFloat(e.target.max);
+
+                    if (!isNaN(min) && value < min) {
+                        e.target.value = min;
+                    }
+                    if (!isNaN(max) && value > max) {
+                        e.target.value = max;
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

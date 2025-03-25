@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Loan Calculator - Financial Planning Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <main class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <h1 class="mb-4">Business Loan Calculator</h1>
+                <div class="card">
+                    <div class="card-body">
+                        <p class="card-text mb-4">
+                            Calculate your business loan payments, analyze different loan scenarios, and understand the total cost of borrowing. This tool helps you make informed decisions about business financing.
+                        </p>
+                        
+                        <form id="businessLoanForm">
+                            <!-- Loan Details -->
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Loan Details</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="loanAmount" class="form-label">Loan Amount</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text">$</span>
+                                                    <input type="number" class="form-control" id="loanAmount" required min="0" step="1000">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="interestRate" class="form-label">Annual Interest Rate (%)</label>
+                                                <div class="input-group">
+                                                    <input type="number" class="form-control" id="interestRate" required min="0" max="100" step="0.1">
+                                                    <span class="input-group-text">%</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="loanTerm" class="form-label">Loan Term</label>
+                                                <div class="input-group">
+                                                    <input type="number" class="form-control" id="loanTerm" required min="1">
+                                                    <select class="form-select" id="termUnit" required>
+                                                        <option value="years">Years</option>
+                                                        <option value="months">Months</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="paymentFrequency" class="form-label">Payment Frequency</label>
+                                                <select class="form-select" id="paymentFrequency" required>
+                                                    <option value="monthly">Monthly</option>
+                                                    <option value="quarterly">Quarterly</option>
+                                                    <option value="semi-annual">Semi-Annual</option>
+                                                    <option value="annual">Annual</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="loanType" class="form-label">Loan Type</label>
+                                                <select class="form-select" id="loanType" required>
+                                                    <option value="amortizing">Amortizing</option>
+                                                    <option value="interest-only">Interest Only</option>
+                                                    <option value="balloon">Balloon Payment</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3" id="balloonPaymentContainer" style="display: none;">
+                                                <label for="balloonPayment" class="form-label">Balloon Payment Amount</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text">$</span>
+                                                    <input type="number" class="form-control" id="balloonPayment" min="0" step="1000">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Additional Costs -->
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Additional Costs</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="originationFee" class="form-label">Origination Fee (%)</label>
+                                                <div class="input-group">
+                                                    <input type="number" class="form-control" id="originationFee" min="0" max="100" step="0.1" value="0">
+                                                    <span class="input-group-text">%</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="closingCosts" class="form-label">Closing Costs</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text">$</span>
+                                                    <input type="number" class="form-control" id="closingCosts" min="0" step="100" value="0">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-calculator"></i> Calculate Loan
+                            </button>
+                        </form>
+
+                        <div id="result" class="mt-4" style="display: none;">
+                            <h3>Loan Analysis</h3>
+                            <div class="card mb-4">
+                                <div class="card-body">
+                                    <canvas id="loanChart"></canvas>
+                                </div>
+                            </div>
+
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Payment Schedule</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped" id="paymentSchedule">
+                                            <thead>
+                                                <tr>
+                                                    <th>Payment #</th>
+                                                    <th>Payment Date</th>
+                                                    <th>Payment Amount</th>
+                                                    <th>Principal</th>
+                                                    <th>Interest</th>
+                                                    <th>Remaining Balance</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Summary</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div id="summary"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <h3>How to Use</h3>
+                            <ol>
+                                <li>Enter the loan amount and annual interest rate</li>
+                                <li>Select the loan term and payment frequency</li>
+                                <li>Choose the loan type (amortizing, interest-only, or balloon payment)</li>
+                                <li>Add any additional costs (origination fee, closing costs)</li>
+                                <li>Click Calculate to view the payment schedule and analysis</li>
+                            </ol>
+                        </div>
+
+                        <div class="mt-4">
+                            <h3>Understanding the Results</h3>
+                            <ul>
+                                <li><strong>Payment Schedule:</strong> Detailed breakdown of each payment, including principal and interest components</li>
+                                <li><strong>Total Cost:</strong> Total amount paid over the life of the loan, including fees</li>
+                                <li><strong>Effective Interest Rate:</strong> Actual cost of borrowing including all fees</li>
+                                <li><strong>Amortization Chart:</strong> Visual representation of principal and interest payments over time</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script src="../js/tools/business-loan-calculator.js"></script>
+</body>
+</html> 

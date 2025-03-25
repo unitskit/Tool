@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NAV Calculator - Net Asset Value - Investment Tools - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate Net Asset Value (NAV) for investment funds. Analyze fund performance, track asset allocation, and evaluate fund management efficiency.">
+    <meta name="keywords" content="NAV, net asset value, mutual fund calculator, ETF calculator, fund valuation, investment fund analysis">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">NAV Calculator - Net Asset Value</h1>
+                    <p class="tool-description">Calculate and analyze the Net Asset Value (NAV) of investment funds. Track fund performance, asset allocation, and management efficiency.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="navForm" class="needs-validation" novalidate>
+                        <!-- Fund Assets -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Fund Assets</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="cashEquivalents" class="form-label">Cash & Equivalents ($)</label>
+                                            <input type="number" class="form-control" id="cashEquivalents" value="1000000" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="securities" class="form-label">Marketable Securities ($)</label>
+                                            <input type="number" class="form-control" id="securities" value="5000000" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="receivables" class="form-label">Receivables ($)</label>
+                                            <input type="number" class="form-control" id="receivables" value="500000" step="0.01" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="otherAssets" class="form-label">Other Assets ($)</label>
+                                            <input type="number" class="form-control" id="otherAssets" value="200000" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="accruedIncome" class="form-label">Accrued Income ($)</label>
+                                            <input type="number" class="form-control" id="accruedIncome" value="100000" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="totalAssets" class="form-label">Total Assets ($)</label>
+                                            <input type="number" class="form-control" id="totalAssets" value="6800000" step="0.01" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fund Liabilities -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Fund Liabilities</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="payables" class="form-label">Payables ($)</label>
+                                            <input type="number" class="form-control" id="payables" value="300000" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="accruedExpenses" class="form-label">Accrued Expenses ($)</label>
+                                            <input type="number" class="form-control" id="accruedExpenses" value="200000" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="shortTermDebt" class="form-label">Short-term Debt ($)</label>
+                                            <input type="number" class="form-control" id="shortTermDebt" value="100000" step="0.01" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="longTermDebt" class="form-label">Long-term Debt ($)</label>
+                                            <input type="number" class="form-control" id="longTermDebt" value="500000" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="otherLiabilities" class="form-label">Other Liabilities ($)</label>
+                                            <input type="number" class="form-control" id="otherLiabilities" value="100000" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="totalLiabilities" class="form-label">Total Liabilities ($)</label>
+                                            <input type="number" class="form-control" id="totalLiabilities" value="1200000" step="0.01" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fund Shares -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Fund Shares</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="sharesOutstanding" class="form-label">Shares Outstanding</label>
+                                            <input type="number" class="form-control" id="sharesOutstanding" value="1000000" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="previousNav" class="form-label">Previous NAV ($)</label>
+                                            <input type="number" class="form-control" id="previousNav" value="5.60" step="0.01" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="managementFee" class="form-label">Management Fee (%)</label>
+                                            <input type="number" class="form-control" id="managementFee" value="1.5" step="0.01" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="expenseRatio" class="form-label">Expense Ratio (%)</label>
+                                            <input type="number" class="form-control" id="expenseRatio" value="0.75" step="0.01" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate NAV</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>NAV Analysis</h3>
+                        
+                        <!-- NAV Metrics -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">NAV Metrics</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Net Asset Value (NAV)</label>
+                                            <p id="nav" class="h4">$0.00</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">NAV Change</label>
+                                            <p id="navChange" class="h4">0.00%</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Total Net Assets</label>
+                                            <p id="totalNetAssets" class="h4">$0.00</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Management Fee Amount</label>
+                                            <p id="managementFeeAmount" class="h4">$0.00</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Total Expenses</label>
+                                            <p id="totalExpenses" class="h4">$0.00</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Expense Impact on NAV</label>
+                                            <p id="expenseImpact" class="h4">$0.00</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Asset Allocation Chart -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Asset Allocation</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="assetChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Liability Distribution Chart -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Liability Distribution</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="liabilityChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="mutual-fund-calculator.html">Mutual Fund Calculator</a></li>
+                            <li class="mb-2"><a href="etf-calculator.html">ETF Calculator</a></li>
+                            <li class="mb-2"><a href="expense-ratio-calculator.html">Expense Ratio Calculator</a></li>
+                            <li class="mb-2"><a href="fund-performance-calculator.html">Fund Performance Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Formula Reference -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Formula Reference</h5>
+                    </div>
+                    <div class="card-body">
+                        <h6>Net Asset Value</h6>
+                        <p class="small mb-3">NAV = (Total Assets - Total Liabilities) / Shares Outstanding</p>
+                        
+                        <h6>NAV Change</h6>
+                        <p class="small mb-3">NAV Change = (Current NAV - Previous NAV) / Previous NAV × 100%</p>
+                        
+                        <h6>Management Fee</h6>
+                        <p class="small mb-3">Fee = Total Net Assets × Management Fee Rate</p>
+                        
+                        <h6>Expense Impact</h6>
+                        <p class="small mb-3">Impact = Total Expenses / Shares Outstanding</p>
+                    </div>
+                </div>
+
+                <!-- NAV Components -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">NAV Components</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="small mb-0">
+                            <li>Assets include securities, cash, receivables</li>
+                            <li>Liabilities include payables, debt, expenses</li>
+                            <li>Shares outstanding affect NAV per share</li>
+                            <li>Expenses reduce NAV over time</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Usage Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter fund assets</li>
+                            <li class="mb-2">Input fund liabilities</li>
+                            <li class="mb-2">Add shares information</li>
+                            <li class="mb-2">Include fee details</li>
+                            <li class="mb-2">Click "Calculate" to analyze</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('navForm');
+            const results = document.getElementById('results');
+            let assetChart = null;
+            let liabilityChart = null;
+
+            function calculateNAV(totalAssets, totalLiabilities, sharesOutstanding) {
+                return (totalAssets - totalLiabilities) / sharesOutstanding;
+            }
+
+            function calculateNAVChange(currentNav, previousNav) {
+                return ((currentNav - previousNav) / previousNav) * 100;
+            }
+
+            function calculateManagementFee(totalNetAssets, managementFeeRate) {
+                return totalNetAssets * (managementFeeRate / 100);
+            }
+
+            function calculateTotalExpenses(totalNetAssets, expenseRatio) {
+                return totalNetAssets * (expenseRatio / 100);
+            }
+
+            function updateAssetChart(assets) {
+                const ctx = document.getElementById('assetChart').getContext('2d');
+                
+                if (assetChart) assetChart.destroy();
+
+                assetChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: ['Cash & Equivalents', 'Marketable Securities', 'Receivables', 'Other Assets', 'Accrued Income'],
+                        datasets: [{
+                            data: [
+                                assets.cashEquivalents,
+                                assets.securities,
+                                assets.receivables,
+                                assets.otherAssets,
+                                assets.accruedIncome
+                            ],
+                            backgroundColor: [
+                                'rgba(54, 162, 235, 0.5)',
+                                'rgba(75, 192, 192, 0.5)',
+                                'rgba(255, 206, 86, 0.5)',
+                                'rgba(255, 99, 132, 0.5)',
+                                'rgba(153, 102, 255, 0.5)'
+                            ],
+                            borderColor: [
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(153, 102, 255, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+            }
+
+            function updateLiabilityChart(liabilities) {
+                const ctx = document.getElementById('liabilityChart').getContext('2d');
+                
+                if (liabilityChart) liabilityChart.destroy();
+
+                liabilityChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: ['Payables', 'Accrued Expenses', 'Short-term Debt', 'Long-term Debt', 'Other Liabilities'],
+                        datasets: [{
+                            data: [
+                                liabilities.payables,
+                                liabilities.accruedExpenses,
+                                liabilities.shortTermDebt,
+                                liabilities.longTermDebt,
+                                liabilities.otherLiabilities
+                            ],
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.5)',
+                                'rgba(54, 162, 235, 0.5)',
+                                'rgba(255, 206, 86, 0.5)',
+                                'rgba(75, 192, 192, 0.5)',
+                                'rgba(153, 102, 255, 0.5)'
+                            ],
+                            borderColor: [
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+            }
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get input values
+                const assets = {
+                    cashEquivalents: parseFloat(document.getElementById('cashEquivalents').value),
+                    securities: parseFloat(document.getElementById('securities').value),
+                    receivables: parseFloat(document.getElementById('receivables').value),
+                    otherAssets: parseFloat(document.getElementById('otherAssets').value),
+                    accruedIncome: parseFloat(document.getElementById('accruedIncome').value),
+                    total: parseFloat(document.getElementById('totalAssets').value)
+                };
+
+                const liabilities = {
+                    payables: parseFloat(document.getElementById('payables').value),
+                    accruedExpenses: parseFloat(document.getElementById('accruedExpenses').value),
+                    shortTermDebt: parseFloat(document.getElementById('shortTermDebt').value),
+                    longTermDebt: parseFloat(document.getElementById('longTermDebt').value),
+                    otherLiabilities: parseFloat(document.getElementById('otherLiabilities').value),
+                    total: parseFloat(document.getElementById('totalLiabilities').value)
+                };
+
+                const sharesOutstanding = parseFloat(document.getElementById('sharesOutstanding').value);
+                const previousNav = parseFloat(document.getElementById('previousNav').value);
+                const managementFeeRate = parseFloat(document.getElementById('managementFee').value);
+                const expenseRatio = parseFloat(document.getElementById('expenseRatio').value);
+
+                // Calculate metrics
+                const totalNetAssets = assets.total - liabilities.total;
+                const nav = calculateNAV(assets.total, liabilities.total, sharesOutstanding);
+                const navChange = calculateNAVChange(nav, previousNav);
+                const managementFeeAmount = calculateManagementFee(totalNetAssets, managementFeeRate);
+                const totalExpenses = calculateTotalExpenses(totalNetAssets, expenseRatio);
+                const expenseImpact = totalExpenses / sharesOutstanding;
+
+                // Update results
+                document.getElementById('nav').textContent = '$' + nav.toFixed(2);
+                document.getElementById('navChange').textContent = navChange.toFixed(2) + '%';
+                document.getElementById('totalNetAssets').textContent = '$' + totalNetAssets.toFixed(2);
+                document.getElementById('managementFeeAmount').textContent = '$' + managementFeeAmount.toFixed(2);
+                document.getElementById('totalExpenses').textContent = '$' + totalExpenses.toFixed(2);
+                document.getElementById('expenseImpact').textContent = '$' + expenseImpact.toFixed(2);
+
+                // Update charts
+                updateAssetChart(assets);
+                updateLiabilityChart(liabilities);
+                
+                // Show results
+                results.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html> 

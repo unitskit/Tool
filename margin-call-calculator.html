@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Margin Call Calculator - Investment Tools - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate margin requirements and potential margin calls for trading positions. Features comprehensive analysis including maintenance margin levels, margin call triggers, and position risk assessment.">
+    <meta name="keywords" content="margin call, margin requirements, maintenance margin, trading margin, position risk, margin level, margin trading">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">Margin Call Calculator</h1>
+                    <p class="tool-description">Calculate margin requirements and potential margin calls for trading positions. Features comprehensive analysis including maintenance margin levels, margin call triggers, and position risk assessment.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="marginForm" class="needs-validation" novalidate>
+                        <!-- Position Parameters -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Position Parameters</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="positionType" class="form-label">Position Type</label>
+                                            <select class="form-select" id="positionType" required>
+                                                <option value="long">Long</option>
+                                                <option value="short">Short</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="numberOfShares" class="form-label">Number of Shares</label>
+                                            <input type="number" class="form-control" id="numberOfShares" value="1000" step="1" required>
+                                            <div class="form-text">Number of shares in the position</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="entryPrice" class="form-label">Entry Price</label>
+                                            <input type="number" class="form-control" id="entryPrice" value="50.00" step="0.01" required>
+                                            <div class="form-text">Price at which position was entered</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="currentPrice" class="form-label">Current Price</label>
+                                            <input type="number" class="form-control" id="currentPrice" value="45.00" step="0.01" required>
+                                            <div class="form-text">Current market price</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Margin Requirements -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Margin Requirements</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="initialMargin" class="form-label">Initial Margin (%)</label>
+                                            <input type="number" class="form-control" id="initialMargin" value="50.00" step="0.01" required>
+                                            <div class="form-text">Initial margin requirement as percentage</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="maintenanceMargin" class="form-label">Maintenance Margin (%)</label>
+                                            <input type="number" class="form-control" id="maintenanceMargin" value="30.00" step="0.01" required>
+                                            <div class="form-text">Maintenance margin requirement as percentage</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="accountBalance" class="form-label">Account Balance</label>
+                                            <input type="number" class="form-control" id="accountBalance" value="50000.00" step="0.01" required>
+                                            <div class="form-text">Current account balance</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="unusedMargin" class="form-label">Unused Margin</label>
+                                            <input type="number" class="form-control" id="unusedMargin" value="0.00" step="0.01" required>
+                                            <div class="form-text">Available margin for other positions</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate Margin Analysis</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>Margin Analysis Results</h3>
+                        
+                        <!-- Position Analysis -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Position Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Position Value</label>
+                                            <p id="positionValue" class="h4">0.00</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Required Initial Margin</label>
+                                            <p id="requiredInitialMargin" class="h4">0.00</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Required Maintenance Margin</label>
+                                            <p id="requiredMaintenanceMargin" class="h4">0.00</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Current Margin Level (%)</label>
+                                            <p id="currentMarginLevel" class="h4">0.00%</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Margin Call Analysis -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Margin Call Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Margin Call Price</label>
+                                            <p id="marginCallPrice" class="h4">0.00</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Price to Margin Call</label>
+                                            <p id="priceToMarginCall" class="h4">0.00</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Additional Funds Needed</label>
+                                            <p id="additionalFundsNeeded" class="h4">0.00</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Position Status</label>
+                                            <p id="positionStatus" class="h4">Safe</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Analysis Chart -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Margin Level Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="marginChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Analysis Table -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Detailed Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Metric</th>
+                                                <th>Value</th>
+                                                <th>Status</th>
+                                                <th>Recommendation</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="analysisTable">
+                                            <!-- Analysis rows will be populated by JavaScript -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="futures-contracts-calculator.html">Futures Contracts Calculator</a></li>
+                            <li class="mb-2"><a href="options-spread-calculator.html">Options Spread Calculator</a></li>
+                            <li class="mb-2"><a href="put-call-parity-calculator.html">Put-Call Parity Calculator</a></li>
+                            <li class="mb-2"><a href="yield-to-call-calculator.html">Yield to Call Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Formula Reference -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Margin Formulas</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="mb-2">Margin Level:</p>
+                        <p class="text-monospace">ML = (Account Equity / Required Margin) × 100%</p>
+                        <p class="mb-2">Margin Call Price:</p>
+                        <p class="text-monospace">MCP = Entry Price × (1 - Initial Margin) / (1 - Maintenance Margin)</p>
+                        <p class="mb-2">Where:</p>
+                        <ul class="list-unstyled small">
+                            <li>ML = Margin Level</li>
+                            <li>MCP = Margin Call Price</li>
+                            <li>Account Equity = Account Balance + Position P/L</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- How to Use Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter position details and current market price</li>
+                            <li class="mb-2">Input margin requirements and account information</li>
+                            <li class="mb-2">Review margin analysis and potential margin calls</li>
+                            <li class="mb-2">Monitor position status and recommendations</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('marginForm');
+            const results = document.getElementById('results');
+            let marginChart = null;
+
+            function calculateMarginMetrics(inputs) {
+                const numberOfShares = inputs.numberOfShares;
+                const entryPrice = inputs.entryPrice;
+                const currentPrice = inputs.currentPrice;
+                const initialMargin = inputs.initialMargin / 100;
+                const maintenanceMargin = inputs.maintenanceMargin / 100;
+                const accountBalance = inputs.accountBalance;
+                const unusedMargin = inputs.unusedMargin;
+                const isLong = inputs.positionType === 'long';
+
+                // Calculate position value
+                const positionValue = numberOfShares * currentPrice;
+
+                // Calculate required margins
+                const requiredInitialMargin = positionValue * initialMargin;
+                const requiredMaintenanceMargin = positionValue * maintenanceMargin;
+
+                // Calculate unrealized P/L
+                const unrealizedPL = (currentPrice - entryPrice) * numberOfShares * (isLong ? 1 : -1);
+
+                // Calculate account equity
+                const accountEquity = accountBalance + unrealizedPL;
+
+                // Calculate current margin level
+                const currentMarginLevel = (accountEquity / requiredMaintenanceMargin) * 100;
+
+                // Calculate margin call price
+                const marginCallPrice = entryPrice * (1 - initialMargin) / (1 - maintenanceMargin);
+
+                // Calculate price to margin call
+                const priceToMarginCall = Math.abs(currentPrice - marginCallPrice);
+
+                // Calculate additional funds needed if margin call occurs
+                const additionalFundsNeeded = Math.max(0, requiredMaintenanceMargin - accountEquity);
+
+                return {
+                    positionValue,
+                    requiredInitialMargin,
+                    requiredMaintenanceMargin,
+                    currentMarginLevel,
+                    marginCallPrice,
+                    priceToMarginCall,
+                    additionalFundsNeeded,
+                    unrealizedPL,
+                    accountEquity
+                };
+            }
+
+            function updateChart(inputs, metrics) {
+                const ctx = document.getElementById('marginChart').getContext('2d');
+                
+                if (marginChart) marginChart.destroy();
+
+                // Generate price scenarios
+                const pricePoints = Array.from({length: 21}, (_, i) => inputs.entryPrice * (0.8 + i * 0.02));
+                const marginLevels = pricePoints.map(price => {
+                    const tempInputs = {...inputs, currentPrice: price};
+                    return calculateMarginMetrics(tempInputs).currentMarginLevel;
+                });
+
+                marginChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: pricePoints.map(price => price.toFixed(2)),
+                        datasets: [{
+                            label: 'Margin Level (%)',
+                            data: marginLevels,
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            backgroundColor: 'rgba(54, 162, 235, 0.1)',
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Price'
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Margin Level (%)'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            function updateAnalysisTable(inputs, metrics) {
+                const table = document.getElementById('analysisTable');
+                table.innerHTML = '';
+
+                // Create analysis rows
+                const rows = [
+                    {
+                        metric: 'Margin Level',
+                        value: metrics.currentMarginLevel.toFixed(2) + '%',
+                        status: metrics.currentMarginLevel > 150 ? 'Strong' : 
+                                metrics.currentMarginLevel > 100 ? 'Adequate' : 'Warning',
+                        recommendation: metrics.currentMarginLevel > 150 ? 'Position well-funded' : 
+                                     metrics.currentMarginLevel > 100 ? 'Monitor margin level' : 
+                                     'Consider adding margin'
+                    },
+                    {
+                        metric: 'Price to Margin Call',
+                        value: metrics.priceToMarginCall.toFixed(2),
+                        status: metrics.priceToMarginCall > 10 ? 'Safe' : 
+                                metrics.priceToMarginCall > 5 ? 'Moderate Risk' : 'High Risk',
+                        recommendation: metrics.priceToMarginCall > 10 ? 'Adequate buffer' : 
+                                     metrics.priceToMarginCall > 5 ? 'Monitor price movement' : 
+                                     'Consider reducing position'
+                    },
+                    {
+                        metric: 'Additional Funds Needed',
+                        value: metrics.additionalFundsNeeded.toFixed(2),
+                        status: metrics.additionalFundsNeeded > 0 ? 'Margin Call Risk' : 'No Risk',
+                        recommendation: metrics.additionalFundsNeeded > 0 ? 
+                                     'Prepare additional funds' : 
+                                     'No immediate action needed'
+                    }
+                ];
+
+                // Add rows to table
+                rows.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${row.metric}</td>
+                        <td>${row.value}</td>
+                        <td>${row.status}</td>
+                        <td>${row.recommendation}</td>
+                    `;
+                    table.appendChild(tr);
+                });
+            }
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const inputs = {
+                    positionType: document.getElementById('positionType').value,
+                    numberOfShares: parseInt(document.getElementById('numberOfShares').value),
+                    entryPrice: parseFloat(document.getElementById('entryPrice').value),
+                    currentPrice: parseFloat(document.getElementById('currentPrice').value),
+                    initialMargin: parseFloat(document.getElementById('initialMargin').value),
+                    maintenanceMargin: parseFloat(document.getElementById('maintenanceMargin').value),
+                    accountBalance: parseFloat(document.getElementById('accountBalance').value),
+                    unusedMargin: parseFloat(document.getElementById('unusedMargin').value)
+                };
+                
+                const metrics = calculateMarginMetrics(inputs);
+                
+                // Update display
+                document.getElementById('positionValue').textContent = metrics.positionValue.toFixed(2);
+                document.getElementById('requiredInitialMargin').textContent = metrics.requiredInitialMargin.toFixed(2);
+                document.getElementById('requiredMaintenanceMargin').textContent = metrics.requiredMaintenanceMargin.toFixed(2);
+                document.getElementById('currentMarginLevel').textContent = metrics.currentMarginLevel.toFixed(2) + '%';
+                document.getElementById('marginCallPrice').textContent = metrics.marginCallPrice.toFixed(2);
+                document.getElementById('priceToMarginCall').textContent = metrics.priceToMarginCall.toFixed(2);
+                document.getElementById('additionalFundsNeeded').textContent = metrics.additionalFundsNeeded.toFixed(2);
+                document.getElementById('positionStatus').textContent = metrics.currentMarginLevel > 100 ? 'Safe' : 'At Risk';
+                
+                // Update chart and analysis table
+                updateChart(inputs, metrics);
+                updateAnalysisTable(inputs, metrics);
+                
+                results.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html> 

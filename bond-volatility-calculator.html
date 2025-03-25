@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bond Volatility Calculator - Fixed Income Tools - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate bond price volatility and analyze risk metrics under different market scenarios. Evaluate interest rate sensitivity and historical volatility patterns.">
+    <meta name="keywords" content="bond volatility, price risk, interest rate sensitivity, fixed income, risk metrics, historical volatility">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">Bond Volatility Calculator</h1>
+                    <p class="tool-description">Calculate and analyze bond price volatility under different market scenarios. Evaluate interest rate sensitivity and historical volatility patterns.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="volatilityForm" class="needs-validation" novalidate>
+                        <!-- Bond Details -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Bond Details</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="parValue" class="form-label">Par Value ($)</label>
+                                            <input type="number" class="form-control" id="parValue" value="1000" step="100" required>
+                                            <div class="form-text">Face value of the bond</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="couponRate" class="form-label">Coupon Rate (%)</label>
+                                            <input type="number" class="form-control" id="couponRate" value="5" step="0.1" required>
+                                            <div class="form-text">Annual coupon rate</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="yearsToMaturity" class="form-label">Years to Maturity</label>
+                                            <input type="number" class="form-control" id="yearsToMaturity" value="10" step="0.5" required>
+                                            <div class="form-text">Time until bond matures</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="yieldToMaturity" class="form-label">Yield to Maturity (%)</label>
+                                            <input type="number" class="form-control" id="yieldToMaturity" value="6" step="0.1" required>
+                                            <div class="form-text">Current yield to maturity</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="paymentsPerYear" class="form-label">Payments Per Year</label>
+                                            <select class="form-select" id="paymentsPerYear" required>
+                                                <option value="1">Annual</option>
+                                                <option value="2" selected>Semi-annual</option>
+                                                <option value="4">Quarterly</option>
+                                                <option value="12">Monthly</option>
+                                            </select>
+                                            <div class="form-text">Frequency of coupon payments</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="historicalVolatility" class="form-label">Historical Volatility (%)</label>
+                                            <input type="number" class="form-control" id="historicalVolatility" value="15" step="0.1" required>
+                                            <div class="form-text">Annualized yield volatility</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Scenario Analysis -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Scenario Settings</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="confidenceLevel" class="form-label">Confidence Level (%)</label>
+                                            <select class="form-select" id="confidenceLevel" required>
+                                                <option value="90">90%</option>
+                                                <option value="95" selected>95%</option>
+                                                <option value="99">99%</option>
+                                            </select>
+                                            <div class="form-text">Statistical confidence level for VaR</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="holdingPeriod" class="form-label">Holding Period (Days)</label>
+                                            <input type="number" class="form-control" id="holdingPeriod" value="10" step="1" required>
+                                            <div class="form-text">Investment horizon for risk analysis</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="stressScenario" class="form-label">Stress Scenario</label>
+                                            <select class="form-select" id="stressScenario" required>
+                                                <option value="moderate">Moderate (±100bp)</option>
+                                                <option value="severe" selected>Severe (±200bp)</option>
+                                                <option value="extreme">Extreme (±300bp)</option>
+                                            </select>
+                                            <div class="form-text">Yield change scenarios for stress testing</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="correlationFactor" class="form-label">Rate Correlation (%)</label>
+                                            <input type="number" class="form-control" id="correlationFactor" value="60" step="1" required>
+                                            <div class="form-text">Correlation with market rates</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate Volatility Analysis</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>Volatility Analysis</h3>
+                        
+                        <!-- Risk Metrics -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Risk Metrics</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Value at Risk (VaR)</label>
+                                            <p id="valueAtRisk" class="h4">$0.00</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Expected Shortfall</label>
+                                            <p id="expectedShortfall" class="h4">$0.00</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Price Volatility</label>
+                                            <p id="priceVolatility" class="h4">0.00%</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Maximum Loss</label>
+                                            <p id="maxLoss" class="h4">$0.00</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Beta to Rates</label>
+                                            <p id="betaToRates" class="h4">0.00</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Volatility Ratio</label>
+                                            <p id="volatilityRatio" class="h4">0.00</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Volatility Distribution Chart -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Price Distribution Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="distributionChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Stress Test Results -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Stress Test Scenarios</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Scenario</th>
+                                                <th>Yield Change</th>
+                                                <th>Price Impact</th>
+                                                <th>VaR</th>
+                                                <th>Expected Shortfall</th>
+                                                <th>Recovery Time</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="stressTestTable">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="bond-risk-calculator.html">Bond Risk Calculator</a></li>
+                            <li class="mb-2"><a href="bond-duration-calculator.html">Bond Duration Calculator</a></li>
+                            <li class="mb-2"><a href="bond-convexity-calculator.html">Bond Convexity Calculator</a></li>
+                            <li class="mb-2"><a href="bond-var-calculator.html">Bond VaR Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- How to Use Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter bond details and market parameters</li>
+                            <li class="mb-2">Set confidence level and holding period</li>
+                            <li class="mb-2">Choose stress test scenario</li>
+                            <li class="mb-2">Specify rate correlation</li>
+                            <li>Click Calculate for volatility analysis</li>
+                        </ol>
+                        <div class="mt-3">
+                            <p class="mb-2"><strong>Key Terms:</strong></p>
+                            <ul class="list-unstyled small">
+                                <li>• VaR: Maximum potential loss at confidence level</li>
+                                <li>• Expected Shortfall: Average loss beyond VaR</li>
+                                <li>• Beta: Sensitivity to market rate changes</li>
+                                <li>• Volatility Ratio: Price volatility relative to yield</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('volatilityForm');
+            const results = document.getElementById('results');
+            let distributionChart = null;
+
+            function calculateBondPrice(parValue, couponRate, ytm, yearsToMaturity, paymentsPerYear) {
+                const periodicRate = couponRate / (100 * paymentsPerYear);
+                const periodicYield = ytm / (100 * paymentsPerYear);
+                const totalPeriods = yearsToMaturity * paymentsPerYear;
+                const couponPayment = parValue * periodicRate;
+                
+                let price = 0;
+                for (let i = 1; i <= totalPeriods; i++) {
+                    price += couponPayment / Math.pow(1 + periodicYield, i);
+                }
+                price += parValue / Math.pow(1 + periodicYield, totalPeriods);
+                
+                return price;
+            }
+
+            function calculateModifiedDuration(parValue, couponRate, ytm, yearsToMaturity, paymentsPerYear) {
+                const deltaYield = 0.0001;
+                const basePrice = calculateBondPrice(parValue, couponRate, ytm, yearsToMaturity, paymentsPerYear);
+                const higherPrice = calculateBondPrice(parValue, couponRate, ytm - deltaYield, yearsToMaturity, paymentsPerYear);
+                const lowerPrice = calculateBondPrice(parValue, couponRate, ytm + deltaYield, yearsToMaturity, paymentsPerYear);
+                
+                return -(higherPrice - lowerPrice) / (2 * basePrice * deltaYield);
+            }
+
+            function calculateValueAtRisk(price, volatility, confidenceLevel, holdingPeriod) {
+                const zScore = {
+                    90: 1.28,
+                    95: 1.645,
+                    99: 2.326
+                }[confidenceLevel];
+                
+                const dailyVol = volatility / Math.sqrt(252);
+                const periodVol = dailyVol * Math.sqrt(holdingPeriod);
+                
+                return price * zScore * periodVol / 100;
+            }
+
+            function calculateExpectedShortfall(price, volatility, confidenceLevel, holdingPeriod) {
+                const var_ = calculateValueAtRisk(price, volatility, confidenceLevel, holdingPeriod);
+                const adjustment = {
+                    90: 1.31,
+                    95: 1.52,
+                    99: 2.0
+                }[confidenceLevel];
+                
+                return var_ * adjustment;
+            }
+
+            function updateDistributionChart(price, volatility, confidenceLevel) {
+                const ctx = document.getElementById('distributionChart').getContext('2d');
+                const points = [];
+                const normalDist = [];
+                const varLine = [];
+                const esLine = [];
+                
+                const dailyVol = volatility / Math.sqrt(252);
+                const var_ = calculateValueAtRisk(price, volatility, confidenceLevel, 1);
+                const es = calculateExpectedShortfall(price, volatility, confidenceLevel, 1);
+                
+                for (let i = -4; i <= 4; i += 0.2) {
+                    const x = price * (1 + i * dailyVol / 100);
+                    points.push(x);
+                    normalDist.push(Math.exp(-Math.pow(i, 2) / 2) / Math.sqrt(2 * Math.PI));
+                    varLine.push(x === price - var_ ? 1 : 0);
+                    esLine.push(x === price - es ? 1 : 0);
+                }
+                
+                if (distributionChart) {
+                    distributionChart.destroy();
+                }
+                
+                distributionChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: points.map(p => formatCurrency(p)),
+                        datasets: [{
+                            label: 'Price Distribution',
+                            data: normalDist,
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            fill: true,
+                            backgroundColor: 'rgba(54, 162, 235, 0.1)'
+                        }, {
+                            label: 'VaR',
+                            data: varLine,
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            borderDash: [5, 5],
+                            fill: false
+                        }, {
+                            label: 'Expected Shortfall',
+                            data: esLine,
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderDash: [2, 2],
+                            fill: false
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Bond Price ($)'
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Probability Density'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            function updateStressTestTable(parValue, couponRate, ytm, yearsToMaturity, paymentsPerYear, volatility, confidenceLevel, scenario) {
+                const tbody = document.getElementById('stressTestTable');
+                const basePrice = calculateBondPrice(parValue, couponRate, ytm, yearsToMaturity, paymentsPerYear);
+                const modDuration = calculateModifiedDuration(parValue, couponRate, ytm, yearsToMaturity, paymentsPerYear);
+                
+                const scenarios = {
+                    moderate: [100, "Moderate"],
+                    severe: [200, "Severe"],
+                    extreme: [300, "Extreme"]
+                };
+                
+                const [bpChange, label] = scenarios[scenario];
+                const upPrice = calculateBondPrice(parValue, couponRate, ytm + bpChange/100, yearsToMaturity, paymentsPerYear);
+                const downPrice = calculateBondPrice(parValue, couponRate, ytm - bpChange/100, yearsToMaturity, paymentsPerYear);
+                
+                const upImpact = ((upPrice - basePrice) / basePrice * 100).toFixed(2) + '%';
+                const downImpact = ((downPrice - basePrice) / basePrice * 100).toFixed(2) + '%';
+                
+                const var_ = calculateValueAtRisk(basePrice, volatility, confidenceLevel, 10);
+                const es = calculateExpectedShortfall(basePrice, volatility, confidenceLevel, 10);
+                
+                const recoveryTime = Math.ceil(Math.abs(bpChange) / (volatility / Math.sqrt(252)));
+                
+                tbody.innerHTML = `
+                    <tr>
+                        <td>${label} Up</td>
+                        <td>+${bpChange}bp</td>
+                        <td>${upImpact}</td>
+                        <td>${formatCurrency(var_)}</td>
+                        <td>${formatCurrency(es)}</td>
+                        <td>${recoveryTime} days</td>
+                    </tr>
+                    <tr>
+                        <td>${label} Down</td>
+                        <td>-${bpChange}bp</td>
+                        <td>${downImpact}</td>
+                        <td>${formatCurrency(var_)}</td>
+                        <td>${formatCurrency(es)}</td>
+                        <td>${recoveryTime} days</td>
+                    </tr>
+                `;
+            }
+
+            function formatCurrency(value) {
+                return new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }).format(value);
+            }
+
+            function formatPercent(value) {
+                return new Intl.NumberFormat('en-US', {
+                    style: 'percent',
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }).format(value);
+            }
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const parValue = parseFloat(document.getElementById('parValue').value);
+                const couponRate = parseFloat(document.getElementById('couponRate').value);
+                const ytm = parseFloat(document.getElementById('yieldToMaturity').value);
+                const yearsToMaturity = parseFloat(document.getElementById('yearsToMaturity').value);
+                const paymentsPerYear = parseInt(document.getElementById('paymentsPerYear').value);
+                const historicalVolatility = parseFloat(document.getElementById('historicalVolatility').value);
+                const confidenceLevel = parseInt(document.getElementById('confidenceLevel').value);
+                const holdingPeriod = parseInt(document.getElementById('holdingPeriod').value);
+                const stressScenario = document.getElementById('stressScenario').value;
+                const correlationFactor = parseFloat(document.getElementById('correlationFactor').value) / 100;
+
+                // Calculate base metrics
+                const price = calculateBondPrice(parValue, couponRate, ytm, yearsToMaturity, paymentsPerYear);
+                const modDuration = calculateModifiedDuration(parValue, couponRate, ytm, yearsToMaturity, paymentsPerYear);
+                
+                // Calculate risk metrics
+                const var_ = calculateValueAtRisk(price, historicalVolatility, confidenceLevel, holdingPeriod);
+                const es = calculateExpectedShortfall(price, historicalVolatility, confidenceLevel, holdingPeriod);
+                const priceVol = historicalVolatility * modDuration;
+                const maxLoss = price * (1 - Math.exp(-historicalVolatility * Math.sqrt(holdingPeriod/252) * 2.326 / 100));
+                const beta = modDuration * correlationFactor;
+                const volRatio = priceVol / historicalVolatility;
+
+                // Update display
+                document.getElementById('valueAtRisk').textContent = formatCurrency(var_);
+                document.getElementById('expectedShortfall').textContent = formatCurrency(es);
+                document.getElementById('priceVolatility').textContent = formatPercent(priceVol/100);
+                document.getElementById('maxLoss').textContent = formatCurrency(maxLoss);
+                document.getElementById('betaToRates').textContent = beta.toFixed(2);
+                document.getElementById('volatilityRatio').textContent = volRatio.toFixed(2);
+
+                // Update chart and table
+                updateDistributionChart(price, historicalVolatility, confidenceLevel);
+                updateStressTestTable(parValue, couponRate, ytm, yearsToMaturity, paymentsPerYear, 
+                    historicalVolatility, confidenceLevel, stressScenario);
+                
+                results.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html> 

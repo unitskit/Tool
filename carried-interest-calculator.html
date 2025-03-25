@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carried Interest Calculator - Private Equity Returns - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate carried interest for private equity and venture capital investments. Determine performance fees and profit sharing based on investment returns and hurdle rates.">
+    <meta name="keywords" content="carried interest calculator, private equity, venture capital, performance fee, hurdle rate, profit sharing">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">Carried Interest Calculator</h1>
+                    <p class="tool-description">Calculate carried interest and performance fees for private equity and venture capital investments. Analyze profit sharing structures and returns distribution based on various parameters.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="carriedInterestForm" class="needs-validation" novalidate>
+                        <!-- Investment Details -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Investment Details</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="totalInvestment" class="form-label">Total Investment Amount</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" id="totalInvestment" step="1000" value="10000000" required>
+                                    </div>
+                                    <div class="form-text">Total capital invested in the fund</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="exitValue" class="form-label">Exit Value</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" id="exitValue" step="1000" value="15000000" required>
+                                    </div>
+                                    <div class="form-text">Value of investment at exit</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Performance Parameters -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Performance Parameters</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="hurdleRate" class="form-label">Hurdle Rate (%)</label>
+                                    <input type="number" class="form-control" id="hurdleRate" step="0.1" value="8.0" required>
+                                    <div class="form-text">Minimum return before carried interest applies</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="carryPercentage" class="form-label">Carry Percentage (%)</label>
+                                    <input type="number" class="form-control" id="carryPercentage" step="1" value="20" required>
+                                    <div class="form-text">Percentage of profits above hurdle rate allocated as carried interest</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="investmentPeriod" class="form-label">Investment Period (Years)</label>
+                                    <input type="number" class="form-control" id="investmentPeriod" step="0.5" value="5" required>
+                                    <div class="form-text">Duration of the investment</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate Carried Interest</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>Carried Interest Analysis</h3>
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5>Return Metrics</h5>
+                                        <p>Total Return: <strong>$<span id="totalReturn">0</span></strong></p>
+                                        <p>IRR: <strong><span id="irr">0</span>%</strong></p>
+                                        <p>Multiple: <strong><span id="multiple">0</span>x</strong></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5>Distribution Analysis</h5>
+                                        <p>Carried Interest: <strong>$<span id="carriedInterest">0</span></strong></p>
+                                        <p>LP Return: <strong>$<span id="lpReturn">0</span></strong></p>
+                                        <p>Hurdle Amount: <strong>$<span id="hurdleAmount">0</span></strong></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Waterfall Analysis -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Distribution Waterfall</h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="waterfallAnalysis"></div>
+                            </div>
+                        </div>
+
+                        <!-- Visual Representation -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Returns Distribution</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="distributionChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="irr-calculator.html">IRR Calculator</a></li>
+                            <li class="mb-2"><a href="investment-calculator.html">Investment Calculator</a></li>
+                            <li class="mb-2"><a href="roi-calculator.html">ROI Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- How to Use Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter the total investment amount</li>
+                            <li class="mb-2">Input the expected exit value</li>
+                            <li class="mb-2">Set the hurdle rate and carry percentage</li>
+                            <li class="mb-2">Specify the investment period</li>
+                            <li>Click calculate to see the carried interest analysis</li>
+                        </ol>
+                        <div class="mt-3">
+                            <p class="mb-0"><strong>Note:</strong> Carried interest typically applies to profits above the hurdle rate</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('carriedInterestForm');
+            const results = document.getElementById('results');
+            let distributionChart = null;
+
+            function calculateIRR(investment, exitValue, years) {
+                return (Math.pow(exitValue / investment, 1/years) - 1) * 100;
+            }
+
+            function formatCurrency(value) {
+                return new Intl.NumberFormat('en-US', {
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0
+                }).format(value);
+            }
+
+            function calculateCarriedInterest(investment, exitValue, hurdleRate, carryPercentage, years) {
+                const totalReturn = exitValue - investment;
+                const hurdleAmount = investment * (hurdleRate/100) * years;
+                let carriedInterest = 0;
+                
+                if (totalReturn > hurdleAmount) {
+                    carriedInterest = (totalReturn - hurdleAmount) * (carryPercentage/100);
+                }
+                
+                const lpReturn = totalReturn - carriedInterest;
+                const multiple = exitValue / investment;
+                const irr = calculateIRR(investment, exitValue, years);
+                
+                return {
+                    totalReturn,
+                    carriedInterest,
+                    lpReturn,
+                    hurdleAmount,
+                    multiple,
+                    irr
+                };
+            }
+
+            function generateWaterfallAnalysis(investment, hurdleAmount, carriedInterest, lpReturn) {
+                const steps = [
+                    `1. Return of Capital: $${formatCurrency(investment)}`,
+                    `2. Hurdle Return: $${formatCurrency(hurdleAmount)}`,
+                    `3. Carried Interest: $${formatCurrency(carriedInterest)}`,
+                    `4. Remaining LP Return: $${formatCurrency(lpReturn - hurdleAmount - investment)}`
+                ];
+                
+                return steps.join('<br>');
+            }
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get input values
+                const investment = parseFloat(document.getElementById('totalInvestment').value);
+                const exitValue = parseFloat(document.getElementById('exitValue').value);
+                const hurdleRate = parseFloat(document.getElementById('hurdleRate').value);
+                const carryPercentage = parseFloat(document.getElementById('carryPercentage').value);
+                const years = parseFloat(document.getElementById('investmentPeriod').value);
+                
+                // Calculate carried interest
+                const results = calculateCarriedInterest(investment, exitValue, hurdleRate, carryPercentage, years);
+                
+                // Display results
+                document.getElementById('totalReturn').textContent = formatCurrency(results.totalReturn);
+                document.getElementById('irr').textContent = results.irr.toFixed(2);
+                document.getElementById('multiple').textContent = results.multiple.toFixed(2);
+                document.getElementById('carriedInterest').textContent = formatCurrency(results.carriedInterest);
+                document.getElementById('lpReturn').textContent = formatCurrency(results.lpReturn);
+                document.getElementById('hurdleAmount').textContent = formatCurrency(results.hurdleAmount);
+                
+                // Display waterfall analysis
+                document.getElementById('waterfallAnalysis').innerHTML = generateWaterfallAnalysis(
+                    investment,
+                    results.hurdleAmount,
+                    results.carriedInterest,
+                    results.lpReturn
+                );
+
+                // Create/update chart
+                const ctx = document.getElementById('distributionChart').getContext('2d');
+                
+                if (distributionChart) {
+                    distributionChart.destroy();
+                }
+
+                distributionChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: ['Return of Capital', 'Hurdle Return', 'Carried Interest', 'Additional LP Return'],
+                        datasets: [{
+                            data: [
+                                investment,
+                                results.hurdleAmount,
+                                results.carriedInterest,
+                                results.lpReturn - results.hurdleAmount - investment
+                            ],
+                            backgroundColor: [
+                                'rgba(75, 192, 192, 0.5)',
+                                'rgba(54, 162, 235, 0.5)',
+                                'rgba(255, 99, 132, 0.5)',
+                                'rgba(255, 206, 86, 0.5)'
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Distribution of Returns'
+                            }
+                        }
+                    }
+                });
+
+                document.getElementById('results').style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bond Current Yield Calculator - Fixed Income Tools - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate bond current yield and analyze income potential. Compare yields across different bonds and evaluate investment opportunities.">
+    <meta name="keywords" content="bond current yield, bond income, fixed income, yield analysis, bond calculator, investment yield">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">Bond Current Yield Calculator</h1>
+                    <p class="tool-description">Calculate and analyze bond current yield to evaluate income potential. Compare yields across different bonds and assess investment opportunities.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="currentYieldForm" class="needs-validation" novalidate>
+                        <!-- Bond Details Section -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Bond Details</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="faceValue" class="form-label">Face Value ($)</label>
+                                            <input type="number" class="form-control" id="faceValue" value="1000" required>
+                                            <div class="form-text">Par value of the bond</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="marketPrice" class="form-label">Market Price ($)</label>
+                                            <input type="number" class="form-control" id="marketPrice" value="950" required>
+                                            <div class="form-text">Current market price</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="couponRate" class="form-label">Coupon Rate (%)</label>
+                                            <input type="number" class="form-control" id="couponRate" value="5" step="0.01" required>
+                                            <div class="form-text">Annual coupon rate</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="paymentsPerYear" class="form-label">Payments Per Year</label>
+                                            <select class="form-select" id="paymentsPerYear" required>
+                                                <option value="1">Annual</option>
+                                                <option value="2" selected>Semi-annual</option>
+                                                <option value="4">Quarterly</option>
+                                                <option value="12">Monthly</option>
+                                            </select>
+                                            <div class="form-text">Frequency of coupon payments</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tax Information -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Tax Information</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="taxRate" class="form-label">Tax Rate (%)</label>
+                                            <input type="number" class="form-control" id="taxRate" value="25" min="0" max="100">
+                                            <div class="form-text">Marginal tax rate for income</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="inflationRate" class="form-label">Inflation Rate (%)</label>
+                                            <input type="number" class="form-control" id="inflationRate" value="2" step="0.1">
+                                            <div class="form-text">Annual inflation rate</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate Yield</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>Yield Analysis</h3>
+                        
+                        <!-- Yield Results -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Yield Metrics</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Current Yield</label>
+                                            <p id="currentYield" class="h4">0.00%</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">After-Tax Yield</label>
+                                            <p id="afterTaxYield" class="h4">0.00%</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="fw-bold">Real Yield</label>
+                                            <p id="realYield" class="h4">0.00%</p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="fw-bold">After-Tax Real Yield</label>
+                                            <p id="afterTaxRealYield" class="h4">0.00%</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Income Analysis -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Income Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Income Type</th>
+                                                <th>Per Payment</th>
+                                                <th>Annual</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="incomeTable"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Yield Comparison Chart -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Yield Comparison</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="yieldChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Premium/Discount Analysis -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Premium/Discount Analysis</h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="premiumDiscountAlert" class="alert" role="alert"></div>
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <tbody id="premiumDiscountTable"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="bond-yield-calculator.html">Bond Yield Calculator</a></li>
+                            <li class="mb-2"><a href="bond-price-calculator.html">Bond Price Calculator</a></li>
+                            <li class="mb-2"><a href="bond-equivalent-yield-calculator.html">Bond Equivalent Yield Calculator</a></li>
+                            <li class="mb-2"><a href="bond-yield-spread-calculator.html">Bond Yield Spread Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- How to Use Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter the bond's face value and market price</li>
+                            <li class="mb-2">Input the coupon rate and payment frequency</li>
+                            <li class="mb-2">Specify tax and inflation rates (optional)</li>
+                            <li>Click Calculate to analyze yields</li>
+                        </ol>
+                        <div class="mt-3">
+                            <p class="mb-2"><strong>Understanding Results:</strong></p>
+                            <ul class="list-unstyled small">
+                                <li>• Current Yield = Annual Coupon / Market Price</li>
+                                <li>• After-Tax Yield accounts for income taxes</li>
+                                <li>• Real Yield adjusts for inflation</li>
+                                <li>• Premium/Discount shows market position vs. par</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('currentYieldForm');
+            const results = document.getElementById('results');
+            let yieldChart = null;
+
+            function calculateCurrentYield(couponPayment, marketPrice) {
+                return (couponPayment / marketPrice) * 100;
+            }
+
+            function calculateAfterTaxYield(currentYield, taxRate) {
+                return currentYield * (1 - taxRate / 100);
+            }
+
+            function calculateRealYield(nominalYield, inflationRate) {
+                return ((1 + nominalYield / 100) / (1 + inflationRate / 100) - 1) * 100;
+            }
+
+            function formatCurrency(value) {
+                return new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }).format(value);
+            }
+
+            function formatPercentage(value) {
+                return new Intl.NumberFormat('en-US', {
+                    style: 'percent',
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }).format(value / 100);
+            }
+
+            function updateYieldChart(yields) {
+                const ctx = document.getElementById('yieldChart').getContext('2d');
+                
+                if (yieldChart) {
+                    yieldChart.destroy();
+                }
+
+                yieldChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Current Yield', 'After-Tax Yield', 'Real Yield', 'After-Tax Real Yield'],
+                        datasets: [{
+                            label: 'Yield (%)',
+                            data: [
+                                yields.current,
+                                yields.afterTax,
+                                yields.real,
+                                yields.afterTaxReal
+                            ],
+                            backgroundColor: [
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(255, 206, 86, 0.2)',
+                                'rgba(153, 102, 255, 0.2)'
+                            ],
+                            borderColor: [
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(153, 102, 255, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Yield (%)'
+                                }
+                            }
+                        },
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Yield Comparison'
+                            }
+                        }
+                    }
+                });
+            }
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get input values
+                const faceValue = parseFloat(document.getElementById('faceValue').value);
+                const marketPrice = parseFloat(document.getElementById('marketPrice').value);
+                const couponRate = parseFloat(document.getElementById('couponRate').value);
+                const paymentsPerYear = parseInt(document.getElementById('paymentsPerYear').value);
+                const taxRate = parseFloat(document.getElementById('taxRate').value);
+                const inflationRate = parseFloat(document.getElementById('inflationRate').value);
+
+                // Calculate annual coupon payment
+                const annualCoupon = faceValue * (couponRate / 100);
+                const couponPerPayment = annualCoupon / paymentsPerYear;
+
+                // Calculate yields
+                const currentYield = calculateCurrentYield(annualCoupon, marketPrice);
+                const afterTaxYield = calculateAfterTaxYield(currentYield, taxRate);
+                const realYield = calculateRealYield(currentYield, inflationRate);
+                const afterTaxRealYield = calculateRealYield(afterTaxYield, inflationRate);
+
+                // Update yield displays
+                document.getElementById('currentYield').textContent = formatPercentage(currentYield);
+                document.getElementById('afterTaxYield').textContent = formatPercentage(afterTaxYield);
+                document.getElementById('realYield').textContent = formatPercentage(realYield);
+                document.getElementById('afterTaxRealYield').textContent = formatPercentage(afterTaxRealYield);
+
+                // Update income table
+                document.getElementById('incomeTable').innerHTML = `
+                    <tr>
+                        <td>Gross Income</td>
+                        <td>${formatCurrency(couponPerPayment)}</td>
+                        <td>${formatCurrency(annualCoupon)}</td>
+                    </tr>
+                    <tr>
+                        <td>After-Tax Income</td>
+                        <td>${formatCurrency(couponPerPayment * (1 - taxRate / 100))}</td>
+                        <td>${formatCurrency(annualCoupon * (1 - taxRate / 100))}</td>
+                    </tr>
+                    <tr>
+                        <td>Real Income</td>
+                        <td>${formatCurrency(couponPerPayment / (1 + inflationRate / 100))}</td>
+                        <td>${formatCurrency(annualCoupon / (1 + inflationRate / 100))}</td>
+                    </tr>
+                `;
+
+                // Update premium/discount analysis
+                const premium = marketPrice - faceValue;
+                const premiumPercent = (premium / faceValue) * 100;
+                const alert = document.getElementById('premiumDiscountAlert');
+                alert.className = `alert ${premium > 0 ? 'alert-warning' : premium < 0 ? 'alert-success' : 'alert-info'}`;
+                alert.textContent = premium > 0 ? 
+                    'Bond is trading at a premium' : premium < 0 ? 
+                    'Bond is trading at a discount' : 
+                    'Bond is trading at par';
+
+                document.getElementById('premiumDiscountTable').innerHTML = `
+                    <tr>
+                        <td>Premium/Discount Amount</td>
+                        <td>${formatCurrency(premium)}</td>
+                    </tr>
+                    <tr>
+                        <td>Premium/Discount Percentage</td>
+                        <td>${formatPercentage(premiumPercent)}</td>
+                    </tr>
+                `;
+
+                // Update chart
+                updateYieldChart({
+                    current: currentYield,
+                    afterTax: afterTaxYield,
+                    real: realYield,
+                    afterTaxReal: afterTaxRealYield
+                });
+
+                results.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html> 

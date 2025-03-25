@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appreciation Calculator - Asset Value Growth - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate how much your assets will appreciate over time. Estimate future value of investments, real estate, and other appreciating assets.">
+    <meta name="keywords" content="appreciation calculator, asset growth, value increase, investment appreciation, real estate appreciation">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">Appreciation Calculator</h1>
+                    <p class="tool-description">Calculate how much your assets will appreciate over time based on different appreciation rates and time periods.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="appreciationForm" class="needs-validation" novalidate>
+                        <!-- Asset Details -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Asset Details</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="initialValue" class="form-label">Initial Asset Value ($)</label>
+                                    <input type="number" class="form-control" id="initialValue" required min="0" step="0.01">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="appreciationRate" class="form-label">Annual Appreciation Rate (%)</label>
+                                    <input type="number" class="form-control" id="appreciationRate" required min="0" max="100" step="0.1">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="timeFrame" class="form-label">Time Frame (Years)</label>
+                                    <input type="number" class="form-control" id="timeFrame" required min="1" step="1">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="compoundingFrequency" class="form-label">Compounding Frequency</label>
+                                    <select class="form-select" id="compoundingFrequency" required>
+                                        <option value="1">Annually</option>
+                                        <option value="2">Semi-annually</option>
+                                        <option value="4">Quarterly</option>
+                                        <option value="12">Monthly</option>
+                                        <option value="365">Daily</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate Appreciation</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>Appreciation Analysis</h3>
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5>Value Changes</h5>
+                                        <p>Future Value: <strong>$<span id="futureValue">0</span></strong></p>
+                                        <p>Total Appreciation: <strong>$<span id="totalAppreciation">0</span></strong></p>
+                                        <p>Appreciation Percentage: <strong><span id="appreciationPercentage">0</span>%</strong></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5>Annual Metrics</h5>
+                                        <p>Average Annual Increase: <strong>$<span id="annualIncrease">0</span></strong></p>
+                                        <p>Effective Annual Rate: <strong><span id="effectiveRate">0</span>%</strong></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Value Progression -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Value Progression Over Time</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="progressionChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="compound-interest-calculator.html">Compound Interest Calculator</a></li>
+                            <li class="mb-2"><a href="investment-calculator.html">Investment Calculator</a></li>
+                            <li class="mb-2"><a href="real-estate-calculator.html">Real Estate Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- How to Use Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter the initial value of your asset</li>
+                            <li class="mb-2">Input the expected annual appreciation rate</li>
+                            <li class="mb-2">Specify the time frame in years</li>
+                            <li class="mb-2">Select how often appreciation compounds</li>
+                            <li>Click calculate to see future values</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('appreciationForm');
+            const results = document.getElementById('results');
+            let progressionChart = null;
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get input values
+                const initialValue = parseFloat(document.getElementById('initialValue').value);
+                const appreciationRate = parseFloat(document.getElementById('appreciationRate').value) / 100;
+                const timeFrame = parseInt(document.getElementById('timeFrame').value);
+                const compoundingFrequency = parseInt(document.getElementById('compoundingFrequency').value);
+
+                // Calculate future value using compound interest formula
+                const futureValue = initialValue * Math.pow(1 + (appreciationRate / compoundingFrequency), compoundingFrequency * timeFrame);
+                
+                // Calculate other metrics
+                const totalAppreciation = futureValue - initialValue;
+                const appreciationPercentage = (totalAppreciation / initialValue) * 100;
+                const annualIncrease = totalAppreciation / timeFrame;
+                const effectiveRate = (Math.pow(futureValue / initialValue, 1 / timeFrame) - 1) * 100;
+
+                // Display results
+                document.getElementById('futureValue').textContent = futureValue.toFixed(2);
+                document.getElementById('totalAppreciation').textContent = totalAppreciation.toFixed(2);
+                document.getElementById('appreciationPercentage').textContent = appreciationPercentage.toFixed(2);
+                document.getElementById('annualIncrease').textContent = annualIncrease.toFixed(2);
+                document.getElementById('effectiveRate').textContent = effectiveRate.toFixed(2);
+
+                // Generate data points for chart
+                const labels = [];
+                const values = [];
+                for (let year = 0; year <= timeFrame; year++) {
+                    labels.push(`Year ${year}`);
+                    const value = initialValue * Math.pow(1 + (appreciationRate / compoundingFrequency), compoundingFrequency * year);
+                    values.push(value);
+                }
+
+                // Create progression chart
+                const ctx = document.getElementById('progressionChart').getContext('2d');
+                
+                // Destroy existing chart if it exists
+                if (progressionChart) {
+                    progressionChart.destroy();
+                }
+
+                // Create new chart
+                progressionChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Asset Value',
+                            data: values,
+                            borderColor: 'rgb(75, 192, 192)',
+                            tension: 0.1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: false,
+                                title: {
+                                    display: true,
+                                    text: 'Value ($)'
+                                }
+                            }
+                        }
+                    }
+                });
+
+                results.style.display = 'block';
+            });
+
+            // Form validation
+            form.addEventListener('input', function(e) {
+                if (e.target.type === 'number') {
+                    const value = parseFloat(e.target.value);
+                    const min = parseFloat(e.target.min);
+                    const max = parseFloat(e.target.max);
+                    
+                    if (!isNaN(min) && value < min) {
+                        e.target.value = min;
+                    }
+                    if (!isNaN(max) && value > max) {
+                        e.target.value = max;
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

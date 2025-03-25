@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bond Yield Calculator - Fixed Income Tools - Multi-Tools</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Calculate bond yields including Yield to Maturity (YTM), Yield to Call (YTC), and Yield to Worst (YTW). Analyze bond returns and compare investment opportunities.">
+    <meta name="keywords" content="bond yield, YTM, yield to maturity, yield to call, YTC, yield to worst, YTW, fixed income">
+</head>
+<body>
+    <!-- Header will be loaded dynamically -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row">
+            <!-- Calculator Section -->
+            <div class="col-lg-8">
+                <div class="tool-container">
+                    <h1 class="tool-title">Bond Yield Calculator</h1>
+                    <p class="tool-description">Calculate various bond yield metrics including Yield to Maturity (YTM), Yield to Call (YTC), and Yield to Worst (YTW). Analyze bond returns and compare investment opportunities.</p>
+
+                    <!-- Calculator Form -->
+                    <form id="bondYieldForm" class="needs-validation" novalidate>
+                        <!-- Bond Details -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Bond Details</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="faceValue" class="form-label">Face Value (Par Value)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" id="faceValue" value="1000" required>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="marketPrice" class="form-label">Market Price</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" id="marketPrice" value="950" required>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="couponRate" class="form-label">Annual Coupon Rate (%)</label>
+                                    <input type="number" class="form-control" id="couponRate" value="5.00" step="0.01" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="yearsToMaturity" class="form-label">Years to Maturity</label>
+                                    <input type="number" class="form-control" id="yearsToMaturity" value="10" step="0.5" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="paymentFrequency" class="form-label">Payment Frequency</label>
+                                    <select class="form-select" id="paymentFrequency">
+                                        <option value="1">Annual</option>
+                                        <option value="2" selected>Semi-annual</option>
+                                        <option value="4">Quarterly</option>
+                                        <option value="12">Monthly</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Call Options -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Call Options</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="callPrice" class="form-label">Call Price</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" id="callPrice" value="1020">
+                                    </div>
+                                    <div class="form-text">Optional: Leave blank if bond is not callable</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="yearsToCall" class="form-label">Years to First Call</label>
+                                    <input type="number" class="form-control" id="yearsToCall" value="5" step="0.5">
+                                    <div class="form-text">Optional: Years until the bond can be called</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Additional Parameters -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Additional Parameters</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="accrualMethod" class="form-label">Accrual Method</label>
+                                    <select class="form-select" id="accrualMethod">
+                                        <option value="30/360" selected>30/360</option>
+                                        <option value="actual/360">Actual/360</option>
+                                        <option value="actual/365">Actual/365</option>
+                                        <option value="actual/actual">Actual/Actual</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="settlementDate" class="form-label">Settlement Date</label>
+                                    <input type="date" class="form-control" id="settlementDate">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="taxRate" class="form-label">Tax Rate (%)</label>
+                                    <input type="number" class="form-control" id="taxRate" value="25.00" step="0.01">
+                                    <div class="form-text">Optional: For after-tax yield calculations</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Calculate Yields</button>
+                    </form>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3>Yield Analysis</h3>
+                        
+                        <!-- Primary Yields -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Primary Yield Metrics</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h6>Core Yields</h6>
+                                        <p>Current Yield: <strong><span id="currentYield">0.00</span>%</strong></p>
+                                        <p>Yield to Maturity (YTM): <strong><span id="yieldToMaturity">0.00</span>%</strong></p>
+                                        <p>Yield to Call (YTC): <strong><span id="yieldToCall">0.00</span>%</strong></p>
+                                        <p>Yield to Worst (YTW): <strong><span id="yieldToWorst">0.00</span>%</strong></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6>Adjusted Yields</h6>
+                                        <p>After-tax YTM: <strong><span id="afterTaxYTM">0.00</span>%</strong></p>
+                                        <p>Real YTM: <strong><span id="realYTM">0.00</span>%</strong></p>
+                                        <p>Bond Equivalent Yield: <strong><span id="bondEquivalentYield">0.00</span>%</strong></p>
+                                        <p>Effective Annual Yield: <strong><span id="effectiveAnnualYield">0.00</span>%</strong></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Yield Components -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Yield Components</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h6>Income Return</h6>
+                                        <p>Annual Coupon Income: <strong>$<span id="annualCouponIncome">0.00</span></strong></p>
+                                        <p>Income Return: <strong><span id="incomeReturn">0.00</span>%</strong></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6>Capital Return</h6>
+                                        <p>Price Gain/Loss: <strong>$<span id="priceGainLoss">0.00</span></strong></p>
+                                        <p>Capital Return: <strong><span id="capitalReturn">0.00</span>%</strong></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Yield Comparison -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Yield Comparison</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Yield Type</th>
+                                                <th>Nominal</th>
+                                                <th>After-tax</th>
+                                                <th>Real</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="yieldComparisonTable"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Visual Representation -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Yield Components Chart</h5>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="yieldChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Ad Space -->
+                <div class="ad-placeholder mb-4">
+                    <p class="text-muted">Advertisement</p>
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Tools</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><a href="bond-price-calculator.html">Bond Price Calculator</a></li>
+                            <li class="mb-2"><a href="bond-equivalent-yield-calculator.html">Bond Equivalent Yield Calculator</a></li>
+                            <li class="mb-2"><a href="bond-current-yield-calculator.html">Bond Current Yield Calculator</a></li>
+                            <li class="mb-2"><a href="bond-convexity-calculator.html">Bond Convexity Calculator</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- How to Use Guide -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Enter the bond's face value and market price</li>
+                            <li class="mb-2">Input the annual coupon rate</li>
+                            <li class="mb-2">Specify years to maturity</li>
+                            <li class="mb-2">Select payment frequency</li>
+                            <li class="mb-2">Optionally enter call details and tax rate</li>
+                            <li>Click calculate to view yields</li>
+                        </ol>
+                        <div class="mt-3">
+                            <p class="mb-2"><strong>Note:</strong></p>
+                            <ul class="list-unstyled small">
+                                <li>YTM assumes holding to maturity</li>
+                                <li>YTC only applies to callable bonds</li>
+                                <li>YTW is the minimum of YTM and YTC</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer will be loaded dynamically -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('bondYieldForm');
+            const results = document.getElementById('results');
+            let yieldChart = null;
+
+            function formatNumber(value, decimals = 2) {
+                return new Intl.NumberFormat('en-US', {
+                    minimumFractionDigits: decimals,
+                    maximumFractionDigits: decimals
+                }).format(value);
+            }
+
+            function calculateCurrentYield(couponPayment, marketPrice) {
+                return (couponPayment / marketPrice) * 100;
+            }
+
+            function calculateYTM(price, faceValue, couponRate, years, frequency) {
+                const couponPayment = (faceValue * couponRate / 100) / frequency;
+                const totalPayments = years * frequency;
+                
+                // Newton-Raphson method to find YTM
+                let yield = couponRate / 100; // Initial guess
+                const tolerance = 0.0000001;
+                const maxIterations = 100;
+                let iteration = 0;
+                
+                while (iteration < maxIterations) {
+                    let presentValue = 0;
+                    let derivativeValue = 0;
+                    
+                    for (let i = 1; i <= totalPayments; i++) {
+                        const discountFactor = Math.pow(1 + yield/frequency, -i);
+                        presentValue += couponPayment * discountFactor;
+                        derivativeValue -= i * couponPayment * discountFactor / (1 + yield/frequency);
+                    }
+                    
+                    presentValue += faceValue * Math.pow(1 + yield/frequency, -totalPayments);
+                    derivativeValue -= totalPayments * faceValue * Math.pow(1 + yield/frequency, -totalPayments-1);
+                    
+                    const difference = presentValue - price;
+                    if (Math.abs(difference) < tolerance) {
+                        return yield * 100;
+                    }
+                    
+                    yield -= difference / derivativeValue;
+                    iteration++;
+                }
+                
+                return yield * 100;
+            }
+
+            function calculateYTC(price, callPrice, couponRate, yearsToCall, frequency) {
+                if (!callPrice || !yearsToCall) return null;
+                return calculateYTM(price, callPrice, couponRate, yearsToCall, frequency);
+            }
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get input values
+                const faceValue = parseFloat(document.getElementById('faceValue').value);
+                const marketPrice = parseFloat(document.getElementById('marketPrice').value);
+                const couponRate = parseFloat(document.getElementById('couponRate').value);
+                const yearsToMaturity = parseFloat(document.getElementById('yearsToMaturity').value);
+                const frequency = parseInt(document.getElementById('paymentFrequency').value);
+                const callPrice = parseFloat(document.getElementById('callPrice').value);
+                const yearsToCall = parseFloat(document.getElementById('yearsToCall').value);
+                const taxRate = parseFloat(document.getElementById('taxRate').value) / 100;
+
+                // Calculate yields
+                const currentYield = calculateCurrentYield(faceValue * couponRate / 100, marketPrice);
+                const ytm = calculateYTM(marketPrice, faceValue, couponRate, yearsToMaturity, frequency);
+                const ytc = calculateYTC(marketPrice, callPrice, couponRate, yearsToCall, frequency);
+                const ytw = ytc ? Math.min(ytm, ytc) : ytm;
+
+                // Calculate adjusted yields
+                const afterTaxYTM = ytm * (1 - taxRate);
+                const realYTM = ytm - 2; // Simplified, assuming 2% inflation
+                const bey = ytm * (frequency / 2); // Convert to semi-annual basis
+                const eay = Math.pow(1 + ytm/frequency, frequency) - 1;
+
+                // Calculate components
+                const annualCouponIncome = faceValue * couponRate / 100;
+                const incomeReturn = currentYield;
+                const priceGainLoss = faceValue - marketPrice;
+                const capitalReturn = (priceGainLoss / marketPrice) / yearsToMaturity * 100;
+
+                // Display results
+                document.getElementById('currentYield').textContent = formatNumber(currentYield);
+                document.getElementById('yieldToMaturity').textContent = formatNumber(ytm);
+                document.getElementById('yieldToCall').textContent = ytc ? formatNumber(ytc) : 'N/A';
+                document.getElementById('yieldToWorst').textContent = formatNumber(ytw);
+                
+                document.getElementById('afterTaxYTM').textContent = formatNumber(afterTaxYTM);
+                document.getElementById('realYTM').textContent = formatNumber(realYTM);
+                document.getElementById('bondEquivalentYield').textContent = formatNumber(bey);
+                document.getElementById('effectiveAnnualYield').textContent = formatNumber(eay * 100);
+
+                document.getElementById('annualCouponIncome').textContent = formatNumber(annualCouponIncome);
+                document.getElementById('incomeReturn').textContent = formatNumber(incomeReturn);
+                document.getElementById('priceGainLoss').textContent = formatNumber(priceGainLoss);
+                document.getElementById('capitalReturn').textContent = formatNumber(capitalReturn);
+
+                // Generate yield comparison table
+                const yieldTypes = [
+                    {name: 'Current Yield', nominal: currentYield},
+                    {name: 'YTM', nominal: ytm},
+                    {name: 'YTC', nominal: ytc || 0},
+                    {name: 'YTW', nominal: ytw}
+                ];
+
+                const comparisonHtml = yieldTypes.map(y => `
+                    <tr>
+                        <td>${y.name}</td>
+                        <td>${formatNumber(y.nominal)}%</td>
+                        <td>${formatNumber(y.nominal * (1 - taxRate))}%</td>
+                        <td>${formatNumber(y.nominal - 2)}%</td>
+                    </tr>
+                `).join('');
+                document.getElementById('yieldComparisonTable').innerHTML = comparisonHtml;
+
+                // Create/update yield components chart
+                const ctx = document.getElementById('yieldChart').getContext('2d');
+                
+                if (yieldChart) {
+                    yieldChart.destroy();
+                }
+
+                yieldChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Income Return', 'Capital Return', 'Total Return'],
+                        datasets: [{
+                            label: 'Return Components',
+                            data: [incomeReturn, capitalReturn, incomeReturn + capitalReturn],
+                            backgroundColor: [
+                                'rgba(75, 192, 192, 0.5)',
+                                'rgba(255, 159, 64, 0.5)',
+                                'rgba(153, 102, 255, 0.5)'
+                            ],
+                            borderColor: [
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(255, 159, 64, 1)',
+                                'rgba(153, 102, 255, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Return (%)'
+                                }
+                            }
+                        },
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Bond Return Components'
+                            }
+                        }
+                    }
+                });
+
+                results.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html> 
